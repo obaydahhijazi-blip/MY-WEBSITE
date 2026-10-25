@@ -30,7 +30,7 @@ export default async function Home() {
   const availability =
     a.status !== "hidden" && (a.confirmed || content.demoMode) ? { status: a.status, label: a.label, preview: !a.confirmed } : undefined;
 
-  // Final order (brief §03). Section numbers follow what is actually rendered.
+  // Order: … process → request a quote → free consultation (last) → footer. Numbers follow what is rendered.
   const order = [
     "about",
     "clients",
@@ -38,9 +38,9 @@ export default async function Home() {
     "works",
     ...(content.testimonials.items.length ? ["testimonials"] : []),
     ...(content.faq.items.length ? ["faq"] : []),
-    "consultation",
     "process",
     "quote",
+    "consultation",
   ];
   const idx = (id: string) => String(order.indexOf(id) + 1).padStart(2, "0");
   const navigation = content.navigation.filter((n) => order.includes(n.id));
@@ -67,9 +67,9 @@ export default async function Home() {
         <WorkSection works={content.works} index={idx("works")} instagram={settings.instagram} instagramHandle={settings.instagramHandle} />
         {content.testimonials.items.length ? <Testimonials testimonials={content.testimonials} index={idx("testimonials")} /> : null}
         <FaqSection faq={content.faq} index={idx("faq")} />
-        <BookingSection consultation={content.consultation} whatsappNumber={settings.whatsappNumber} index={idx("consultation")} />
         <ProcessTimeline process={content.process} index={idx("process")} />
         <QuoteSection quote={content.quote} whatsappNumber={settings.whatsappNumber} index={idx("quote")} />
+        <BookingSection consultation={content.consultation} whatsappNumber={settings.whatsappNumber} index={idx("consultation")} />
       </main>
       <ContactFooter content={content} navigation={navigation} />
       <FloatingWhatsApp href={contactHref} />

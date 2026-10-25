@@ -32,10 +32,6 @@
       "label": "عني"
     },
     {
-      "id": "clients",
-      "label": "الجهات"
-    },
-    {
       "id": "expertise",
       "label": "تخصصاتي"
     },
@@ -44,16 +40,20 @@
       "label": "أعمالي"
     },
     {
+      "id": "video",
+      "label": "الفيديو"
+    },
+    {
+      "id": "process",
+      "label": "طريقة العمل"
+    },
+    {
       "id": "faq",
       "label": "الأسئلة"
     },
     {
       "id": "consultation",
       "label": "الاستشارة"
-    },
-    {
-      "id": "process",
-      "label": "طريقة العمل"
     }
   ],
   "hero": {

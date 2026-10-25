@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { BrandBars } from "@/components/BrandBars";
-import { ArrowIcon, InstagramIcon, Star8, WhatsAppIcon } from "@/components/icons";
+import { ArrowIcon, InstagramIcon, WhatsAppIcon } from "@/components/icons";
 import type { SiteContent } from "@/lib/cms/types";
 import { whatsappLink } from "@/lib/whatsapp";
 
-/** Compact footer after the quote section: identity, short navigation, contact links, rights. */
+/** Compact footer after the final section: identity, short navigation, contact links, rights. */
 export function ContactFooter({ content, navigation }: { content: SiteContent; navigation: SiteContent["navigation"] }) {
   const s = content.settings;
   const email = s.email.trim();
@@ -12,15 +12,13 @@ export function ContactFooter({ content, navigation }: { content: SiteContent; n
   return (
     <footer id="contact" className="bg-petrol text-white">
       <div className="container-x grid gap-10 py-14 md:grid-cols-12 md:items-start">
-        <div className="flex items-center gap-4 md:col-span-4">
-          <Image src="/images/brand/logo-white.webp" alt={s.nameAr} width={600} height={402} className="h-12 w-auto" />
-          <div>
-            <p className="font-semibold">{s.nameAr}</p>
-            <p className="font-latin flex items-center gap-2 text-[0.7rem] tracking-[0.28em] text-white/50">
-              {s.nameEn}
-              <Star8 className="size-2.5 text-cyan" />
-            </p>
-            <p className="mt-1 text-xs text-white/50">{s.jobAr}</p>
+        <div className="footer-brand md:col-span-4">
+          <Image src="/images/brand/logo-white.webp" alt={s.nameAr} width={600} height={402} className="h-[60px] w-auto shrink-0" />
+          <span className="footer-brand-rule" aria-hidden="true" />
+          <div className="grid gap-1.5">
+            <p className="text-[1.15rem] font-bold leading-tight">{s.nameAr}</p>
+            <p className="font-latin text-[0.72rem] font-medium leading-none tracking-[0.2em] text-cyan">{s.nameEn}</p>
+            <p className="text-[0.82rem] leading-snug text-white/60">{s.jobAr}</p>
           </div>
         </div>
 

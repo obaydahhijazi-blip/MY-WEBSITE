@@ -1247,6 +1247,19 @@ img {
   }
 }
 
+/* ───────── Footer brand ───────── */
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.footer-brand-rule {
+  align-self: stretch;
+  width: 1px;
+  margin-block: 6px;
+  background: linear-gradient(to bottom, transparent, rgb(255 255 255 / 0.22), transparent);
+}
+
 /* ───────── Request a quote ───────── */
 .quote-block {
   position: relative;
