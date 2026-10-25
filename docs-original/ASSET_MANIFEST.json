@@ -1,0 +1,476 @@
+{
+  "package_name": "Obaydah Claude Portfolio V3",
+  "hero_layers": {
+    "background-master.png": "Scenic dark petroleum original full canvas, background already has some colored highlights",
+    "obaydah-portrait-cutout.png": "Transparent personal cutout, main hero foreground",
+    "name-title-lockup-reference.png": "English brand name/title graphic reference, replace with HTML/SVG when possible",
+    "brand-three-bars.png": "Tiny personal branding bars",
+    "cyan-glow-star-large.png": "Large decorative cyan star, optional",
+    "cyan-glow-star-small.png": "Small decorative cyan star, optional",
+    "floating-photoshop-right.png": "Floating Photoshop-themed icon on the right, optional",
+    "floating-photoshop-left.png": "Floating Photoshop-themed icon on the left, optional",
+    "teal-light-sweep.png": "Large sweeping teal light wash, optional"
+  },
+  "optimized_webp_assets": [
+    {
+      "original": "assets/hero/layers/floating-photoshop-right.png",
+      "webp": "assets/hero/optimized/floating-photoshop-right.webp",
+      "size": [
+        640,
+        1036
+      ]
+    },
+    {
+      "original": "assets/hero/layers/cyan-glow-star-large.png",
+      "webp": "assets/hero/optimized/cyan-glow-star-large.webp",
+      "size": [
+        1307,
+        1254
+      ]
+    },
+    {
+      "original": "assets/hero/layers/background-master.png",
+      "webp": "assets/hero/optimized/background-master.webp",
+      "size": [
+        4920,
+        1872
+      ]
+    },
+    {
+      "original": "assets/hero/layers/teal-light-sweep.png",
+      "webp": "assets/hero/optimized/teal-light-sweep.webp",
+      "size": [
+        4772,
+        777
+      ]
+    },
+    {
+      "original": "assets/hero/layers/obaydah-portrait-cutout.png",
+      "webp": "assets/hero/optimized/obaydah-portrait-cutout.webp",
+      "size": [
+        1205,
+        1466
+      ]
+    },
+    {
+      "original": "assets/hero/layers/name-title-lockup-reference.png",
+      "webp": "assets/hero/optimized/name-title-lockup-reference.webp",
+      "size": [
+        1310,
+        643
+      ]
+    },
+    {
+      "original": "assets/hero/layers/floating-photoshop-left.png",
+      "webp": "assets/hero/optimized/floating-photoshop-left.webp",
+      "size": [
+        600,
+        608
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "PROMPT_FOR_CLAUDE.txt",
+      "bytes": 18038,
+      "sha256": "dd83f517751473efe090eab7b91a0db0b206d4f24a49f801b70977011c273a69"
+    },
+    {
+      "path": "README_START_HERE_AR.md",
+      "bytes": 3671,
+      "sha256": "ee97ba3264036c75a4e5de017665bf959a24294bd3a13fc200fde3be8390a63a"
+    },
+    {
+      "path": "assets/hero/layers/background-master.png",
+      "bytes": 3125495,
+      "sha256": "d54475b6c83dc6db84ca44a795047da0554116e780fcdb503bb1959ff2beed2c",
+      "width": 4920,
+      "height": 1872,
+      "alpha": false,
+      "usage": "Scenic dark petroleum original full canvas, background already has some colored highlights"
+    },
+    {
+      "path": "assets/hero/layers/brand-three-bars.png",
+      "bytes": 476,
+      "sha256": "c12eaec732b02969b3e95e28201d25e22037b55ac50122bf7af76085b17aa7d7",
+      "width": 111,
+      "height": 114,
+      "alpha": true,
+      "usage": "Tiny personal branding bars"
+    },
+    {
+      "path": "assets/hero/layers/cyan-glow-star-large.png",
+      "bytes": 174875,
+      "sha256": "230d80688b32244a7945f697e7d4685b009e7a861c97b4cba328697b877691f0",
+      "width": 1307,
+      "height": 1254,
+      "alpha": true,
+      "usage": "Large decorative cyan star, optional"
+    },
+    {
+      "path": "assets/hero/layers/cyan-glow-star-small.png",
+      "bytes": 44375,
+      "sha256": "5a8cc5e42486edf79616c4f0d36cc842131298078e85caab5ba920ab2f975819",
+      "width": 237,
+      "height": 242,
+      "alpha": true,
+      "usage": "Small decorative cyan star, optional"
+    },
+    {
+      "path": "assets/hero/layers/floating-photoshop-left.png",
+      "bytes": 225900,
+      "sha256": "c9e74a9e11866af1c2701fc3bab7c606b08c51db6ac4d94b8e284e1c9bc7ff57",
+      "width": 600,
+      "height": 608,
+      "alpha": true,
+      "usage": "Floating Photoshop-themed icon on the left, optional"
+    },
+    {
+      "path": "assets/hero/layers/floating-photoshop-right.png",
+      "bytes": 366962,
+      "sha256": "15c4a7ca4439d5d1941718fc20cb977ceedd533e16ab68305c4b8fa05b458f63",
+      "width": 640,
+      "height": 1036,
+      "alpha": true,
+      "usage": "Floating Photoshop-themed icon on the right, optional"
+    },
+    {
+      "path": "assets/hero/layers/name-title-lockup-reference.png",
+      "bytes": 34961,
+      "sha256": "50d8eff778f976af4f2044f12a6b664a2d89eb656950089ec20f476c30279750",
+      "width": 1310,
+      "height": 643,
+      "alpha": true,
+      "usage": "English brand name/title graphic reference, replace with HTML/SVG when possible"
+    },
+    {
+      "path": "assets/hero/layers/obaydah-portrait-cutout.png",
+      "bytes": 1318145,
+      "sha256": "385366f3900ecd9079bbd75e34a18db4ac08f45645780a996a8869581e39f285",
+      "width": 1205,
+      "height": 1466,
+      "alpha": true,
+      "usage": "Transparent personal cutout, main hero foreground"
+    },
+    {
+      "path": "assets/hero/layers/teal-light-sweep.png",
+      "bytes": 387463,
+      "sha256": "d657d3223476dfab8485db37c306243cbda7634eeee1c3ee91146b24eff5e0e4",
+      "width": 4772,
+      "height": 777,
+      "alpha": true,
+      "usage": "Large sweeping teal light wash, optional"
+    },
+    {
+      "path": "assets/hero/optimized/background-master.webp",
+      "bytes": 97126,
+      "sha256": "d60f658a3f099d6742046bb42a0a9dff1137a41dd162db3170a9e980099b3b0e",
+      "width": 4920,
+      "height": 1872,
+      "alpha": false
+    },
+    {
+      "path": "assets/hero/optimized/cyan-glow-star-large.webp",
+      "bytes": 79460,
+      "sha256": "187f6f6d7bd74b683f5fd52bc5329b498f36d828d97613ca685bb408b27e6076",
+      "width": 1307,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "path": "assets/hero/optimized/floating-photoshop-left.webp",
+      "bytes": 29900,
+      "sha256": "51b83b95628804cee125aa46f8c575ca4a7d24f1c26c9d0f2811852dfd5c3607",
+      "width": 600,
+      "height": 608,
+      "alpha": true
+    },
+    {
+      "path": "assets/hero/optimized/floating-photoshop-right.webp",
+      "bytes": 30424,
+      "sha256": "894c006f287d64d45f4dadb940051fa3ae16eb7746b047074b4399d5a058c57a",
+      "width": 640,
+      "height": 1036,
+      "alpha": true
+    },
+    {
+      "path": "assets/hero/optimized/name-title-lockup-reference.webp",
+      "bytes": 21046,
+      "sha256": "34bab3eb14dac25d7ca2236dd8b4133582bad0aee990a97827548c35d37da5b2",
+      "width": 1310,
+      "height": 643,
+      "alpha": true
+    },
+    {
+      "path": "assets/hero/optimized/obaydah-portrait-cutout.webp",
+      "bytes": 84706,
+      "sha256": "559c25b677cb4ef33c99298aed21fe845f9ffd045f894bb9c968041033bf0927",
+      "width": 1205,
+      "height": 1466,
+      "alpha": true
+    },
+    {
+      "path": "assets/hero/optimized/teal-light-sweep.webp",
+      "bytes": 40688,
+      "sha256": "fb687b948190141e361c5f78d6e41eda88e8afc7e5171433defc74ee77704700",
+      "width": 4772,
+      "height": 777,
+      "alpha": true
+    },
+    {
+      "path": "assets/logo/obaydah-logo-dark.png",
+      "bytes": 71714,
+      "sha256": "bc5a5facf93c4937fa0bbf4aa4cf2dfd101740aeb4b188fbe9473f52bf3a5be3",
+      "width": 1844,
+      "height": 1235,
+      "alpha": true
+    },
+    {
+      "path": "assets/logo/obaydah-logo-dark.webp",
+      "bytes": 30342,
+      "sha256": "a0290e6f15fbc6b196c15baea35ab99a77e80dabdedde0e3e8ea25f264f4a72e",
+      "width": 1844,
+      "height": 1235,
+      "alpha": true
+    },
+    {
+      "path": "assets/logo/obaydah-logo-white.png",
+      "bytes": 70625,
+      "sha256": "dc3531e17f9bb26ea67bef6846fe3bfd192dc481b06d5772436965d0159b8462",
+      "width": 1844,
+      "height": 1235,
+      "alpha": true
+    },
+    {
+      "path": "assets/logo/obaydah-logo-white.webp",
+      "bytes": 30342,
+      "sha256": "92befc069dd6cb4bd33f0bb9681f50ec367d543b960a84ed933d425437e5e24b",
+      "width": 1844,
+      "height": 1235,
+      "alpha": true
+    },
+    {
+      "path": "assets/logo/obaydah-original.eps",
+      "bytes": 1409906,
+      "sha256": "5011dfb39a8430117dc68d4a8b8f607dc7f6d06e8b3b7ab195de14ab0c7c266d"
+    },
+    {
+      "path": "content/.env.example",
+      "bytes": 309,
+      "sha256": "4a299d2f587671710041e23cbdbaf1e39e17b49691b13f8555e167b6b134d79a"
+    },
+    {
+      "path": "content/clients.json",
+      "bytes": 129,
+      "sha256": "e733288bb9d20781378c0f35e76aaa38b2acebc0cc40188501726422c65acde6"
+    },
+    {
+      "path": "content/site-content.ar.json",
+      "bytes": 6127,
+      "sha256": "450057c40dccdc43303f801deacff75b000b77e46e252ffa1bdeb0fa7b640a56"
+    },
+    {
+      "path": "content/works.json",
+      "bytes": 325,
+      "sha256": "646ef6b0f4c203a2862e42e7c06098c21e2cc0ddb35318e2c33e8e21c2b021c2"
+    },
+    {
+      "path": "docs/BRAND_AND_UX_BRIEF.md",
+      "bytes": 1902,
+      "sha256": "51da967ac233c0ae7a49fd630c16966ecba4ece13c0a3bcf877d672fc4626cc6"
+    },
+    {
+      "path": "docs/CONSULTATION_WHATSAPP_INTEGRATION.md",
+      "bytes": 2517,
+      "sha256": "6303a8ac957ab49b95adc4b11e2723847a3d3d2af1a319eb344beb54cd9f20d0"
+    },
+    {
+      "path": "docs/FONT_LICENSE_AND_SETUP.md",
+      "bytes": 1017,
+      "sha256": "af9f25d1eea9fd5cf27c4a86bdd28026f5f65ee9a1b89db4c3f22aedc43674fe"
+    },
+    {
+      "path": "docs/HANDOFF_AND_PENDING.md",
+      "bytes": 1378,
+      "sha256": "d40a4f063931c62dd8e1f7d7364f1f751e89c87efc02f583765a82e02a1d4195"
+    },
+    {
+      "path": "docs/HERO_LAYERS_AND_INTERACTION.md",
+      "bytes": 1979,
+      "sha256": "58d830ad398fee0ea04c08ead05926e4252fd728f3c79cd40fc1dbf61e6b57ea"
+    },
+    {
+      "path": "references/business-card-back.png",
+      "bytes": 58472,
+      "sha256": "3daca568540d76daf794c23d471bedf5543af99388b77e148a910defcaead16f",
+      "width": 1300,
+      "height": 780,
+      "alpha": false
+    },
+    {
+      "path": "references/business-card-front.png",
+      "bytes": 153066,
+      "sha256": "3a79a61408aaf0c6d360e1dbc8d333dfdd5a9588be23068c152277815f5e2813",
+      "width": 1300,
+      "height": 780,
+      "alpha": false
+    },
+    {
+      "path": "references/facebook-cover-original.jpg",
+      "bytes": 142000,
+      "sha256": "4dbd31cc803b16a7426cf199f2a8dc6768b72d2a760362753d39d185bdc155b5",
+      "width": 2048,
+      "height": 779,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/ORIGINAL_FILENAMES.json",
+      "bytes": 3245,
+      "sha256": "6196f842f9aaf9726a07b33217061b6e68bfd5aea71ba8e6406596824da53f28"
+    },
+    {
+      "path": "references/social-style/style-reference-01.jpg",
+      "bytes": 400167,
+      "sha256": "f09e53d6eb645b9a949bc7ea4f28a1f0f5e09af4fd69705690bd3eebd7309bc6",
+      "width": 1080,
+      "height": 1920,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-02.jpg",
+      "bytes": 119322,
+      "sha256": "dbc4bce5005bff5e04672404f8484d8e3ed2738e0af9b1fae40aa1c8e9a18c15",
+      "width": 2048,
+      "height": 1189,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-03.jpg",
+      "bytes": 329143,
+      "sha256": "c23b93065975c11ddffd7957032b04087141cb0e9327cdd0f7c6cea86dedd64e",
+      "width": 2048,
+      "height": 1189,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-04.jpg",
+      "bytes": 297058,
+      "sha256": "776c99e622000935e5421e0a0eda48bbe23732b42c54729e3408f30fb0e8f6a0",
+      "width": 2048,
+      "height": 1189,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-05.jpg",
+      "bytes": 407354,
+      "sha256": "dfd0f1d407e17041e03196c7469db1626046229ea5fe12a325b10c33660cbe15",
+      "width": 2048,
+      "height": 1189,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-06.jpg",
+      "bytes": 419726,
+      "sha256": "79b0fedbcab017fec4bcb9c731aad6dd7d01ee3489af4d79f87a96de82ccf891",
+      "width": 1635,
+      "height": 2047,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-07.jpg",
+      "bytes": 397169,
+      "sha256": "a47a769f6595be245458b293145645d370ff62d91917ccde37d677275acc5041",
+      "width": 1635,
+      "height": 2047,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-08.jpg",
+      "bytes": 349246,
+      "sha256": "292d1c9495451cd0c6d0e77fd07d3fa897f5224098966907bb4594f70b96f62e",
+      "width": 1635,
+      "height": 2047,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-09.jpg",
+      "bytes": 358069,
+      "sha256": "5abdf6a824b5c4a66b5d72b985fe2a845172d219189293ea1bc21e13d7b16cae",
+      "width": 1635,
+      "height": 2047,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-10.jpg",
+      "bytes": 330208,
+      "sha256": "b3b1bf4366358550eef0bbd23240a933a63daf51e22244cbe469acd6098c5def",
+      "width": 1635,
+      "height": 2047,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-11.jpg",
+      "bytes": 407913,
+      "sha256": "f4e9169e000e2224846da1fec72369d3273d63c3db1db9f598560b7ee1ef9f82",
+      "width": 1635,
+      "height": 2047,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-12.jpg",
+      "bytes": 377197,
+      "sha256": "eb4abefd02b0fe6022a9f8751deef6c4dd749ee576f8e750f09e1a30e982b2a7",
+      "width": 1635,
+      "height": 2047,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-13.jpg",
+      "bytes": 288771,
+      "sha256": "72050225c162eaf148d249f399af1f604b338af1ad84858e98c2c2a4c952cf82",
+      "width": 1635,
+      "height": 2047,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-14.jpg",
+      "bytes": 190788,
+      "sha256": "8c5b58db818b11376b2e4c1863711c19d5b730ab9718b15b9d61a78ad2ceae1a",
+      "width": 1635,
+      "height": 2047,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-15.jpg",
+      "bytes": 331467,
+      "sha256": "51c91144cf1e23aa3dfd12e20dc2282ac485b6f9ebe3aa775773f067b0e097af",
+      "width": 1637,
+      "height": 2047,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-16.jpg",
+      "bytes": 380685,
+      "sha256": "18b510e1b11e2418ccd4bcfa615e43ab1f96698467804439187f552dce9ecbf6",
+      "width": 1637,
+      "height": 2047,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-17.jpg",
+      "bytes": 441463,
+      "sha256": "c110bd541abbe2028fd7042f411eaf73ce1ed29a5be8e191a498d5afd67ea3e6",
+      "width": 1637,
+      "height": 2047,
+      "alpha": false
+    },
+    {
+      "path": "references/social-style/style-reference-18.jpg",
+      "bytes": 446380,
+      "sha256": "3a502c7f62c6f4e9c42f8130ba0cc1e69e053c72ea848b38700bdab01c9d8d5a",
+      "width": 1388,
+      "height": 2048,
+      "alpha": false
+    }
+  ]
+}

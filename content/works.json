@@ -1,0 +1,11 @@
+{
+  "note": "Local fallback only — once Sanity is configured, manage projects at /admin. Add ONLY curated, approved projects. references/social-style are mood references, not projects.",
+  "categories": [
+    { "id": "identity", "label": "الهويات البصرية" },
+    { "id": "social", "label": "السوشيال ميديا" },
+    { "id": "print", "label": "المطبوعات" },
+    { "id": "ai", "label": "أعمال الذكاء الاصطناعي" },
+    { "id": "film", "label": "التصوير والمونتاج" }
+  ],
+  "projects": []
+}

@@ -1,0 +1,111 @@
+YOU ARE: A world-class creative director, senior editorial web designer, bilingual/RTL UX specialist, accessibility-minded interaction designer, and senior full-stack engineer.
+
+MISSION
+Build a real, premium, responsive personal portfolio for Obaydah Hijazi (عبيدة حجازي), an independent senior graphic designer and AI creative specialist serving clients in Syria, Saudi Arabia, the Gulf, and the wider Arab world. The website should build trust, convey expertise, and convert visitors into WhatsApp conversations and free 30-minute consultations. It should spotlight Obaydah as a professional person, NOT become a giant image gallery or a generic creative agency template.
+
+IMPORTANT: A ZIP of real project assets accompanies this prompt. Read README_START_HERE_AR.md, docs/ASSET_MANIFEST.json, docs/BRAND_AND_UX_BRIEF.md, content/site-content.ar.json, content/clients.json, content/works.json, and the assets before designing. Extract the ZIP if you can. Use the supplied imagery as primary art direction. Do not replace it with stock images, AI-generated faces, or invented clients. You have creative freedom within the nonnegotiable constraints below.
+
+CREATIVE NORTH STAR
+- Visual personality: 70% refined professional / 30% tasteful experimental art direction.
+- Editorial minimalism, exquisite Arabic typography, rational grids, whitespace, micro-details, subtle Swiss-style hierarchy, refined asymmetric composition.
+- Two complementary atmospheres: a DARK cinematic petroleum/teal opening hero based on the supplied layered Facebook cover, followed by very LIGHT professional editorial sections. Avoid making the entire page dark or decorating every section like a social poster.
+- The design should feel credible enough for high-value GCC corporate clients and personally distinct enough for a creative director.
+- The supplied personal logo and hero portrait are the primary visual assets.
+- Design references are directional, not templates to copy: https://ghonimyarts.com/ (personal professional presentation) and https://thmanyah.com/ (confident Arabic editorial clarity). Respect their originality, copy neither.
+
+NON-NEGOTIABLE IDENTITY
+- Primary display name (Arabic): عبيدة حجازي
+- Latin display name: OBAYDAH HIJAZI (match the graphic cover's expressive brand treatment when appropriate).
+- Profession: مصمم غرافيك ومختص في الإبداع البصري والذكاء الاصطناعي
+- Instagram: https://www.instagram.com/obaydah.graphic/
+- Confirmed WhatsApp: +963 964 766 503; click-to-chat: https://wa.me/963964766503
+- Language: fully Arabic, native human-edited Modern Standard Arabic with correct RTL and logical punctuation. English may appear as graphic-brand material and for technical visual labels, but NEVER turn the site into a predominantly English interface.
+- Do not publish unconfirmed email addresses, personal birth date, residential address, emergency numbers, fake client testimonials, awards, counts, company affiliations, or private CV information.
+- The existing hero art features the text '7+ Years of Experience'; this is part of the user-provided creative. Treat as a USER-REVIEW item before publication rather than independently verified numeric fact. Make experience number editable.
+
+PALETTE
+- Midnight petroleum: #001E25
+- Deep teal: #00373E
+- Cyan: #00BBD4 (limited emphasis, hover, active states)
+- Yellow: #FFBD06 (tiny brand accent only, never large panels)
+- Warm paper white: #FAFAF8 (primary content background)
+- Primary dark text: #111719
+- Neutrals: thoughtful calm grays. Use restrained contrast and accessible color pairings.
+- The original background contains embedded color accents: do not blindly duplicate them with overlay layers.
+
+TYPOGRAPHY
+- KO Sans is the CONFIRMED primary Arabic brand font; the owner has confirmed possession of a license. The package includes the full local integration: styles/ko-sans.css, scripts/setup-ko-sans.ps1, and docs/FONT_LICENSE_AND_SETUP.md. IMPORTANT: font binaries are not included here. The owner will copy their own seven licensed OTF files to public/fonts locally, mapping weight 100/200/300/400/500/600/700. Implement the provided CSS and typography styling now, while allowing a graceful fallback until the owner copies the fonts. Never fetch substitute KO Sans binaries from unofficial sources, or claim the actual KO Sans files were embedded in this ZIP.
+- KO Sans intended usage: Bold/SemiBold for key headings, Medium/Regular for body and interface, Light sparingly in secondary copy; prioritize mobile readability, proper line heights, modern scale.
+- For the large Latin name art, use a licensed appropriate font, or the provided transparent name-title lockup reference as a brand graphic with matching real accessible HTML text. If the lockup is used as an image, never rely on image-only text for SEO, semantic headings, or CTAs.
+- Avoid pseudo-Arabic letter-spacing that breaks Arabic joining, stretched glyphs, and low-contrast ultra-thin body copy.
+
+INFORMATION ARCHITECTURE: SINGLE PRIMARY PAGE / 7 SECTIONS
+1. HERO — premium full-viewport-ish introduction based on the attached separated Facebook cover. Layout on desktop: Obaydah's portrait on left, strong large brand name/professional line on right, graceful branding and restrained decorative objects. Clear primary CTA: 'احجز استشارة مجانية', secondary CTA: 'تواصل معي' (WhatsApp), optional small 'استكشف المزيد'. Keep menu subtle and readable, with personal logo and navigation. Hero should feel official, premium, dramatic yet orderly.
+2. ABOUT — 'من أنا؟' or editorial alternative. Concise refined Arabic bio. Do not use any secondary portrait from previous drafts. The only approved personal portrait for this package is the transparent hero cutout in assets/hero/layers/obaydah-portrait-cutout.png. Make the About section primarily typographic, or reuse a tasteful crop of the approved hero portrait without visual duplication. Keep the focus on the designer's perspective and approach, not a huge resume dump. One strong heading, 1–2 short paragraphs, visual alignment.
+3. EXPERTISE & APPROACH — formal, scan-friendly presentation of genuine fields: الهوية البصرية; التصميم الإعلاني والسوشيال ميديا; الإخراج الفني; التصاميم المعززة بالذكاء الاصطناعي; المطبوعات والملفات التعريفية; وصناعة المحتوى البصري. Keep layouts clear, with either 2-column editorial rows or a clean numbered list. Can add a miniature experience summary without invented metrics.
+4. CLIENTS / COLLABORATIONS — 'عملاء وجهات عملت معها' or 'جهات تعاونت معها'. IMPORTANT: logos will be provided later. Implement a clean adaptive monochrome logo grid and editable data configuration, but DO NOT invent names/logos/partnerships. If the list is empty, use a clear edit-mode placeholder or hide the public section until approved logos are supplied. CV employers and collaborators must not automatically be treated as clients.
+5. SELECTED WORK — a smaller-than-usual curated gallery (it should NOT eclipse the personal positioning). Large quality project visuals, elegantly sized. Editable categories and lightweight filters: الكل، الهوية البصرية، السوشيال ميديا، الإخراج الفني، أعمال AI، المطبوعات. Click for full-screen accessible gallery/lightbox, keyboard arrows/Escape, pinch-aware mobile UX; preserve landscape/portrait ratios thoughtfully. Samples in references/social-style are STYLE REFERENCES ONLY and are not automatically approved project entries; use content/works.json as the source of truth (initially empty). Do not present social samples as contracted client projects without confirmation.
+6. FREE CONSULTATION — custom polished section 'احجز استشارة مجانية' with duration 30 minutes and real availability. Design embedded scheduling elegantly (Cal.com inline/popup is acceptable). Collect client name, phone, optional business/brand name, project category, optional short message, proposed local meeting time/date and associated IANA timezone; prevent conflicting appointments through a genuine scheduling backend/provider. The booking provider is NOT configured yet. Do not invent available time slots or show fake 'booking confirmed' states. Keep activation/env config and graceful missing-config fallback.
+7. CONTACT / FOOTER — decisive, concise call to action. Obvious one-tap WhatsApp, Instagram, optional email when owner verifies it. Professional footer with logo/name and minimal navigational elements. No clutter.
+
+HEADER / NAVIGATION
+- Elegant minimal desktop header with logo, links 'عني', 'تخصصاتي', 'الجهات', 'أعمالي', 'استشارة', 'تواصل'; maybe show fewer top-level items if needed for clarity.
+- On mobile, a compact accessible menu and persistent but discreet WhatsApp/contact affordance, with ample tap targets.
+- CTA within 1 click from any location; avoid blocking the content with floating widgets. Make anchored scrolling logical with sticky-header offsets.
+
+INTERACTION DESIGN — REAL HERO PARALLAX
+- The ZIP includes isolated ORIGINAL layers in assets/hero/layers with transparent PNG files. Assemble the hero from those assets rather than using a flattened JPG as the entire site.
+- Maintain the original cover's overall hierarchy and placements as a reference, while improving composition for real browser sizes.
+- Make Obaydah's isolated cutout, a small number of Photoshop-related decorative pieces, and a controlled colored-light layer respond independently to pointer movement in different directions/depths. Background should react minimally. Hero text should remain readable and largely stable.
+- Suggest motion envelopes: background translation <= 3–5px, portrait <= 8–12px, decor <= 14–20px, subtle easing/lerp and requestAnimationFrame; do not use all layers at maximum intensity. Pointer leave smoothly returns to zero. Optionally add small reveal on load.
+- Restrict parallax to fine-pointer desktop devices; no device-motion permissions and no unnecessary gyroscope effects. Mobile gets statically optimized composition, elegant entrance, and short reveal animations. Honor prefers-reduced-motion, battery/performance constraints, and keyboard accessibility. Avoid jank, oversized image payloads, continuous parallax on touch, and accessibility problems.
+- Balance performance and fidelity: optionally convert images to optimized WebP/AVIF variants, keep full-quality originals, set explicit dimensions, position with CSS relative to a bounded stage, reserve layout height to minimize CLS.
+- Typography reveal, hovering project cards, tasteful magnetic CTA if useful, section entrances, smooth but not hijacked scrolling. No particle storm, overwhelming glows, intrusive loaders, nonstop rotating effects, or fake 3D rooms.
+
+BOOKING + WHATSAPP — MUST BE ACCURATE
+- Owner's receiving WhatsApp number is +963964766503. For general contact, create safe wa.me deep links with URL-encoded short editable Arabic message.
+- True scheduling must use real availability: ideally a configurable Cal.com 30-minute event linked to the owner's calendar, correct timezone conversions, buffer times, prevent double-booking, cancellation/reschedule support. Avoid a nonfunctional decorative form.
+- When a verified booking is CREATED, the ultimate requirement is automatic OWNER notification via WhatsApp containing: full client name, WhatsApp/phone, type of project, optional description, exact date, local time + timezone, status, booking ID, and optional call link where available. For cancellation/reschedule, optionally notify with clear changed status.
+- Architectural path: Cal.com booking -> signed/validated webhook endpoint -> normalized payload + idempotency/deduplication -> optional official WhatsApp Business Platform (Cloud API)/compliant provider integration -> approved template / rules / owner recipient setup -> logging without revealing user data.
+- Owner currently has NOT provided Cal.com event URL/credentials, webhook secret, Meta WhatsApp credentials, or approved messaging setup. Scaffold the integration and document exact setup steps and environment variables, but DO NOT CLAIM AUTOMATED NOTIFICATIONS ARE ACTIVE. No secret keys in client code. Never make up bookings. If WhatsApp API setup is not feasible, show an HONEST fallback: a real Cal.com booking still completes and user can optionally open WhatsApp with a prefilled confirmation/details message for them to press Send; this user-triggered message is NOT automatic. Alternatively set up owner's email notification if configured. State which behavior is live.
+- Add consent/privacy note for user-supplied contact details and minimize retention; no misleading promises.
+- Verify webhook authenticity with documented signature mechanism of the selected service; sanitize text, rate limit relevant endpoints, avoid logging personal phone numbers into public logs, handle duplicates.
+- WhatsApp platform-initiated messages may require approved templates and platform permissions; follow applicable Meta policy. Do not use unofficial WhatsApp Web scraping or browser automation to silently send messages.
+
+CONTENT QUALITY (ALL USER-FACING TEXT IN ARABIC)
+- Use the provided content/site-content.ar.json as initial text. Polish where useful, preserving factual accuracy and the owner's serious yet distinctive voice. Avoid inflated salesmanship, clichéd 'I turn dreams into reality' copy, meaningless statistics, excessive English words, or invented achievements.
+- Never display 'عملاؤنا' as if this is a multi-person agency. Personal-brand phrases like 'جهات عملت معها' are preferable, but the section still fulfills the requested clients/partners showcase.
+- Every image must have suitable Arabic alt text or empty alt for purely decorative layers.
+- Provide editable social proof placeholders (logos and clients) but no fake logos.
+
+DELIVERABLE QUALITY & TECH
+- Build actual project files using Next.js App Router + TypeScript + Tailwind CSS and Motion if valuable. The exact component system is your choice when it improves maintainability and smoothness. Responsive for 360px to ultrawide; directionally-correct RTL, semantic HTML (lang=ar dir=rtl), logical keyboard focus, accessibility, color contrast, alt text, image performance, metadata/OG, sitemap/robots, tasteful hover and focus states.
+- No unneeded backend/CMS. Data-driven simple JSON/TS config for biography, socials, services, clients, works, and consultation settings. Project content must be editable without changing layout code.
+- Use Next/Image where appropriate, size assets properly, no layout shift; hero image layers may need custom sizing. Don't import full-resolution references as hidden site content.
+- Support accessible client logo grid (with links only if known), optional grayscale-to-color hover with reduced motion.
+- Build reusable components: Header, HeroScene, BioSection, Expertise, ClientLogoGrid, WorkGallery, WorkLightbox, BookingSection, ContactFooter; be free to improve naming.
+- Secure endpoints, server-only secrets, error handling, loading and empty states; provide .env.example (values blank for secrets).
+- The page should look finished even before real client logos and curated projects arrive, without falsely populating them. Make missing data invisible or marked clearly in a private developer preview, not as fake business claims.
+- Provide modern light theme in main sections; DO NOT add dark-mode toggle unless it materially improves design.
+- Fonts: do not bundle/distribute KO Sans in output. Leave local placeholders and instructions for the owner to install licensed files independently; open-source fallback is okay.
+- Verify with whatever checks are available: typecheck, lint, build; fix issues; inspect real desktop and mobile rendering if browser tools exist; explain remaining setup work truthfully.
+
+CREATIVE AUTONOMY
+You have genuine creative discretion over micro-layout, whitespace, grid, typography sizing, transitions, motion pacing, section boundaries, framing/crop, composition details, gallery rhythm, and mobile-specific treatments. Suggest one standout interaction (subtle and meaningful) if you find a better approach than the examples. Do not change the core brand palette, replace the supplied person/identity, add unrelated illustrations, invent clients, or defeat the professional minimalism requirement. Do not copy the two reference sites pixel-for-pixel.
+
+ORDER OF WORK
+1. Read/extract bundle; audit files, inspect key images, summarize the image/asset mapping and missing configuration.
+2. Make brief creative direction + section map (max 20 lines; no prolonged Q&A).
+3. Implement the complete working site immediately, using provided assets and approved content.
+4. Wire functioning WhatsApp links and a real-provider-ready Cal.com scheduling component with honest setup guards. Prepare signed webhook/API adapter and a documented integration path for automatic notification.
+5. Validate accessibility, responsive layout, motion and reduced-motion, SEO and performance, dev/build scripts.
+6. Provide a concise Arabic handoff: setup and deploy commands, where to add approved client logos, where to add curated projects, how to install licensed KO Sans, how to configure Cal.com and WhatsApp, and an honest checklist of integrations not yet activated.
+
+ACCEPTANCE CRITERIA
+- Opening impresses through Obaydah's REAL layered portrait and name, clean professional typography, restrained elegant mouse-responsive depth.
+- Every interior section is light, editorial and extremely tidy, with coherent brand micro-accents.
+- Focus is on Obaydah, skills, credibility and ease of contact; not on a sea of works.
+- Clients grid exists but never invents assets or names.
+- Free 30-minute consultation respects actual availability and WhatsApp's technical rules, with automation clearly labeled setup-required until configured.
+- Desktop + mobile versions are polished and fast.
+- The deliverable is real runnable code, not only a mockup, pitch deck, or description.

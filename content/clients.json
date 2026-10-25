@@ -1,0 +1,4 @@
+{
+  "note": "Local fallback only — once Sanity is configured, manage logos at /admin. Add ONLY owner-approved organizations with publishing permission. Example: { \"name\": \"اسم الجهة\", \"logo\": { \"src\": \"/clients/example.svg\", \"width\": 160, \"height\": 64, \"alt\": \"شعار الجهة\" }, \"href\": \"https://example.com\", \"approved\": true }",
+  "clients": []
+}

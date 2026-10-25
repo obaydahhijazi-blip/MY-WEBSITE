@@ -1,0 +1,16 @@
+node_modules
+.next
+out
+.env
+.env.local
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
+# Licensed font binaries are installed locally by the owner — never commit or redistribute them.
+public/fonts/*.otf
+public/fonts/*.woff
+public/fonts/*.woff2
+public/fonts/*.ttf
+
+# Local backups
+backups/
