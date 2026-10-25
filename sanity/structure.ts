@@ -42,6 +42,7 @@ export const structure: StructureResolver = (S, context) =>
             .title("الاستشارات وطلب عرض السعر")
             .items([singleton(S, "consultationSection", "الاستشارة المجانية", CalendarIcon), singleton(S, "quoteSection", "طلب عرض السعر", DocumentTextIcon)]),
         ),
+      singleton(S, "legalPages", "سياسة العمل والخصوصية", DocumentTextIcon),
       S.divider(),
       singleton(S, "siteSettings", "إعدادات الموقع (الحالة، التواصل، SEO، الموسيقى)", CogIcon),
     ]);

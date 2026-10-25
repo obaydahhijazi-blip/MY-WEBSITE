@@ -1,8 +1,8 @@
 import { imageWithAlt, videoItem } from "./shared";
-import { aboutSection, consultationSection, quoteSection, sectionTexts, siteSettings } from "./singletons";
+import { aboutSection, consultationSection, legalPages, quoteSection, sectionTexts, siteSettings } from "./singletons";
 import { clientLogo, faqItem, project, service, testimonial } from "./collections";
 
-export const SINGLETONS = ["siteSettings", "aboutSection", "sectionTexts", "consultationSection", "quoteSection"] as const;
+export const SINGLETONS = ["siteSettings", "aboutSection", "sectionTexts", "consultationSection", "quoteSection", "legalPages"] as const;
 
 export const schemaTypes = [
   imageWithAlt,
@@ -12,6 +12,7 @@ export const schemaTypes = [
   sectionTexts,
   consultationSection,
   quoteSection,
+  legalPages,
   project,
   clientLogo,
   testimonial,

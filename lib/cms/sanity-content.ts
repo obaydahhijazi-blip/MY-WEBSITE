@@ -1,4 +1,4 @@
-import type { IconId, ImageAsset, MediaItem, SiteContent, Testimonial, Work } from "@/lib/cms/types";
+import type { IconId, ImageAsset, LegalPage, MediaItem, SiteContent, Testimonial, Work } from "@/lib/cms/types";
 import { DEMO_CLIENTS, DEMO_TESTIMONIALS, DEMO_WORKS, withDemo, withDemoWorks } from "@/lib/demo";
 import { groupOf } from "@/lib/cms/local";
 
@@ -11,6 +11,16 @@ const arr = <T,>(v: unknown, fallback: T[]): T[] => (Array.isArray(v) && v.lengt
 function image(raw: Raw): ImageAsset | null {
   if (!raw?.src || !raw.width || !raw.height) return null;
   return { src: raw.src, width: raw.width, height: raw.height, alt: str(raw.alt, ""), lqip: raw.lqip || undefined };
+}
+
+function legalOf(raw: Raw, fallback: LegalPage): LegalPage {
+  const sections = (raw?.sections ?? []).filter((x: Raw) => x?.heading && x?.body).map((x: Raw) => ({ heading: x!.heading, body: x!.body }));
+  return {
+    title: str(raw?.title, fallback.title),
+    intro: str(raw?.intro, fallback.intro),
+    sections: sections.length ? sections : fallback.sections,
+    note: typeof raw?.note === "string" ? raw.note : fallback.note,
+  };
 }
 
 function orientationOf(i: ImageAsset): Work["orientation"] {
@@ -218,6 +228,10 @@ export function mergeSanityContent(local: SiteContent, data: Record<string, any>
       note: str(q?.note, local.quote.note),
       secondary: str(q?.secondary, local.quote.secondary),
       privacyNote: str(q?.privacyNote, local.quote.privacyNote),
+    },
+    legal: {
+      terms: legalOf(data.legal?.terms, local.legal.terms),
+      privacy: legalOf(data.legal?.privacy, local.legal.privacy),
     },
     contact: {
       ...local.contact,

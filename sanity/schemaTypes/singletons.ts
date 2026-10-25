@@ -254,3 +254,40 @@ export const quoteSection = defineType({
   ],
   preview: { prepare: () => ({ title: "قسم طلب عرض السعر" }) },
 });
+
+const legalPage = (name: string, title: string) =>
+  defineField({
+    name,
+    title,
+    type: "object",
+    options: { collapsible: true, collapsed: false },
+    fields: [
+      defineField({ name: "title", title: "العنوان", type: "string" }),
+      defineField({ name: "intro", title: "المقدمة", type: "text", rows: 3 }),
+      defineField({
+        name: "sections",
+        title: "البنود",
+        type: "array",
+        of: [
+          defineArrayMember({
+            type: "object",
+            name: "clause",
+            fields: [
+              defineField({ name: "heading", title: "عنوان البند", type: "string", validation: (r) => r.required() }),
+              defineField({ name: "body", title: "النص", type: "text", rows: 4, validation: (r) => r.required() }),
+            ],
+            preview: { select: { title: "heading", subtitle: "body" } },
+          }),
+        ],
+      }),
+      defineField({ name: "note", title: "ملاحظة ختامية", type: "text", rows: 2 }),
+    ],
+  });
+
+export const legalPages = defineType({
+  name: "legalPages",
+  title: "سياسة العمل والخصوصية",
+  type: "document",
+  fields: [legalPage("terms", "سياسة العمل وشروط التعاون"), legalPage("privacy", "سياسة الخصوصية")],
+  preview: { prepare: () => ({ title: "سياسة العمل والخصوصية" }) },
+});

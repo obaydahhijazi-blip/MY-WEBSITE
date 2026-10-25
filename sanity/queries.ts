@@ -8,6 +8,7 @@ export const SITE_QUERY = defineQuery(`{
   "sections": *[_id == "sectionTexts"][0],
   "consultation": *[_id == "consultationSection"][0],
   "quote": *[_id == "quoteSection"][0],
+  "legal": *[_id == "legalPages"][0],
   "services": *[_type == "service"] | order(orderRank) { title, description, icon },
   "servicesCount": count(*[_type == "service"]),
   "projects": *[_type == "project" && hidden != true && defined(cover.asset)] | order(orderRank) {

@@ -104,6 +104,12 @@ const docs: ({ _id: string; _type: string } & Record<string, unknown>)[] = [
     secondary: c.quote.secondary,
     privacyNote: c.quote.privacyNote,
   },
+  {
+    _id: "legalPages",
+    _type: "legalPages",
+    terms: { ...c.legal.terms, sections: c.legal.terms.sections.map((x, i) => ({ _key: key(i), _type: "clause", ...x })) },
+    privacy: { ...c.legal.privacy, sections: c.legal.privacy.sections.map((x, i) => ({ _key: key(i), _type: "clause", ...x })) },
+  },
   ...c.expertise.items.map((s, i) => ({ _id: `service-${i + 1}`, _type: "service", orderRank: nextRank(), ...s })),
   ...c.faq.items.map((f, i) => ({ _id: `faq-${i + 1}`, _type: "faqItem", orderRank: nextRank(), published: true, ...f })),
 ];

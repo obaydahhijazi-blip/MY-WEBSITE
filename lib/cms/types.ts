@@ -34,6 +34,7 @@ export type Work = {
 
 export type Testimonial = { id: string; quote: string; name?: string; role?: string; company?: string; logo?: ImageAsset; demo?: boolean };
 export type FaqItem = { question: string; answer: string };
+export type LegalPage = { title: string; intro: string; sections: { heading: string; body: string }[]; note: string };
 
 export type SiteContent = {
   source: "sanity" | "local";
@@ -112,4 +113,5 @@ export type SiteContent = {
     privacyNote: string;
   };
   contact: { label: string; title: string; description: string; primary: string; secondary: string };
+  legal: { terms: LegalPage; privacy: LegalPage };
 };

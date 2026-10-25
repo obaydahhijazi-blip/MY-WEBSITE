@@ -58,11 +58,13 @@ export function ContactFooter({ content, navigation }: { content: SiteContent; n
 
       <div className="border-t border-line-dark">
         <div className="container-x flex items-center justify-between gap-4 py-6 text-xs text-white/50">
-          <span className="flex items-center gap-3">
+          <span className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <BrandBars />
             <span>
               © <span className="font-latin">{new Date().getFullYear()}</span> {s.nameAr}. جميع الحقوق محفوظة.
             </span>
+            <a href="/terms" className="hover:text-white">سياسة العمل</a>
+            <a href="/privacy" className="hover:text-white">الخصوصية</a>
           </span>
           <a href="#top" className="grid size-10 place-items-center rounded-full border border-line-dark text-white/80 hover:border-white/50" aria-label="العودة إلى الأعلى">
             <ArrowIcon direction="up" />

@@ -58,7 +58,12 @@ export function FaqSection({ faq, index }: { faq: SiteContent["faq"]; index: str
           </ul>
           <p className="reveal mt-8 flex items-start gap-3 text-sm leading-7 text-muted">
             <span className="mt-2.5 block size-1.5 shrink-0 rounded-full bg-yellow" aria-hidden="true" />
-            {faq.note}
+            <span>
+              {faq.note}{" "}
+              <a href="/terms" className="font-medium text-cyan-ink underline underline-offset-4">
+                اقرأ سياسة العمل كاملة
+              </a>
+            </span>
           </p>
         </div>
       </div>

@@ -140,5 +140,6 @@ export function getLocalContent(): SiteContent {
       primary: site.contact.primary,
       secondary: site.contact.secondary,
     },
+    legal: site.legal,
   };
 }
