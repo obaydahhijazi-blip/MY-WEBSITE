@@ -1,10 +1,11 @@
 /* KO Sans — owner-provided licensed font integration.
+   Optional: add .woff2 copies with the same names (much smaller); browsers use them first and fall back to OTF.
    Copy your own licensed OTF files to public/fonts using scripts/setup-ko-sans.ps1.
    Do not assume a browser will load the font until those files exist. */
 
 @font-face {
   font-family: "KO Sans";
-  src: url("/fonts/KO-Sans-100.otf") format("opentype");
+  src: url("/fonts/KO-Sans-100.woff2") format("woff2"), url("/fonts/KO-Sans-100.otf") format("opentype");
   font-style: normal;
   font-weight: 100;
   font-display: swap;
@@ -12,7 +13,7 @@
 
 @font-face {
   font-family: "KO Sans";
-  src: url("/fonts/KO-Sans-200.otf") format("opentype");
+  src: url("/fonts/KO-Sans-200.woff2") format("woff2"), url("/fonts/KO-Sans-200.otf") format("opentype");
   font-style: normal;
   font-weight: 200;
   font-display: swap;
@@ -20,7 +21,7 @@
 
 @font-face {
   font-family: "KO Sans";
-  src: url("/fonts/KO-Sans-300.otf") format("opentype");
+  src: url("/fonts/KO-Sans-300.woff2") format("woff2"), url("/fonts/KO-Sans-300.otf") format("opentype");
   font-style: normal;
   font-weight: 300;
   font-display: swap;
@@ -28,7 +29,7 @@
 
 @font-face {
   font-family: "KO Sans";
-  src: url("/fonts/KO-Sans-400.otf") format("opentype");
+  src: url("/fonts/KO-Sans-400.woff2") format("woff2"), url("/fonts/KO-Sans-400.otf") format("opentype");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -36,7 +37,7 @@
 
 @font-face {
   font-family: "KO Sans";
-  src: url("/fonts/KO-Sans-500.otf") format("opentype");
+  src: url("/fonts/KO-Sans-500.woff2") format("woff2"), url("/fonts/KO-Sans-500.otf") format("opentype");
   font-style: normal;
   font-weight: 500;
   font-display: swap;
@@ -44,7 +45,7 @@
 
 @font-face {
   font-family: "KO Sans";
-  src: url("/fonts/KO-Sans-600.otf") format("opentype");
+  src: url("/fonts/KO-Sans-600.woff2") format("woff2"), url("/fonts/KO-Sans-600.otf") format("opentype");
   font-style: normal;
   font-weight: 600;
   font-display: swap;
@@ -52,7 +53,7 @@
 
 @font-face {
   font-family: "KO Sans";
-  src: url("/fonts/KO-Sans-700.otf") format("opentype");
+  src: url("/fonts/KO-Sans-700.woff2") format("woff2"), url("/fonts/KO-Sans-700.otf") format("opentype");
   font-style: normal;
   font-weight: 700;
   font-display: swap;

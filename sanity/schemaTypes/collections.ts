@@ -1,6 +1,7 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { orderRankField, orderRankOrdering } from "@sanity/orderable-document-list";
 import { SERVICE_ICONS, WORK_CATEGORIES } from "./options";
+import { minWidth } from "../image-size";
 
 export const project = defineType({
   name: "project",
@@ -37,11 +38,17 @@ export const project = defineType({
     defineField({ name: "year", title: "السنة", type: "string", validation: (r) => r.regex(/^\d{4}$/).warning("أربعة أرقام، مثل 2025") }),
     defineField({ name: "summary", title: "وصف مختصر", type: "text", rows: 3, validation: (r) => r.max(320) }),
     defineField({ name: "featured", title: "مشروع مميز (يظهر بحجم أكبر)", type: "boolean", initialValue: false }),
-    defineField({ name: "cover", title: "صورة الغلاف", type: "imageWithAlt", validation: (r) => r.required() }),
+    defineField({
+      name: "cover",
+      title: "صورة الغلاف",
+      description: "يُفضّل 2000px عرضاً على الأقل (JPG أو WebP). للريلز: صورة عمودية 1080×1920. حجم الملف أقل من 1MB إن أمكن.",
+      type: "imageWithAlt",
+      validation: (r) => [r.required(), r.custom(minWidth(1600, "صورة الغلاف")).warning()],
+    }),
     defineField({
       name: "media",
       title: "صور وفيديوهات المشروع",
-      description: "تُعرض في المعرض بعد صورة الغلاف. اسحب العناصر لتغيير ترتيبها.",
+      description: "تُعرض في المعرض بعد صورة الغلاف. اسحب العناصر لتغيير ترتيبها. الصور: 2000px عرضاً تقريباً. الفيديو: MP4 (H.264) بحجم أقل من 20MB.",
       type: "array",
       of: [defineArrayMember({ type: "imageWithAlt" }), defineArrayMember({ type: "videoItem" })],
     }),
@@ -75,8 +82,9 @@ export const clientLogo = defineType({
       name: "logo",
       title: "الشعار (SVG أو PNG بخلفية شفافة)",
       type: "image",
+      description: "الأفضل SVG. إن كان PNG أو WebP فبعرض 600px على الأقل وبخلفية شفافة ومن دون هوامش زائدة.",
       options: { accept: "image/svg+xml,image/png,image/webp" },
-      validation: (r) => r.required(),
+      validation: (r) => [r.required(), r.custom(minWidth(400, "الشعار")).warning()],
     }),
     defineField({ name: "url", title: "رابط موقع الجهة (اختياري)", type: "url" }),
     defineField({

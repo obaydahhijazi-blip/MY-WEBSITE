@@ -7,9 +7,28 @@ import { QUOTE_PREFILL, type QuotePrefill } from "@/lib/quote-bus";
 import type { SiteContent } from "@/lib/cms/types";
 import { whatsappLink } from "@/lib/whatsapp";
 
-type Fields = { name: string; company: string; service: string; details: string; budget: string; deadline: string; email: string };
+type Fields = { name: string; company: string; service: string; details: string; link: string; budget: string; deadline: string; email: string };
 type Errors = Partial<Record<keyof Fields, string>>;
-const EMPTY: Fields = { name: "", company: "", service: "", details: "", budget: "", deadline: "", email: "" };
+const EMPTY: Fields = { name: "", company: "", service: "", details: "", link: "", budget: "", deadline: "", email: "" };
+const DRAFT_KEY = "quote-draft-v1";
+
+// The draft lives only in this browser; storage may be unavailable (private mode), so every access is guarded.
+const readDraft = (): Partial<Fields> | null => {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    return raw ? (JSON.parse(raw) as Partial<Fields>) : null;
+  } catch {
+    return null;
+  }
+};
+const writeDraft = (f: Fields | null) => {
+  try {
+    if (f && Object.values(f).some((v) => v.trim())) localStorage.setItem(DRAFT_KEY, JSON.stringify(f));
+    else localStorage.removeItem(DRAFT_KEY);
+  } catch {
+    /* ignore */
+  }
+};
 
 const STEPS = ["تُرسل التفاصيل من حسابك على واتساب", "أراجع متطلبات المشروع", "أعود إليك بالخطوة التالية وعرض مناسب"];
 
@@ -21,6 +40,37 @@ export function QuoteSection({ quote, whatsappNumber, index }: { quote: SiteCont
   const [ref, setRef] = useState<string>("");
   const [errors, setErrors] = useState<Errors>({});
   const [href, setHref] = useState<string | null>(null);
+  const [restored, setRestored] = useState(false);
+  const loaded = useRef(false);
+
+  // Restore an unsent draft once, then keep saving changes (debounced).
+  useEffect(() => {
+    if (!loaded.current) {
+      loaded.current = true;
+      const d = readDraft();
+      if (d) {
+        const next = { ...EMPTY };
+        for (const k of Object.keys(EMPTY) as (keyof Fields)[]) if (typeof d[k] === "string") next[k] = d[k] as string;
+        if (next.service && !quote.services.includes(next.service)) next.service = "";
+        queueMicrotask(() => {
+          setF(next);
+          setRestored(true);
+        });
+      }
+      return;
+    }
+    const t = setTimeout(() => writeDraft(f), 400);
+    return () => clearTimeout(t);
+  }, [f, quote.services]);
+
+  const clearForm = () => {
+    setF(EMPTY);
+    setRef("");
+    setErrors({});
+    setHref(null);
+    setRestored(false);
+    writeDraft(null);
+  };
 
   // «أرغب في مشروع مشابه» from the gallery pre-selects the service and notes the reference project.
   useEffect(() => {
@@ -45,6 +95,7 @@ export function QuoteSection({ quote, whatsappNumber, index }: { quote: SiteCont
     if (f.name.trim().length < 2) found.name = "يرجى كتابة الاسم الكامل.";
     if (!f.service) found.service = "يرجى اختيار نوع الخدمة المطلوبة.";
     if (f.details.trim().length < 10) found.details = "يرجى كتابة وصف مختصر للمشروع ومتطلباته (عشرة أحرف على الأقل).";
+    if (f.link.trim() && !/^(https?:\/\/)?[^\s.]+\.[^\s]{2,}$/i.test(f.link.trim())) found.link = "يرجى كتابة رابط صحيح أو ترك الحقل فارغاً.";
     if (f.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim())) found.email = "يرجى كتابة بريد إلكتروني صحيح أو ترك الحقل فارغاً.";
     setErrors(found);
     const first = Object.keys(found)[0];
@@ -60,6 +111,7 @@ export function QuoteSection({ quote, whatsappNumber, index }: { quote: SiteCont
       line("نوع الخدمة", f.service),
       line("وصف المشروع", f.details),
       ref ? `مشروع مرجعي من المعرض: ${ref}` : "",
+      line("رابط مرجعي", f.link),
       line("الميزانية التقريبية", f.budget),
       line("الموعد المتوقع", f.deadline),
       line("البريد الإلكتروني", f.email),
@@ -70,6 +122,8 @@ export function QuoteSection({ quote, whatsappNumber, index }: { quote: SiteCont
     const link = whatsappLink(whatsappNumber, message);
     setHref(link);
     track("quote_whatsapp_click", { service: f.service });
+    writeDraft(null);
+    setRestored(false);
     window.open(link, "_blank", "noopener,noreferrer");
   };
 
@@ -148,6 +202,11 @@ export function QuoteSection({ quote, whatsappNumber, index }: { quote: SiteCont
                 {ref ? <p className="mt-2 text-xs text-cyan">مشروع مرجعي من المعرض: {ref}</p> : null}
                 {err("details")}
               </div>
+              <div className="field sm:col-span-2">
+                <label htmlFor={`${uid}-link`}>رابط مرجعي أو مثال يعجبك {opt}</label>
+                <input {...field("link")} type="url" inputMode="url" maxLength={300} dir="ltr" placeholder="https://" />
+                {err("link")}
+              </div>
               <div className="field">
                 <label htmlFor={`${uid}-budget`}>الميزانية التقريبية {opt}</label>
                 <input {...field("budget")} type="text" maxLength={60} placeholder="مثال: لم تُحدّد بعد" />
@@ -167,9 +226,19 @@ export function QuoteSection({ quote, whatsappNumber, index }: { quote: SiteCont
                   <WhatsAppIcon className="size-5" />
                   {quote.cta}
                 </button>
-                <p className="mt-3 text-xs leading-6 text-white/55">
-                  {quote.note} {quote.privacyNote}
-                </p>
+                <div className="mt-3 flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
+                  <p className="max-w-lg text-xs leading-6 text-white/55">
+                    {quote.note} {quote.privacyNote}
+                  </p>
+                  <button type="button" onClick={clearForm} className="text-xs font-medium text-white/60 underline decoration-white/25 underline-offset-4 transition-colors hover:text-white">
+                    مسح النموذج
+                  </button>
+                </div>
+                {restored ? (
+                  <p role="status" className="mt-2 text-xs text-cyan">
+                    استعدنا مسودتك السابقة المحفوظة في هذا المتصفح فقط.
+                  </p>
+                ) : null}
                 {href ? (
                   <div role="status" className="mt-4 rounded-2xl border border-cyan/40 bg-cyan/10 p-4 text-sm leading-7 text-white/85">
                     فُتح واتساب برسالة جاهزة؛ اضغط «إرسال» هناك لإيصال طلبك. إن لم يُفتح تلقائياً{" "}
