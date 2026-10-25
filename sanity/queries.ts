@@ -11,7 +11,7 @@ export const SITE_QUERY = defineQuery(`{
   "services": *[_type == "service"] | order(orderRank) { title, description, icon },
   "servicesCount": count(*[_type == "service"]),
   "projects": *[_type == "project" && hidden != true && defined(cover.asset)] | order(orderRank) {
-    "id": slug.current, title, category, client, year, summary, "featured": coalesce(featured, false), "demo": coalesce(isDemo, false),
+    "id": slug.current, title, category, client, year, summary, "featured": coalesce(featured, false), "demo": coalesce(isDemo, false), orientation,
     "cover": cover${img},
     "media": media[]{
       _type == "imageWithAlt" => { "type": "image", ...@${img} },

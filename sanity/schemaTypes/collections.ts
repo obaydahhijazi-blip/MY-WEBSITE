@@ -18,6 +18,21 @@ export const project = defineType({
       options: { list: WORK_CATEGORIES, layout: "radio" },
       validation: (r) => r.required(),
     }),
+    defineField({
+      name: "orientation",
+      title: "اتجاه الفيديو أو الصورة",
+      description: "للريلز اختر «طولي 9:16». إذا تركته فارغاً يُحدَّد تلقائياً من صورة الغلاف.",
+      type: "string",
+      options: {
+        list: [
+          { title: "طولي (ريلز 9:16)", value: "portrait" },
+          { title: "عرضي (16:9)", value: "landscape" },
+          { title: "مربع", value: "square" },
+        ],
+        layout: "radio",
+        direction: "horizontal",
+      },
+    }),
     defineField({ name: "client", title: "اسم العميل أو الجهة (اختياري — بعد موافقتها)", type: "string" }),
     defineField({ name: "year", title: "السنة", type: "string", validation: (r) => r.regex(/^\d{4}$/).warning("أربعة أرقام، مثل 2025") }),
     defineField({ name: "summary", title: "وصف مختصر", type: "text", rows: 3, validation: (r) => r.max(320) }),

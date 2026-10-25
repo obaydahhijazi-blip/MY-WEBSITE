@@ -12,6 +12,11 @@ function image(raw: Raw): ImageAsset | null {
   return { src: raw.src, width: raw.width, height: raw.height, alt: str(raw.alt, ""), lqip: raw.lqip || undefined };
 }
 
+function orientationOf(i: ImageAsset): Work["orientation"] {
+  const r = i.width / i.height;
+  return r < 0.85 ? "portrait" : r > 1.15 ? "landscape" : "square";
+}
+
 /** Overlay Sanity values on the local content. Empty CMS fields fall back to the bundled defaults. */
 export function mergeSanityContent(local: SiteContent, data: Record<string, any>): SiteContent {
   const s: Raw = data.settings;
@@ -37,7 +42,8 @@ export function mergeSanityContent(local: SiteContent, data: Record<string, any>
       return {
         id: str(p.id, p.title),
         title: p.title,
-        category: p.category,
+        category: p.category === "film" ? "ads" : p.category, // legacy «التصوير والمونتاج»
+        orientation: p.orientation || orientationOf(cover),
         client: p.client || undefined,
         year: p.year || undefined,
         summary: p.summary || undefined,

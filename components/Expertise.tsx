@@ -12,9 +12,9 @@ export function Expertise({ expertise, index }: { expertise: SiteContent["expert
           <p className="reveal text-[1.05rem] leading-9 text-white/70 lg:col-span-5 lg:col-start-8">{expertise.intro}</p>
         </div>
 
-        <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+        <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
           {expertise.items.map((item, i) => (
-            <li key={item.title} className="reveal" style={{ ["--delay" as string]: `${(i % 3) * 0.07}s` }}>
+            <li key={item.title} className="reveal" style={{ ["--delay" as string]: `${(i % 4) * 0.07}s` }}>
               <article className="service-card h-full">
                 <div className="flex items-start justify-between gap-4">
                   <span className="service-icon">

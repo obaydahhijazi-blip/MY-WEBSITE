@@ -7,13 +7,13 @@ export type MediaItem = ({ type: "image" } & ImageAsset) | VideoAsset;
 export type IconId =
   | "identity" | "social" | "direction" | "ai" | "print" | "content" | "film"
   | "listen" | "idea" | "build" | "deliver"
-  | "clock" | "users" | "globe" | "layers" | "free" | "chat" | "pin";
+  | "clock" | "users" | "globe" | "layers" | "free" | "chat" | "pin" | "motion" | "grid";
 
 /** value null = not confirmed yet → hidden on the public site. */
 export type Stat = { value: number | null; suffix: string; label: string; mapLink: boolean; icon: IconId };
 export type Service = { title: string; description: string; icon: IconId };
 export type ProcessStep = Service;
-export type Category = { id: string; label: string };
+export type Category = { id: string; label: string; group: "design" | "video" };
 
 export type Client = { name: string; logo: ImageAsset; href?: string; demo?: boolean };
 
@@ -28,6 +28,8 @@ export type Work = {
   cover: ImageAsset;
   media: MediaItem[];
   demo?: boolean;
+  /** Vertical reels are shown 9:16 in the video gallery. Derived from the cover when not set. */
+  orientation?: "portrait" | "landscape" | "square";
 };
 
 export type Testimonial = { id: string; quote: string; name?: string; role?: string; company?: string; logo?: ImageAsset; demo?: boolean };

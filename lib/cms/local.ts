@@ -3,7 +3,7 @@ import clientsData from "@/content/clients.json";
 import worksData from "@/content/works.json";
 import faqData from "@/content/faq.json";
 import testimonialsData from "@/content/testimonials.json";
-import type { Client, IconId, SiteContent, Testimonial, Work } from "@/lib/cms/types";
+import type { Category, Client, IconId, SiteContent, Testimonial, Work } from "@/lib/cms/types";
 import { DEMO_CLIENTS, DEMO_TESTIMONIALS, DEMO_WORKS, demoMode } from "@/lib/demo";
 
 type LocalClient = Client & { approved?: boolean };
@@ -80,7 +80,7 @@ export function getLocalContent(): SiteContent {
       emptyBody: site.works.empty_body,
       emptyCategory: site.works.empty_category,
       similarCta: site.works.similar_cta,
-      categories: worksData.categories,
+      categories: worksData.categories as Category[],
       items: (worksData.projects as LocalWork[])
         .filter((w) => w.approved === true)
         .map((w) => ({ ...w, featured: w.featured ?? false, media: w.media ?? [{ type: "image" as const, ...w.cover }] }))

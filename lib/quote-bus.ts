@@ -8,8 +8,11 @@ export const CATEGORY_TO_SERVICE: Record<string, string> = {
   identity: "هوية بصرية",
   social: "تصميم إعلاني وسوشيال ميديا",
   print: "مطبوعات وملفات تعريفية",
+  reels: "إنتاج الريلز والفيديو الإعلاني",
+  ads: "إنتاج الريلز والفيديو الإعلاني",
+  film: "إنتاج الريلز والفيديو الإعلاني",
+  motion: "موشن جرافيك",
   ai: "إنتاج بالذكاء الاصطناعي",
-  film: "تصوير ومونتاج",
 };
 
 /** Pre-fill the request-a-quote form (e.g. from «أرغب في مشروع مشابه») and scroll to it. */

@@ -113,6 +113,13 @@ const LINE_ICONS: Record<string, React.ReactNode> = {
       <path d="m15.5 10.5 5-3v9l-5-3" />
     </>
   ),
+  motion: (
+    <>
+      <circle cx="15.5" cy="12" r="5" />
+      <path d="M3.5 9h5M2.5 12h6M3.5 15h5" />
+      <path d="m14.5 10 2.5 2-2.5 2Z" fill="currentColor" stroke="none" />
+    </>
+  ),
   listen: (
     <>
       <path d="M4 11.5a8 8 0 0 1 16 0v4a2 2 0 0 1-2 2h-1.5v-6H20M4 11.5h3.5v6H6a2 2 0 0 1-2-2Z" />
