@@ -62,7 +62,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   };
 
   return (
-    <html lang="ar" dir="rtl" className={fallbackArabic.variable}>
+    <html lang="ar" dir="rtl" className={fallbackArabic.variable} suppressHydrationWarning>
       <body>
         <a href="#main" className="skip-link">
           تخطَّ إلى المحتوى
