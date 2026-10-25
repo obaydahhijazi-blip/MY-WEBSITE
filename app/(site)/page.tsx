@@ -61,7 +61,7 @@ export default async function Home() {
           availability={availability}
         />
         <IdentityMarquee items={content.marquee} />
-        <BioSection about={content.about} index={idx("about")} demoMode={content.demoMode} />
+        <BioSection about={content.about} index={idx("about")} demoMode={content.demoMode} servicesCount={content.expertise.items.length} />
         <ClientLogoGrid clients={content.clients} index={idx("clients")} />
         <Expertise expertise={content.expertise} index={idx("expertise")} />
         <WorkSection works={content.works} index={idx("works")} instagram={settings.instagram} instagramHandle={settings.instagramHandle} />

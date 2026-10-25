@@ -122,7 +122,7 @@ export const aboutSection = defineType({
             }),
             defineField({ name: "suffix", title: "لاحقة (مثل +)", type: "string" }),
             defineField({ name: "label", title: "الوصف", type: "string", validation: (r) => r.required() }),
-            defineField({ name: "mapLink", title: "مرتبط بالخريطة (يُبرز الدول عند المرور)", type: "boolean", initialValue: false }),
+            defineField({ name: "mapLink", title: "يعرض قائمة الدول عند المرور أو الضغط", type: "boolean", initialValue: false }),
           ],
           preview: {
             select: { v: "value", s: "suffix", l: "label" },
@@ -131,10 +131,10 @@ export const aboutSection = defineType({
         }),
       ],
     }),
-    defineField({ name: "mapTitle", title: "عنوان الخريطة", type: "string" }),
+    defineField({ name: "mapTitle", title: "عنوان قائمة الدول", type: "string" }),
     defineField({
       name: "countries",
-      title: "الدول المميزة على الخريطة",
+      title: "الدول التي عملت فيها",
       type: "array",
       of: [defineArrayMember({ type: "string" })],
       options: { list: COUNTRY_OPTIONS, layout: "grid" },

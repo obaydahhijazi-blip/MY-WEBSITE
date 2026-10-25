@@ -28,7 +28,7 @@ export const structure: StructureResolver = (S, context) =>
           S.list()
             .title("النصوص والتخصصات")
             .items([
-              singleton(S, "aboutSection", "نبذة عني والأرقام والخريطة", InfoOutlineIcon),
+              singleton(S, "aboutSection", "نبذة عني والأرقام والدول", InfoOutlineIcon),
               orderableDocumentListDeskItem({ type: "service", title: "التخصصات", icon: StarIcon, S, context }),
               singleton(S, "sectionTexts", "عناوين الأقسام وطريقة العمل", DocumentTextIcon),
             ]),

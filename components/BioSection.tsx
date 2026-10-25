@@ -1,7 +1,17 @@
-import { StatsAndMap } from "@/components/about/StatsAndMap";
+import { StatsBand } from "@/components/about/StatsBand";
 import type { SiteContent } from "@/lib/cms/types";
 
-export function BioSection({ about, index, demoMode }: { about: SiteContent["about"]; index: string; demoMode: boolean }) {
+type Props = { about: SiteContent["about"]; index: string; demoMode: boolean; servicesCount: number };
+
+export function BioSection({ about, index, demoMode, servicesCount }: Props) {
+  // Unconfirmed figures are dropped here so they never reach the public page or its data payload.
+  const confirmed = about.stats.filter((s) => s.value !== null || demoMode);
+  // «تخصصات» is counted from the expertise cards, so it is always true; inserted before any unconfirmed figure.
+  const stats = [
+    ...confirmed.filter((s) => s.value !== null),
+    ...(servicesCount ? [{ value: servicesCount, suffix: "", label: "تخصصات", mapLink: false, icon: "grid" as const }] : []),
+    ...confirmed.filter((s) => s.value === null),
+  ];
   return (
     <section id="about" className="section bg-paper" aria-labelledby="about-title">
       <div className="container-x">
@@ -30,8 +40,7 @@ export function BioSection({ about, index, demoMode }: { about: SiteContent["abo
           </div>
         </div>
 
-        {/* Unconfirmed figures are dropped here so they never reach the public page or its data payload. */}
-        <StatsAndMap about={{ ...about, stats: about.stats.filter((s) => s.value !== null || demoMode) }} demoMode={demoMode} />
+        <StatsBand stats={stats} countries={about.countries} countriesTitle={about.mapTitle} />
       </div>
     </section>
   );

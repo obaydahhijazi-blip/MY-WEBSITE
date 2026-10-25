@@ -113,6 +113,14 @@ const LINE_ICONS: Record<string, React.ReactNode> = {
       <path d="m15.5 10.5 5-3v9l-5-3" />
     </>
   ),
+  grid: (
+    <>
+      <rect x="4" y="4" width="6.5" height="6.5" rx="1.5" />
+      <rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5" />
+      <rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5" />
+      <rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5" />
+    </>
+  ),
   motion: (
     <>
       <circle cx="15.5" cy="12" r="5" />
