@@ -177,6 +177,13 @@ export function mergeSanityContent(local: SiteContent, data: Record<string, any>
       similarCta: str(t?.works?.similarCta, local.works.similarCta),
       items: withDemoWorks(works, DEMO_WORKS, (c) => groupOf(local.works.categories, c), local.demoMode),
     },
+    video: {
+      ...local.video,
+      title: str(t?.video?.title, local.video.title),
+      description: str(t?.video?.description, local.video.description),
+      emptyTitle: str(t?.video?.emptyTitle, local.video.emptyTitle),
+      emptyBody: str(t?.video?.emptyBody, local.video.emptyBody),
+    },
     testimonials: {
       ...local.testimonials,
       title: str(t?.testimonials?.title, local.testimonials.title),

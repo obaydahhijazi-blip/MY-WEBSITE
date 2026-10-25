@@ -183,10 +183,14 @@ export const sectionTexts = defineType({
         ],
       }),
     ]),
-    sectionText("works", "الأعمال", [
+    sectionText("works", "أعمال التصميم", [
       defineField({ name: "emptyTitle", title: "عنوان الحالة الفارغة", type: "string" }),
       defineField({ name: "emptyBody", title: "نص الحالة الفارغة", type: "text", rows: 2 }),
       defineField({ name: "similarCta", title: "نص زر «مشروع مشابه»", type: "string" }),
+    ]),
+    sectionText("video", "الفيديو والذكاء الاصطناعي", [
+      defineField({ name: "emptyTitle", title: "عنوان الحالة الفارغة", type: "string" }),
+      defineField({ name: "emptyBody", title: "نص الحالة الفارغة", type: "text", rows: 2 }),
     ]),
     sectionText("testimonials", "آراء العملاء"),
     sectionText("faq", "الأسئلة الشائعة", [defineField({ name: "note", title: "الملاحظة الختامية", type: "string" })]),

@@ -93,6 +93,7 @@ export type SiteContent = {
     categories: Category[];
     items: Work[];
   };
+  video: { label: string; title: string; description: string; allLabel: string; emptyTitle: string; emptyBody: string; reelsTitle: string; hint: string };
   testimonials: { label: string; title: string; items: Testimonial[] };
   faq: { label: string; title: string; note: string; items: FaqItem[] };
   consultation: {

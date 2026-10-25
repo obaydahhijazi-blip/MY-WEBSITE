@@ -15,6 +15,7 @@ import { SmoothScroll } from "@/components/SmoothScroll";
 import { Testimonials } from "@/components/Testimonials";
 import { TrackClicks } from "@/components/TrackClicks";
 import { WorkSection } from "@/components/WorkSection";
+import { VideoSection } from "@/components/VideoSection";
 import { BookingSection } from "@/components/booking/BookingSection";
 import { getSiteContent } from "@/lib/cms";
 import { whatsappLink } from "@/lib/whatsapp";
@@ -30,12 +31,19 @@ export default async function Home() {
   const availability =
     a.status !== "hidden" && (a.confirmed || content.demoMode) ? { status: a.status, label: a.label, preview: !a.confirmed } : undefined;
 
+  // Design projects and video/AI projects are shown in separate galleries.
+  const group = (g: string) => content.works.categories.filter((c) => c.group === g);
+  const ids = (g: string) => new Set(group(g).map((c) => c.id));
+  const designWorks = { ...content.works, categories: group("design"), items: content.works.items.filter((w) => ids("design").has(w.category)) };
+  const videoItems = content.works.items.filter((w) => ids("video").has(w.category));
+
   // Order: … process → request a quote → free consultation (last) → footer. Numbers follow what is rendered.
   const order = [
     "about",
     "clients",
     "expertise",
     "works",
+    "video",
     ...(content.testimonials.items.length ? ["testimonials"] : []),
     ...(content.faq.items.length ? ["faq"] : []),
     "process",
@@ -64,7 +72,16 @@ export default async function Home() {
         <BioSection about={content.about} index={idx("about")} demoMode={content.demoMode} servicesCount={content.expertise.items.length} />
         <ClientLogoGrid clients={content.clients} index={idx("clients")} />
         <Expertise expertise={content.expertise} index={idx("expertise")} />
-        <WorkSection works={content.works} index={idx("works")} instagram={settings.instagram} instagramHandle={settings.instagramHandle} />
+        <WorkSection works={designWorks} index={idx("works")} instagram={settings.instagram} instagramHandle={settings.instagramHandle} />
+        <VideoSection
+          video={content.video}
+          works={content.works}
+          categories={group("video")}
+          items={videoItems}
+          index={idx("video")}
+          instagram={settings.instagram}
+          instagramHandle={settings.instagramHandle}
+        />
         {content.testimonials.items.length ? <Testimonials testimonials={content.testimonials} index={idx("testimonials")} /> : null}
         <FaqSection faq={content.faq} index={idx("faq")} />
         <ProcessTimeline process={content.process} index={idx("process")} />

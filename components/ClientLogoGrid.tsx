@@ -18,7 +18,7 @@ function Logo({ c }: { c: Client }) {
           className="h-auto max-h-16 w-auto max-w-[170px] object-contain"
         />
       </span>
-      <span className="client-logo-name">{c.name}</span>
+      <span className="client-logo-name" dir="rtl">{c.name}</span>
     </>
   );
   return c.href ? (
@@ -34,7 +34,7 @@ function Logo({ c }: { c: Client }) {
 }
 
 /** Repeat a short list so one copy of each row is always wider than the screen. */
-const fill = (list: Client[], min = 8) => (list.length ? Array.from({ length: Math.ceil(min / list.length) }, () => list).flat() : []);
+const fill = (list: Client[], min = 12) => (list.length ? Array.from({ length: Math.ceil(min / list.length) }, () => list).flat() : []);
 
 /** Approved logos only (managed in /admin). Sample logos appear only in demo/preview mode. */
 export function ClientLogoGrid({ clients, index }: { clients: SiteContent["clients"]; index: string }) {

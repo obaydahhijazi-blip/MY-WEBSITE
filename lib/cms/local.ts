@@ -92,6 +92,16 @@ export function getLocalContent(): SiteContent {
         demoMode,
       ),
     },
+    video: {
+      label: site.video.section_label,
+      title: site.video.title,
+      description: site.video.description,
+      allLabel: site.video.all_label,
+      emptyTitle: site.video.empty_title,
+      emptyBody: site.video.empty_body,
+      reelsTitle: site.video.reels_title,
+      hint: site.video.hint,
+    },
     testimonials: {
       label: site.testimonials.section_label,
       title: site.testimonials.title,
