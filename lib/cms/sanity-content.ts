@@ -1,5 +1,6 @@
 import type { IconId, ImageAsset, MediaItem, SiteContent, Testimonial, Work } from "@/lib/cms/types";
-import { DEMO_CLIENTS, DEMO_TESTIMONIALS, DEMO_WORKS } from "@/lib/demo";
+import { DEMO_CLIENTS, DEMO_TESTIMONIALS, DEMO_WORKS, withDemo, withDemoWorks } from "@/lib/demo";
+import { groupOf } from "@/lib/cms/local";
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- GROQ results are untyped; every field is validated below */
 type Raw = Record<string, any> | null | undefined;
@@ -148,7 +149,7 @@ export function mergeSanityContent(local: SiteContent, data: Record<string, any>
       title: str(t?.clients?.title, local.clients.title),
       description: str(t?.clients?.description, local.clients.description),
       emptyText: str(t?.clients?.emptyText, local.clients.emptyText),
-      items: clients.length || !local.demoMode ? clients : DEMO_CLIENTS,
+      items: withDemo(clients, DEMO_CLIENTS, local.demoMode),
     },
     expertise: {
       ...local.expertise,
@@ -174,12 +175,12 @@ export function mergeSanityContent(local: SiteContent, data: Record<string, any>
       emptyTitle: str(t?.works?.emptyTitle, local.works.emptyTitle),
       emptyBody: str(t?.works?.emptyBody, local.works.emptyBody),
       similarCta: str(t?.works?.similarCta, local.works.similarCta),
-      items: works.length || !local.demoMode ? works : DEMO_WORKS,
+      items: withDemoWorks(works, DEMO_WORKS, (c) => groupOf(local.works.categories, c), local.demoMode),
     },
     testimonials: {
       ...local.testimonials,
       title: str(t?.testimonials?.title, local.testimonials.title),
-      items: testimonials.length || !local.demoMode ? testimonials : DEMO_TESTIMONIALS,
+      items: withDemo(testimonials, DEMO_TESTIMONIALS, local.demoMode),
     },
     faq: {
       ...local.faq,

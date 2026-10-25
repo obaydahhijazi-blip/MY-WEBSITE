@@ -1,37 +1,48 @@
 import Image from "next/image";
+import { DragMarquee } from "@/components/DragMarquee";
 import { SectionHeading } from "@/components/SectionHeading";
 import type { Client, SiteContent } from "@/lib/cms/types";
 
 function Logo({ c }: { c: Client }) {
-  const img = (
-    <Image
-      src={c.logo.src}
-      alt={c.logo.alt || `شعار ${c.name}`}
-      width={c.logo.width}
-      height={c.logo.height}
-      sizes="180px"
-      unoptimized={c.logo.src.endsWith(".svg")}
-      className="h-auto max-h-12 w-auto max-w-[150px] object-contain"
-    />
+  const inner = (
+    <>
+      <span className="client-logo-img">
+        <Image
+          src={c.logo.src}
+          alt={c.logo.alt || `شعار ${c.name}`}
+          width={c.logo.width}
+          height={c.logo.height}
+          sizes="200px"
+          draggable={false}
+          unoptimized={c.logo.src.endsWith(".svg")}
+          className="h-auto max-h-16 w-auto max-w-[170px] object-contain"
+        />
+      </span>
+      <span className="client-logo-name">{c.name}</span>
+    </>
   );
   return c.href ? (
-    <a href={c.href} target="_blank" rel="noopener noreferrer" className="client-logo" title={c.name}>
-      {img}
+    <a href={c.href} target="_blank" rel="noopener noreferrer" className="client-logo" draggable={false}>
+      {inner}
       <span className="sr-only">(يفتح موقع {c.name} في نافذة جديدة)</span>
     </a>
   ) : (
-    <span className="client-logo" title={c.name}>
-      {img}
+    <span className="client-logo" tabIndex={0}>
+      {inner}
     </span>
   );
 }
+
+/** Repeat a short list so one copy of each row is always wider than the screen. */
+const fill = (list: Client[], min = 8) => (list.length ? Array.from({ length: Math.ceil(min / list.length) }, () => list).flat() : []);
 
 /** Approved logos only (managed in /admin). Sample logos appear only in demo/preview mode. */
 export function ClientLogoGrid({ clients, index }: { clients: SiteContent["clients"]; index: string }) {
   const items = clients.items;
   const hasDemo = items.some((c) => c.demo);
-  // Repeat short lists so one half of the loop is always wider than the screen.
-  const run = items.length ? Array.from({ length: Math.max(1, Math.ceil(10 / items.length)) }, () => items).flat() : [];
+  // Six or more logos are split between the rows; fewer appear in both rows in a different order.
+  const rowA = items.length >= 6 ? items.filter((_, i) => i % 2 === 0) : items;
+  const rowB = items.length >= 6 ? items.filter((_, i) => i % 2 === 1) : [...items].reverse();
 
   return (
     <section id="clients" className="section-tight bg-paper-2" aria-labelledby="clients-title">
@@ -41,23 +52,22 @@ export function ClientLogoGrid({ clients, index }: { clients: SiteContent["clien
           <p className="reveal text-[1.02rem] leading-8 text-muted lg:col-span-4 lg:col-start-9">{clients.description}</p>
         </div>
         {hasDemo ? (
-          <p className="mt-6 inline-flex rounded-full bg-yellow/20 px-3 py-1 text-xs font-semibold text-ink-2">عينة تجريبية للمعاينة — لا تظهر في الموقع المنشور</p>
+          <p className="mt-6 inline-flex rounded-full bg-yellow/20 px-3 py-1 text-xs font-semibold text-ink-2">عينة تجريبية للمعاينة — تختفي تلقائياً عند إضافة أول شعار حقيقي</p>
         ) : null}
       </div>
 
       {items.length > 0 ? (
-        <div className="logo-marquee reveal mt-10" data-lenis-prevent>
-          <div className="marquee-track">
-            {["a", "b"].map((half) => (
-              <ul key={half} className="logo-half" aria-hidden={half === "b" || undefined}>
-                {run.map((c, i) => (
-                  <li key={`${half}-${i}`} {...(half === "b" ? { inert: true } : {})}>
-                    <Logo c={c} />
-                  </li>
-                ))}
-              </ul>
+        <div className="reveal mt-12 grid gap-5">
+          <DragMarquee speed={22} label="شعارات الجهات — الصف الأول، يمكن سحبه">
+            {fill(rowA).map((c, i) => (
+              <Logo key={`a${i}`} c={c} />
             ))}
-          </div>
+          </DragMarquee>
+          <DragMarquee speed={-14} label="شعارات الجهات — الصف الثاني، يمكن سحبه">
+            {fill(rowB).map((c, i) => (
+              <Logo key={`b${i}`} c={c} />
+            ))}
+          </DragMarquee>
         </div>
       ) : (
         <div className="container-x">

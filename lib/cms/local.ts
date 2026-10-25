@@ -4,10 +4,12 @@ import worksData from "@/content/works.json";
 import faqData from "@/content/faq.json";
 import testimonialsData from "@/content/testimonials.json";
 import type { Category, Client, IconId, SiteContent, Testimonial, Work } from "@/lib/cms/types";
-import { DEMO_CLIENTS, DEMO_TESTIMONIALS, DEMO_WORKS, demoMode } from "@/lib/demo";
+import { DEMO_CLIENTS, DEMO_TESTIMONIALS, DEMO_WORKS, demoMode, withDemo, withDemoWorks } from "@/lib/demo";
 
 type LocalClient = Client & { approved?: boolean };
 type LocalWork = Omit<Work, "media" | "featured"> & { media?: Work["media"]; featured?: boolean; approved?: boolean };
+
+export const groupOf = (categories: Category[], id: string) => categories.find((c) => c.id === id)?.group ?? "design";
 
 /** Content bundled with the code. Used when Sanity is not configured, and as the migration seed. */
 export function getLocalContent(): SiteContent {
@@ -57,7 +59,7 @@ export function getLocalContent(): SiteContent {
       title: site.clients.title,
       description: site.clients.description,
       emptyText: site.clients.empty_text,
-      items: [...(clientsData.clients as LocalClient[]).filter((c) => c.approved === true), ...(demoMode ? DEMO_CLIENTS : [])],
+      items: withDemo((clientsData.clients as LocalClient[]).filter((c) => c.approved === true), DEMO_CLIENTS, demoMode),
     },
     expertise: {
       label: site.expertise.section_label,
@@ -81,15 +83,19 @@ export function getLocalContent(): SiteContent {
       emptyCategory: site.works.empty_category,
       similarCta: site.works.similar_cta,
       categories: worksData.categories as Category[],
-      items: (worksData.projects as LocalWork[])
-        .filter((w) => w.approved === true)
-        .map((w) => ({ ...w, featured: w.featured ?? false, media: w.media ?? [{ type: "image" as const, ...w.cover }] }))
-        .concat(demoMode ? DEMO_WORKS : []),
+      items: withDemoWorks(
+        (worksData.projects as LocalWork[])
+          .filter((w) => w.approved === true)
+          .map((w) => ({ ...w, featured: w.featured ?? false, media: w.media ?? [{ type: "image" as const, ...w.cover }] })),
+        DEMO_WORKS,
+        (c) => groupOf(worksData.categories as Category[], c),
+        demoMode,
+      ),
     },
     testimonials: {
       label: site.testimonials.section_label,
       title: site.testimonials.title,
-      items: [...(testimonialsData.items as Testimonial[]), ...(demoMode ? DEMO_TESTIMONIALS : [])],
+      items: withDemo(testimonialsData.items as Testimonial[], DEMO_TESTIMONIALS, demoMode),
     },
     faq: { label: site.faq.section_label, title: site.faq.title, note: site.faq.note, items: faqData.items },
     consultation: {

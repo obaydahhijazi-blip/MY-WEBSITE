@@ -40,3 +40,17 @@ export const DEMO_TESTIMONIALS: Testimonial[] = [
   { id: "demo-t2", quote: "نص تجريبي ثانٍ لاختبار طول النص والتمرير الأفقي على الهاتف.", name: "اسم تجريبي", role: "المنصب", company: "جهة تجريبية", demo: true },
   { id: "demo-t3", quote: "نص تجريبي ثالث. لا يظهر أي من هذه البطاقات في الموقع المنشور.", name: "اسم تجريبي", demo: true },
 ];
+
+/**
+ * Sample items only fill a section (or, for works, a gallery group) that has no real content yet.
+ * As soon as one real item is published there, the samples disappear automatically.
+ */
+export function withDemo<T>(real: T[], demo: T[], on: boolean): T[] {
+  return on && real.length === 0 ? demo : real;
+}
+
+export function withDemoWorks(real: Work[], demo: Work[], groupOf: (category: string) => string, on: boolean): Work[] {
+  if (!on) return real;
+  const filled = new Set(real.map((w) => groupOf(w.category)));
+  return [...real, ...demo.filter((w) => !filled.has(groupOf(w.category)))];
+}
