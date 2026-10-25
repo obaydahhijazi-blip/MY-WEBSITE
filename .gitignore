@@ -14,3 +14,4 @@ public/fonts/*.ttf
 
 # Local backups
 backups/
+assets/audio/*.mp3
