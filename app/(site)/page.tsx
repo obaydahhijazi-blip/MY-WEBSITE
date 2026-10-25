@@ -14,6 +14,8 @@ import { ScrollProgress } from "@/components/ScrollProgress";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Testimonials } from "@/components/Testimonials";
 import { TrackClicks } from "@/components/TrackClicks";
+import { MotionFX } from "@/components/MotionFX";
+import { LogoIntro } from "@/components/LogoIntro";
 import { WorkSection } from "@/components/WorkSection";
 import { VideoSection } from "@/components/VideoSection";
 import { BookingSection } from "@/components/booking/BookingSection";
@@ -55,6 +57,7 @@ export default async function Home() {
 
   return (
     <>
+      <LogoIntro />
       <ScrollProgress />
       <Header items={navigation} nameAr={settings.nameAr} whatsappHref={contactHref} ctaLabel={hero.primaryCta} music={settings.music} />
       <main id="main">
@@ -93,6 +96,7 @@ export default async function Home() {
       <RevealObserver />
       <SmoothScroll />
       <TrackClicks />
+      <MotionFX />
     </>
   );
 }

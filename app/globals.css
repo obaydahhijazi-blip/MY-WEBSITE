@@ -1094,32 +1094,38 @@ img {
   bottom: 16px;
 }
 
-/* ───────── Testimonials ───────── */
-.testimonial-track {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: min(86%, 440px);
-  gap: 20px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding-bottom: 8px;
-  scrollbar-width: thin;
+/* ───────── Testimonials (spotlight) ───────── */
+.quote-stage {
+  position: relative;
+  margin-top: clamp(40px, 5vw, 64px);
+  max-width: 980px;
 }
-.testimonial-card {
-  display: flex;
-  flex-direction: column;
-  scroll-snap-align: start;
-  border: 1px solid var(--color-line);
-  border-radius: 24px;
-  background: #fff;
-  padding: 32px;
+.quote-mark {
+  position: absolute;
+  top: -0.35em;
+  inset-inline-start: -0.08em;
+  font-size: clamp(7rem, 14vw, 11rem);
+  line-height: 1;
+  color: rgb(0 187 212 / 0.18);
+  pointer-events: none;
+}
+.quote-body {
+  position: relative;
+  padding-top: clamp(40px, 5vw, 64px);
+  animation: journey-in 0.6s var(--ease-out-soft) both;
+}
+.quote-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 99px;
+  background: rgb(17 23 25 / 0.18);
   transition:
-    border-color 0.3s,
-    transform 0.5s var(--ease-out-soft);
+    width 0.4s var(--ease-out-soft),
+    background-color 0.3s;
 }
-.testimonial-card:hover {
-  border-color: rgb(0 187 212 / 0.45);
-  transform: translateY(-3px);
+.quote-dot[aria-current] {
+  width: 28px;
+  background: var(--color-cyan-ink);
 }
 .carousel-btn {
   display: grid;
@@ -1220,6 +1226,10 @@ img {
   display: flex;
   width: max-content;
   animation: marquee-rtl 48s linear infinite;
+}
+.marquee-track.is-js {
+  animation: none;
+  will-change: transform;
 }
 .marquee-half {
   display: flex;
@@ -1337,6 +1347,163 @@ img {
 }
 .quote-form .field [aria-invalid="true"] {
   border-color: #ffb4a8;
+}
+
+/* ───────── Word-by-word headings ───────── */
+.headline .w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-block: 0.08em 0.12em;
+  margin-block: -0.08em -0.12em;
+}
+.headline .w > span {
+  display: inline-block;
+  transform: translateY(105%);
+  transition: transform 0.9s var(--ease-out-soft);
+  transition-delay: calc(var(--wi) * 70ms);
+}
+.headline.words-in .w > span {
+  transform: none;
+}
+
+/* ───────── Cursor ring (mouse devices) ───────── */
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  pointer-events: none;
+  display: none;
+}
+.has-cursor .cursor-ring {
+  display: block;
+}
+.cursor-ring::before {
+  content: "";
+  position: absolute;
+  top: -16px;
+  left: -16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-cyan);
+  opacity: 0;
+  transition:
+    opacity 0.3s,
+    transform 0.35s var(--ease-out-soft),
+    background-color 0.3s,
+    border-color 0.3s;
+}
+.cursor-ring.is-on::before {
+  opacity: 0.8;
+}
+.cursor-ring[data-state="link"]::before {
+  transform: scale(1.5);
+  background: rgb(0 187 212 / 0.12);
+}
+.cursor-ring[data-state="label"]::before {
+  transform: scale(2.6);
+  background: var(--color-cyan);
+  border-color: var(--color-cyan);
+  opacity: 1;
+}
+.cursor-ring.is-down::before {
+  transform: scale(0.8);
+}
+.cursor-tag {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-petrol);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.cursor-ring[data-state="label"] .cursor-tag {
+  opacity: 1;
+}
+
+/* ───────── Spotlight on service cards ───────── */
+.service-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, -40%), rgb(0 187 212 / 0.16), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.service-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(200px circle at var(--mx, 50%) var(--my, -40%), rgb(0 187 212 / 0.9), transparent 70%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.service-card:hover::before,
+.service-card:hover::after {
+  opacity: 1;
+}
+
+/* ───────── Logo intro ───────── */
+.logo-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--color-petrol);
+  animation: intro-out 0.55s var(--ease-out-soft) 1.25s forwards;
+  pointer-events: none;
+}
+.logo-intro-mark {
+  width: min(42vw, 220px);
+  height: auto;
+}
+.logo-intro-mark path {
+  fill: #fafaf8;
+  fill-opacity: 0;
+  stroke: var(--color-cyan);
+  stroke-width: 2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation:
+    intro-draw 0.9s ease-in-out forwards,
+    intro-fill 0.35s ease 0.8s forwards;
+}
+@keyframes intro-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes intro-fill {
+  to {
+    fill-opacity: 1;
+    stroke-opacity: 0;
+  }
+}
+@keyframes intro-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+.intro-seen .logo-intro {
+  display: none;
 }
 
 /* ───────── Music toggle ───────── */
@@ -1531,5 +1698,11 @@ img {
   }
   .marquee-track {
     animation: none !important;
+  }
+  .logo-intro {
+    display: none;
+  }
+  .headline .w > span {
+    transform: none;
   }
 }

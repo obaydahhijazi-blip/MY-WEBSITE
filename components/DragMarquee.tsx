@@ -141,7 +141,7 @@ export function DragMarquee({ children, speed, label, className = "" }: Props) {
 
   return (
     // dir="ltr" anchors the track to the left edge so the offset maths is direction-independent.
-    <div ref={wrap} className={`drag-marquee ${className}`} role="region" aria-label={label} dir="ltr">
+    <div ref={wrap} className={`drag-marquee ${className}`} role="region" aria-label={label} dir="ltr" data-cursor="اسحب">
       <div ref={track} className="drag-track">
         <div className="drag-set">{children}</div>
         <div className="drag-set" aria-hidden="true" inert>
