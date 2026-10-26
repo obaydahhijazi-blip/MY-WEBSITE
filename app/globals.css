@@ -1879,7 +1879,7 @@ html[lang="ar"] .headline.words-in .w > span {
   display: block;
   width: clamp(65px, 7.2vw, 107px);
   filter: drop-shadow(12px 19px 15px rgb(0 10 14 / .3));
-  transform: translate3d(calc(var(--file-px) * var(--file-depth, 1)),calc(var(--file-py) * var(--file-depth, 1)),0);
+  transform: translate3d(var(--file-px), var(--file-py), 0);
   transition: transform 1.3s cubic-bezier(.2,.7,.2,1);
   opacity: .86;
 }
