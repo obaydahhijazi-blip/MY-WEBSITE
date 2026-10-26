@@ -363,8 +363,10 @@ export function EnglishPortfolio({ content }: Props) {
           </div>
         </>)}
 
+        <EnglishQuote phone={quotePhone} />
+        <EnglishConsultation phone={quotePhone} calUrl={content.consultation.calUrl} />
         {section("faq", "bg-paper", <>
-          {sectionLabel(8, "Before we begin")}
+          {sectionLabel(11, "Before we begin")}
           <h2 className="font-latin text-4xl font-semibold">Frequently asked questions & working terms</h2>
           <div className="mt-9 grid gap-3">
             {FAQ.concat(content.faq.items.filter(x => x.questionEn && x.answerEn && !FAQ.some(([q]) => q === x.questionEn)).map(x => [x.questionEn!, x.answerEn!] as string[])).map(([question, answer]) => <details key={question} className="group rounded-xl border border-line bg-white px-6 py-5">
@@ -375,8 +377,6 @@ export function EnglishPortfolio({ content }: Props) {
           <p className="mt-5 text-sm text-muted">Project-specific terms are agreed in the approved quotation. <a href="/en/terms" className="text-cyan-ink underline">Full working terms</a> · <a href="/en/privacy" className="text-cyan-ink underline">Privacy policy</a></p>
         </>)}
 
-        <EnglishQuote phone={quotePhone} />
-        <EnglishConsultation phone={quotePhone} calUrl={content.consultation.calUrl} />
       </main>
 
       <footer className="bg-petrol py-12 text-white">
