@@ -140,12 +140,10 @@ export function VideoSection({ video, works, categories, items, index, instagram
   const tabs = [{ id: "all", label: video.allLabel, count: items.length }, ...categories.map((c) => ({ ...c, count: counts.get(c.id) ?? 0 }))];
 
   return (
-    <section id="video" className="section section-framed bg-paper text-white" aria-labelledby="video-title">
-      <div className="container-x">
-        <div className="cinematic-panel relative isolate overflow-hidden">
-          <div className="pointer-events-none absolute -top-40 left-[12%] size-[30rem] rounded-full bg-teal blur-3xl" aria-hidden="true" />
-          <FloatingDesignFiles files={["PRPROJ", "AEP"]} placement="video" />
-          <div className="relative z-10">
+    <section id="video" className="section relative overflow-hidden bg-petrol text-white" aria-labelledby="video-title">
+      <div className="pointer-events-none absolute -top-40 left-[12%] size-[30rem] rounded-full bg-teal blur-3xl" aria-hidden="true" />
+      <FloatingDesignFiles files={["PRPROJ", "AEP"]} placement="video" />
+      <div className="container-x relative">
         <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
           <header className="reveal lg:col-span-6">
             <p className="section-index !text-white/60">
@@ -234,8 +232,6 @@ export function VideoSection({ video, works, categories, items, index, instagram
         )}
       </div>
 
-        </div>
-      </div>
       {open ? <WorkLightbox work={open} categoryLabel={labelOf(open.category)} similarCta={works.similarCta} onClose={() => setOpen(null)} /> : null}
     </section>
   );
