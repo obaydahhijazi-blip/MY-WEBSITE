@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { WorkLightbox } from "@/components/WorkLightbox";
 import { ArrowIcon, InstagramIcon, PlayIcon } from "@/components/icons";
 import type { Category, SiteContent, VideoAsset, Work } from "@/lib/cms/types";
+import { track } from "@/lib/analytics";
 
 type Props = {
   video: SiteContent["video"];
@@ -158,7 +159,7 @@ export function VideoSection({ video, works, categories, items, index, instagram
         <div className="reveal -mx-4 mt-12 sm:mx-0">
           <div role="group" aria-label="تصفية أعمال الفيديو" className="work-tabs flex gap-2 overflow-x-auto px-4 pb-2 sm:flex-wrap sm:overflow-visible sm:px-0">
             {tabs.map((t) => (
-              <button key={t.id} type="button" aria-pressed={filter === t.id} onClick={() => setFilter(t.id)} className="work-tab is-dark">
+              <button key={t.id} type="button" aria-pressed={filter === t.id} onClick={() => { setFilter(t.id); track("portfolio_filter", { category: t.id, gallery: "video" }); }} className="work-tab is-dark">
                 {t.label}
                 {items.length > 0 ? <span className="font-latin text-[0.72rem] opacity-60">{t.count}</span> : null}
               </button>
@@ -202,7 +203,7 @@ export function VideoSection({ video, works, categories, items, index, instagram
                 <ul ref={reelRow} className="reel-row" aria-label={video.reelsTitle}>
                   {reels.map((w) => (
                     <li key={w.id} className="work-card-enter">
-                      <VideoCard w={w} label={labelOf(w.category)} onOpen={() => setOpen(w)} tall />
+                      <VideoCard w={w} label={labelOf(w.category)} onOpen={() => { setOpen(w); track("portfolio_open", { project: w.id, category: w.category, gallery: "video" }); }} tall />
                     </li>
                   ))}
                 </ul>
@@ -213,7 +214,7 @@ export function VideoSection({ video, works, categories, items, index, instagram
               <ul className="grid gap-5 md:grid-cols-2">
                 {wide.map((w) => (
                   <li key={w.id} className={`work-card-enter ${w.featured ? "md:col-span-2" : ""}`}>
-                    <VideoCard w={w} label={labelOf(w.category)} onOpen={() => setOpen(w)} />
+                    <VideoCard w={w} label={labelOf(w.category)} onOpen={() => { setOpen(w); track("portfolio_open", { project: w.id, category: w.category, gallery: "video" }); }} />
                   </li>
                 ))}
               </ul>
