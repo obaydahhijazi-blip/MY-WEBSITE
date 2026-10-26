@@ -166,6 +166,7 @@ export function mergeSanityContent(local: SiteContent, data: Record<string, any>
       headline: str(t?.expertise?.title, local.expertise.headline),
       intro: str(t?.expertise?.description, local.expertise.intro),
       items: data.servicesCount
+        ? data.services.map((x: Raw) => ({ title: x!.title, description: x!.description ?? "", icon: (x!.icon || "content") as IconId }))
         : local.expertise.items,
     },
     process: {
