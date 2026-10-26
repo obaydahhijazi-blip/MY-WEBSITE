@@ -1706,3 +1706,114 @@ img {
     transform: none;
   }
 }
+
+
+/* ───────── Review fixes: Arabic typography, clean outlined digits, interactive statistics ───────── */
+/* Keep glyph ascenders, descenders and dots visible while the word reveal runs. */
+html[lang="ar"] .headline,
+html[lang="ar"] .journey-tab,
+html[lang="ar"] .journey-panel h3 {
+  overflow: visible;
+  line-height: 1.55;
+  padding-bottom: 0.12em;
+  text-rendering: optimizeLegibility;
+}
+html[lang="ar"] .headline .w {
+  overflow: visible;
+  vertical-align: baseline;
+  padding-block: 0.08em 0.2em;
+  margin-block: -0.08em -0.2em;
+}
+html[lang="ar"] .headline .w > span {
+  transform: translateY(0.27em);
+  opacity: 0;
+  transition: transform 0.8s var(--ease-out-soft), opacity 0.7s ease;
+}
+html[lang="ar"] .headline.words-in .w > span {
+  transform: none;
+  opacity: 1;
+}
+.journey-tab > span:last-child {
+  min-width: 0;
+  line-height: 1.65;
+  padding-block: 0.12em;
+}
+.journey-panel h3 {
+  line-height: 1.65;
+  padding-block: 0.08em 0.2em;
+  margin-block: -0.08em -0.2em;
+}
+/* Preserve the desktop number size, location and pale stroke but stop overlaps between glyphs. */
+.journey-big {
+  display: inline-flex;
+  direction: ltr;
+  letter-spacing: normal;
+  gap: 0.035em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  white-space: nowrap;
+}
+.journey-digit {
+  display: inline-block;
+  flex: none;
+  -webkit-text-stroke: 1px rgb(255 255 255 / 0.12);
+  paint-order: stroke fill;
+}
+
+.stats-band { overflow: visible; isolation: isolate; }
+.stats-grid[data-active] .stat-cell:not([data-hover-active]) .stat-toggle { opacity: 0.66; }
+.stat-cell { z-index: 0; transition: transform 280ms var(--ease-out-soft), background-color 280ms ease; }
+.stat-cell:hover, .stat-cell[data-hover-active] { z-index: 3; background: rgb(255 255 255 / 0.055); }
+.stat-cell[data-hover-active] { transform: translateY(-3px); }
+.stat-toggle { position: relative; min-height: 180px; transition: opacity 280ms ease; }
+.stat-toggle:focus-visible { outline: 2px solid var(--color-cyan); outline-offset: 5px; border-radius: 12px; }
+.stat-toggle .stat-icon { transition: transform 280ms ease, box-shadow 280ms ease, background 280ms ease; }
+.stat-cell[data-hover-active] .stat-icon { transform: translateY(-2px); box-shadow: 0 0 0 4px rgb(0 187 212 / 0.1), 0 0 20px rgb(0 187 212 / 0.16); }
+.stat-toggle .stat-value { display: block; transition: transform 280ms ease; }
+.stat-cell[data-hover-active] .stat-value { transform: translateY(-2px); }
+.stat-toggle .stat-label { display: block; }
+.stat-detail {
+  position: absolute;
+  z-index: 9;
+  top: calc(100% - 3px);
+  inset-inline-start: 10px;
+  width: min(370px, calc(100vw - 48px));
+  max-height: min(390px, 65vh);
+  overflow-y: auto;
+  padding: 20px 22px;
+  border: 1px solid rgb(0 187 212 / 0.38);
+  border-radius: 19px;
+  background: #063239;
+  box-shadow: 0 16px 45px rgb(0 15 18 / 0.36);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-7px);
+  transition: opacity 280ms ease, transform 280ms var(--ease-out-soft), visibility 280ms;
+  text-align: start;
+  color: #fff;
+}
+.stat-cell:last-child .stat-detail { inset-inline-start: auto; inset-inline-end: 10px; }
+.stat-detail[data-open] { opacity: 1; visibility: visible; pointer-events: auto; transform: none; }
+.stat-detail-title { font-weight: 700; font-size: 0.95rem; line-height: 1.8; margin-bottom: 12px; }
+.stat-detail-copy { font-size: 1rem; line-height: 1.95; font-weight: 600; }
+.stat-chip-list { display: flex; flex-wrap: wrap; gap: 7px; }
+.stat-chip { border: 1px solid rgb(0 187 212 / .35); background: rgb(0 187 212 / .1); padding: 5px 9px; border-radius: 999px; font-size: .83rem; }
+.stat-specialties { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 10px; }
+.stat-specialties li { display: flex; align-items: flex-start; gap: 7px; font-size: .8rem; line-height: 1.7; }
+.stat-career { display: grid; gap: 13px; border-inline-start: 1px solid rgb(0 187 212 / .5); padding-inline-start: 15px; }
+.stat-career li { display: grid; gap: 2px; position: relative; }
+.stat-career li:before { content: ""; position: absolute; inset-inline-start: -20px; top: 9px; border-radius: 999px; width: 9px; height: 9px; background: var(--color-cyan); }
+.stat-career span { font-size: .8rem; color: var(--color-cyan); }
+.stat-career strong { font-size: .9rem; font-weight: 600; line-height: 1.8; }
+@media (max-width: 767px) {
+  .stat-detail { width: min(340px, calc(100vw - 34px)); inset-inline-start: 2px; }
+  .stat-specialties { grid-template-columns: 1fr; }
+  .stat-toggle { min-height: 150px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stat-cell, .stat-toggle, .stat-icon, .stat-value, .stat-detail, .headline .w > span {
+    animation: none !important; transition: none !important; transform: none !important;
+  }
+  .headline .w > span { opacity: 1 !important; }
+}
