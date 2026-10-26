@@ -11,7 +11,6 @@ export const project = defineType({
   fields: [
     orderRankField({ type: "project" }),
     defineField({ name: "title", title: "اسم المشروع", type: "string", validation: (r) => r.required() }),
-    defineField({ name: "titleEn", title: "اسم المشروع بالإنجليزية (اختياري)", type: "string" }),
     defineField({ name: "slug", title: "المعرّف", type: "slug", options: { source: "title", maxLength: 80 }, validation: (r) => r.required() }),
     defineField({
       name: "category",
@@ -36,10 +35,8 @@ export const project = defineType({
       },
     }),
     defineField({ name: "client", title: "اسم العميل أو الجهة (اختياري — بعد موافقتها)", type: "string" }),
-    defineField({ name: "clientEn", title: "اسم العميل بالإنجليزية (اختياري)", type: "string" }),
     defineField({ name: "year", title: "السنة", type: "string", validation: (r) => r.regex(/^\d{4}$/).warning("أربعة أرقام، مثل 2025") }),
     defineField({ name: "summary", title: "وصف مختصر", type: "text", rows: 3, validation: (r) => r.max(320) }),
-    defineField({ name: "summaryEn", title: "وصف مختصر بالإنجليزية (اختياري)", type: "text", rows: 3, validation: (r) => r.max(320) }),
     defineField({ name: "featured", title: "مشروع مميز (يظهر بحجم أكبر)", type: "boolean", initialValue: false }),
     defineField({
       name: "cover",
@@ -123,7 +120,6 @@ export const testimonial = defineType({
   fields: [
     orderRankField({ type: "testimonial" }),
     defineField({ name: "quote", title: "نص الشهادة", type: "text", rows: 4, validation: (r) => r.required().max(500) }),
-    defineField({ name: "quoteEn", title: "نص الشهادة بالإنجليزية (اختياري، بعد موافقة العميل على الترجمة)", type: "text", rows: 4, validation: (r) => r.max(500) }),
     defineField({ name: "name", title: "اسم صاحب الشهادة (اختياري)", type: "string" }),
     defineField({ name: "role", title: "المنصب (اختياري)", type: "string" }),
     defineField({ name: "company", title: "الجهة (اختياري)", type: "string" }),
@@ -160,9 +156,7 @@ export const faqItem = defineType({
   fields: [
     orderRankField({ type: "faqItem" }),
     defineField({ name: "question", title: "السؤال", type: "string", validation: (r) => r.required() }),
-    defineField({ name: "questionEn", title: "السؤال بالإنجليزية (اختياري)", type: "string" }),
     defineField({ name: "answer", title: "الإجابة", type: "text", rows: 3, validation: (r) => r.required() }),
-    defineField({ name: "answerEn", title: "الإجابة بالإنجليزية (اختياري)", type: "text", rows: 3 }),
     defineField({ name: "published", title: "منشور", type: "boolean", initialValue: true }),
   ],
   preview: {
@@ -180,8 +174,6 @@ export const service = defineType({
     orderRankField({ type: "service" }),
     defineField({ name: "title", title: "العنوان", type: "string", validation: (r) => r.required() }),
     defineField({ name: "description", title: "الوصف", type: "text", rows: 2 }),
-    defineField({ name: "titleEn", title: "العنوان بالإنجليزية (اختياري)", type: "string" }),
-    defineField({ name: "descriptionEn", title: "الوصف بالإنجليزية (اختياري)", type: "text", rows: 2 }),
     defineField({ name: "icon", title: "الأيقونة", type: "string", options: { list: SERVICE_ICONS } }),
   ],
   preview: { select: { title: "title", subtitle: "description" } },
