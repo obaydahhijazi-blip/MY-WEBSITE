@@ -235,7 +235,6 @@ export function VideoSection({ video, works, categories, items, index, instagram
       </div>
 
         </div>
-        </div>
       </div>
       {open ? <WorkLightbox work={open} categoryLabel={labelOf(open.category)} similarCta={works.similarCta} onClose={() => setOpen(null)} /> : null}
     </section>
