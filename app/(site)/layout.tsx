@@ -26,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description: s.seoDescription,
     applicationName: s.nameAr,
     authors: [{ name: s.nameAr }],
-    alternates: { canonical: "/" },
+    alternates: { canonical: "/", languages: { ar: "/", en: "/en" } },
     openGraph: {
       type: "website",
       locale: "ar_AR",
