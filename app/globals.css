@@ -1932,3 +1932,11 @@ html[lang="ar"] .headline .w > span {
   .headline .w > span { opacity: 1 !important; transform: none !important; transition: none !important; }
   .journey-panel-body, .work-card-enter { animation: none !important; }
 }
+
+/* Slightly slower entrance, not slower buttons or scrolling. */
+.hero-enter { animation-duration: 1.5s; }
+.hero-portrait-enter { animation-duration: 1.9s; }
+.marquee-track { animation-duration: 68s; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-enter, .hero-portrait-enter { animation: none !important; }
+}
