@@ -1467,34 +1467,45 @@ img {
   display: grid;
   place-items: center;
   background: var(--color-petrol);
-  animation: intro-out 0.55s var(--ease-out-soft) 1.25s forwards;
+  animation: intro-out 0.5s var(--ease-out-soft) 1.32s forwards;
   pointer-events: none;
 }
+
 .logo-intro-mark {
-  width: min(42vw, 220px);
+  position: relative;
+  width: min(48vw, 230px);
+  aspect-ratio: 600 / 402;
   height: auto;
+  background: transparent;
+  overflow: visible;
 }
-.logo-intro-mark path {
-  fill: #fafaf8;
-  fill-opacity: 0;
-  stroke: var(--color-cyan);
-  stroke-width: 2;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation:
-    intro-draw 0.9s ease-in-out forwards,
-    intro-fill 0.35s ease 0.8s forwards;
+.logo-intro-ink,
+.logo-intro-glow {
+  position: absolute;
+  inset: 0;
+  display: block;
+  -webkit-mask: url("/images/brand/logo-white.webp") center / contain no-repeat;
+  mask: url("/images/brand/logo-white.webp") center / contain no-repeat;
+  pointer-events: none;
 }
-@keyframes intro-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
+.logo-intro-ink {
+  background: #fafaf8;
+  clip-path: inset(0 0 0 100%);
+  animation: intro-real-mark 1.12s cubic-bezier(.43,.02,.18,1) .08s forwards;
 }
-@keyframes intro-fill {
-  to {
-    fill-opacity: 1;
-    stroke-opacity: 0;
-  }
+.logo-intro-glow {
+  background: var(--color-cyan);
+  opacity: .75;
+  clip-path: inset(0 0 0 100%);
+  animation: intro-real-mark .96s cubic-bezier(.43,.02,.18,1) 0s forwards,
+             intro-glow-away .24s ease .95s forwards;
+}
+@keyframes intro-real-mark {
+  0% { clip-path: inset(0 0 0 100%); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+@keyframes intro-glow-away {
+  to { opacity: 0; }
 }
 @keyframes intro-out {
   to {
