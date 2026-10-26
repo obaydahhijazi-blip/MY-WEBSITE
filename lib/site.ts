@@ -1,4 +1,4 @@
-export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/+$/, "");
+export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || process.env.URL || "http://localhost:3000").replace(/\/+$/, "");
 
 /** Accepts "user/event" or a full Cal.com URL; returns the path the Cal embed expects. */
 export function normalizeCalLink(raw: string | undefined): string {

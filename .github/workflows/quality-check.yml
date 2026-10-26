@@ -1,7 +1,7 @@
 name: Verify website
 on:
   push:
-    branches: [feature/english-and-lead-analytics]
+    branches: [fix/complete-portfolio-review]
   pull_request:
     branches: [main]
 jobs:
@@ -42,4 +42,9 @@ jobs:
           curl --silent --show-error --fail http://127.0.0.1:3100/en/privacy -o /tmp/en-privacy.html
           grep -q "Working Terms" /tmp/en-terms.html
           grep -q "Privacy Policy" /tmp/en-privacy.html
+          OG_PATH=$(grep -oE "/opengraph-image-[a-zA-Z0-9]+" /tmp/ar.html | head -1)
+          test -n "$OG_PATH"
+          curl --silent --show-error --fail "http://127.0.0.1:3100$OG_PATH" -o /tmp/og-image.png
+          test "$(wc -c </tmp/og-image.png)" -gt 3000
+          grep -q "معاينة رسالة واتساب" /tmp/ar.html
           echo "All public routes respond correctly."

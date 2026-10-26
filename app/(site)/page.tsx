@@ -39,7 +39,7 @@ export default async function Home() {
   const designWorks = { ...content.works, categories: group("design"), items: content.works.items.filter((w) => ids("design").has(w.category)) };
   const videoItems = content.works.items.filter((w) => ids("video").has(w.category));
 
-  // Order: … process → request a quote → free consultation (last) → footer. Numbers follow what is rendered.
+  // Order: process → quote → consultation → FAQ → footer. Indices reflect the rendered order.
   const order = [
     "about",
     "clients",
@@ -47,10 +47,10 @@ export default async function Home() {
     "works",
     "video",
     ...(content.testimonials.items.length ? ["testimonials"] : []),
-    ...(content.faq.items.length ? ["faq"] : []),
     "process",
     "quote",
     "consultation",
+    ...(content.faq.items.length ? ["faq"] : []),
   ];
   const idx = (id: string) => String(order.indexOf(id) + 1).padStart(2, "0");
   const navigation = content.navigation.filter((n) => order.includes(n.id));
@@ -72,7 +72,7 @@ export default async function Home() {
           availability={availability}
         />
         <IdentityMarquee items={content.marquee} />
-        <BioSection about={content.about} index={idx("about")} demoMode={content.demoMode} servicesCount={content.expertise.items.length} />
+        <BioSection about={content.about} index={idx("about")} demoMode={content.demoMode} services={content.expertise.items} />
         <ClientLogoGrid clients={content.clients} index={idx("clients")} />
         <Expertise expertise={content.expertise} index={idx("expertise")} />
         <WorkSection works={designWorks} index={idx("works")} instagram={settings.instagram} instagramHandle={settings.instagramHandle} />
@@ -86,10 +86,10 @@ export default async function Home() {
           instagramHandle={settings.instagramHandle}
         />
         {content.testimonials.items.length ? <Testimonials testimonials={content.testimonials} index={idx("testimonials")} /> : null}
-        <FaqSection faq={content.faq} index={idx("faq")} />
         <ProcessTimeline process={content.process} index={idx("process")} />
         <QuoteSection quote={content.quote} whatsappNumber={settings.whatsappNumber} index={idx("quote")} />
         <BookingSection consultation={content.consultation} whatsappNumber={settings.whatsappNumber} index={idx("consultation")} />
+        <FaqSection faq={content.faq} index={idx("faq")} />
       </main>
       <ContactFooter content={content} navigation={navigation} />
       <FloatingWhatsApp href={contactHref} />

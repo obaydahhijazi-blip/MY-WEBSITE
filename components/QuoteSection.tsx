@@ -41,6 +41,9 @@ export function QuoteSection({ quote, whatsappNumber, index }: { quote: SiteCont
   const [errors, setErrors] = useState<Errors>({});
   const [href, setHref] = useState<string | null>(null);
   const [restored, setRestored] = useState(false);
+  const [extrasOpen, setExtrasOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [copyStatus, setCopyStatus] = useState("");
   const loaded = useRef(false);
 
   // Restore an unsent draft once, then keep saving changes (debounced).
@@ -89,20 +92,7 @@ export function QuoteSection({ quote, whatsappNumber, index }: { quote: SiteCont
     setHref(null);
   };
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const found: Errors = {};
-    if (f.name.trim().length < 2) found.name = "يرجى كتابة الاسم الكامل.";
-    if (!f.service) found.service = "يرجى اختيار نوع الخدمة المطلوبة.";
-    if (f.details.trim().length < 10) found.details = "يرجى كتابة وصف مختصر للمشروع ومتطلباته (عشرة أحرف على الأقل).";
-    if (f.link.trim() && !/^(https?:\/\/)?[^\s.]+\.[^\s]{2,}$/i.test(f.link.trim())) found.link = "يرجى كتابة رابط صحيح أو ترك الحقل فارغاً.";
-    if (f.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim())) found.email = "يرجى كتابة بريد إلكتروني صحيح أو ترك الحقل فارغاً.";
-    setErrors(found);
-    const first = Object.keys(found)[0];
-    if (first) {
-      formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
-      return;
-    }
+  const buildMessage = () => {
     const line = (label: string, v: string) => (v.trim() ? `${label}: ${v.trim()}` : "");
     const message = [
       "مرحباً عبيدة، أرغب في الحصول على عرض سعر لمشروعي.",
@@ -119,11 +109,28 @@ export function QuoteSection({ quote, whatsappNumber, index }: { quote: SiteCont
     ]
       .filter(Boolean)
       .join("\n");
+    return message;
+  };
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const found: Errors = {};
+    if (f.name.trim().length < 2) found.name = "يرجى كتابة الاسم الكامل.";
+    if (!f.service) found.service = "يرجى اختيار نوع الخدمة المطلوبة.";
+    if (f.details.trim().length < 10) found.details = "يرجى كتابة وصف مختصر للمشروع ومتطلباته (عشرة أحرف على الأقل).";
+    if (f.link.trim() && !/^(https?:\/\/)?[^\s.]+\.[^\s]{2,}$/i.test(f.link.trim())) found.link = "يرجى كتابة رابط صحيح أو ترك الحقل فارغاً.";
+    if (f.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim())) found.email = "يرجى كتابة بريد إلكتروني صحيح أو ترك الحقل فارغاً.";
+    setErrors(found);
+    const first = Object.keys(found)[0];
+    if (first) {
+      formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
+      return;
+    }
+    const message = buildMessage();
     const link = whatsappLink(whatsappNumber, message);
     setHref(link);
     track("quote_whatsapp_click", { service: f.service });
-    writeDraft(null);
-    setRestored(false);
+    // Do not discard an unsent draft: opening WhatsApp is not confirmation of sending.
     window.open(link, "_blank", "noopener,noreferrer");
   };
 
@@ -178,10 +185,6 @@ export function QuoteSection({ quote, whatsappNumber, index }: { quote: SiteCont
                 <input {...field("name")} type="text" autoComplete="name" required maxLength={80} />
                 {err("name")}
               </div>
-              <div className="field">
-                <label htmlFor={`${uid}-company`}>اسم الشركة أو الجهة {opt}</label>
-                <input {...field("company")} type="text" autoComplete="organization" maxLength={80} />
-              </div>
               <div className="field sm:col-span-2">
                 <label htmlFor={`${uid}-service`}>نوع الخدمة المطلوبة {req}</label>
                 <select {...field("service")} required>
@@ -202,6 +205,14 @@ export function QuoteSection({ quote, whatsappNumber, index }: { quote: SiteCont
                 {ref ? <p className="mt-2 text-xs text-cyan">مشروع مرجعي من المعرض: {ref}</p> : null}
                 {err("details")}
               </div>
+              <button type="button" className="sm:col-span-2 text-start text-sm font-semibold text-cyan underline underline-offset-4" onClick={() => setExtrasOpen(x => !x)} aria-expanded={extrasOpen}>
+                {extrasOpen ? "− إخفاء المعلومات الاختيارية" : "+ إضافة معلومات اختيارية"}
+              </button>
+              {extrasOpen ? <>
+              <div className="field">
+                <label htmlFor={`${uid}-company`}>اسم الشركة أو الجهة {opt}</label>
+                <input {...field("company")} type="text" autoComplete="organization" maxLength={80} />
+              </div>
               <div className="field sm:col-span-2">
                 <label htmlFor={`${uid}-link`}>رابط مرجعي أو مثال يعجبك {opt}</label>
                 <input {...field("link")} type="url" inputMode="url" maxLength={300} dir="ltr" placeholder="https://" />
@@ -221,6 +232,21 @@ export function QuoteSection({ quote, whatsappNumber, index }: { quote: SiteCont
                 {err("email")}
               </div>
 
+
+              </> : null}
+              <div className="sm:col-span-2 rounded-2xl border border-white/15 bg-white/5 p-4">
+                <button type="button" className="text-sm font-semibold text-cyan underline underline-offset-4" aria-expanded={previewOpen} onClick={() => setPreviewOpen(x => !x)}>
+                  {previewOpen ? "إخفاء معاينة رسالة واتساب" : "معاينة رسالة واتساب قبل إرسال الطلب"}
+                </button>
+                {previewOpen ? <div className="mt-4 grid gap-3">
+                  <textarea readOnly rows={9} dir="rtl" aria-label="معاينة رسالة واتساب" value={buildMessage()} className="w-full rounded-xl border border-white/20 bg-petrol/40 p-3 text-sm leading-7 text-white/90" />
+                  <button type="button" className="justify-self-start rounded-full border border-cyan/50 px-4 py-2 text-sm text-cyan hover:bg-cyan/10" onClick={async () => {
+                    try { await navigator.clipboard.writeText(buildMessage()); setCopyStatus("تم نسخ الرسالة."); }
+                    catch { setCopyStatus("تعذّر النسخ التلقائي. يمكنك تحديد النص ونسخه يدوياً."); }
+                  }}>نسخ رسالة الطلب</button>
+                  {copyStatus ? <p role="status" className="text-xs text-white/70">{copyStatus}</p> : null}
+                </div> : null}
+              </div>
               <div className="sm:col-span-2">
                 <button type="submit" className="btn btn-primary w-full !min-h-14 text-[1.05rem]">
                   <WhatsAppIcon className="size-5" />

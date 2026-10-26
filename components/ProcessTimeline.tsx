@@ -145,7 +145,8 @@ export function ProcessTimeline({ process, index }: { process: SiteContent["proc
           >
             <div key={active} className="journey-panel-body">
               <span className="journey-big font-latin" aria-hidden="true">
-                {String(active + 1).padStart(2, "0")}
+                <span className="journey-num-desktop">{String(active + 1).padStart(2, "0").split("").map((digit, index) => <span key={index} className="journey-digit">{digit}</span>)}</span>
+                <span className="journey-num-mobile">{String(active + 1).padStart(2, "0")}</span>
               </span>
               <span className="journey-icon" aria-hidden="true">
                 <LineIcon name={step.icon} className="size-8" />
