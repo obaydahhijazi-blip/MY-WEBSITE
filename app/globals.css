@@ -1872,3 +1872,35 @@ html[lang="ar"] .headline .w > span {
 @media (prefers-reduced-motion: reduce) {
   .hero-enter, .hero-portrait-enter { animation: none !important; }
 }
+
+/* ───────── Website scrollbar: restrained cyan accent on a light track ─────────
+ * Root vertical scrollbar only. Internal galleries, dialogs and embeds retain
+ * their own scrolling behaviour. Touch devices keep the OS-native scrollbar.
+ */
+@media (hover: hover) and (pointer: fine) {
+  html::-webkit-scrollbar {
+    width: 7px;
+  }
+  html::-webkit-scrollbar-track {
+    background: #edf2f1;
+  }
+  html::-webkit-scrollbar-thumb {
+    background: #008a9b;
+    border-radius: 999px;
+    border: 1px solid #edf2f1;
+  }
+  html::-webkit-scrollbar-thumb:hover {
+    background: #00bbd4;
+  }
+  html::-webkit-scrollbar-thumb:active {
+    background: #006f7c;
+  }
+
+  /* Firefox uses its standardized thin scrollbar implementation. */
+  @supports (-moz-appearance: none) {
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: #008a9b #edf2f1;
+    }
+  }
+}
