@@ -224,8 +224,8 @@ export function EnglishPortfolio({ content }: Props) {
       </div>
       <span className="block p-5">
         <span className="text-xs uppercase tracking-widest text-cyan-ink">{CATEGORIES[w.category] || "Selected work"}</span>
-        <span className="mt-2 block text-xl font-semibold text-ink" dir="auto">{w.title}</span>
-        {w.client ? <span className="mt-2 block text-sm text-muted" dir="auto">{w.client}</span> : null}
+        <span className="mt-2 block text-xl font-semibold text-ink" dir="auto">{w.titleEn || w.title}</span>
+        {w.client ? <span className="mt-2 block text-sm text-muted" dir="auto">{w.clientEn || w.client}</span> : null}
         <span className="mt-4 block text-sm font-medium text-teal">View project →</span>
       </span>
     </button>
@@ -313,8 +313,10 @@ export function EnglishPortfolio({ content }: Props) {
           <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {content.expertise.items.map((s, i) => {
               const info = SERVICES[s.icon] || { title: s.title, description: s.description };
+              const title = s.titleEn || info.title;
+              const description = s.descriptionEn || info.description;
               return <div key={i} className="group rounded-2xl border border-white/15 bg-white/5 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-cyan/70 hover:bg-white/10">
-                <span className="text-xs tracking-widest text-cyan">0{i + 1}</span><h3 className="mt-6 text-xl font-semibold">{info.title}</h3><p className="mt-3 text-sm leading-7 text-white/65">{info.description}</p>
+                <span className="text-xs tracking-widest text-cyan">0{i + 1}</span><h3 className="mt-6 text-xl font-semibold">{title}</h3><p className="mt-3 text-sm leading-7 text-white/65">{description}</p>
               </div>;
             })}
           </div>
@@ -345,7 +347,7 @@ export function EnglishPortfolio({ content }: Props) {
         {content.testimonials.items.length ? section("testimonials", "bg-petrol text-white", <>
           {sectionLabel(6, "Client feedback")}<h2 className="font-latin text-4xl font-semibold">Words from collaborators</h2>
           <div className="mt-8 grid gap-5 md:grid-cols-2">{content.testimonials.items.map(t => <blockquote key={t.id} className="rounded-2xl border border-white/15 bg-white/5 p-8">
-            <p className="text-lg leading-8" dir="auto">“{t.quote}”</p><footer className="mt-5 text-sm text-cyan" dir="auto">{t.name || t.company}</footer>
+            <p className="text-lg leading-8" dir="auto">“{t.quoteEn || t.quote}”</p><footer className="mt-5 text-sm text-cyan" dir="auto">{t.name || t.company}</footer>
           </blockquote>)}</div>
         </>) : null}
 
@@ -365,7 +367,7 @@ export function EnglishPortfolio({ content }: Props) {
           {sectionLabel(8, "Before we begin")}
           <h2 className="font-latin text-4xl font-semibold">Frequently asked questions & working terms</h2>
           <div className="mt-9 grid gap-3">
-            {FAQ.map(([question, answer]) => <details key={question} className="group rounded-xl border border-line bg-white px-6 py-5">
+            {FAQ.concat(content.faq.items.filter(x => x.questionEn && x.answerEn && !FAQ.some(([q]) => q === x.questionEn)).map(x => [x.questionEn!, x.answerEn!] as string[])).map(([question, answer]) => <details key={question} className="group rounded-xl border border-line bg-white px-6 py-5">
               <summary className="cursor-pointer list-none font-semibold marker:hidden">{question} <span className="float-right text-cyan-ink group-open:rotate-45">+</span></summary>
               <p className="mt-4 text-sm leading-7 text-muted">{answer}</p>
             </details>)}
@@ -393,12 +395,12 @@ export function EnglishPortfolio({ content }: Props) {
       {activeWork ? <div role="dialog" aria-modal="true" aria-label="Project preview" className="fixed inset-0 z-[80] grid place-items-center bg-petrol/95 p-4" onMouseDown={e => { if (e.target === e.currentTarget) setActiveWork(null); }}>
         <div className="flex max-h-[92dvh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white">
           <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-3">
-            <h2 className="min-w-0 truncate text-lg font-semibold text-ink" dir="auto">{activeWork.title}</h2>
+            <h2 className="min-w-0 truncate text-lg font-semibold text-ink" dir="auto">{activeWork.titleEn || activeWork.title}</h2>
             <button type="button" onClick={() => setActiveWork(null)} className="rounded-full p-2 text-ink hover:bg-paper-2" aria-label="Close project">✕</button>
           </div>
           <div className="min-h-0 overflow-y-auto p-4">
             {activeWork.media.length && activeWork.media[mediaIndex]?.type === "video" ? <video src={activeWork.media[mediaIndex].src} poster={activeWork.media[mediaIndex].type === "video" ? activeWork.media[mediaIndex].poster?.src : undefined} controls playsInline className="mx-auto max-h-[65dvh] w-full object-contain" /> :
-              <Image src={activeWork.media[mediaIndex]?.type === "image" ? activeWork.media[mediaIndex].src : activeWork.cover.src} alt={activeWork.title} width={activeWork.cover.width} height={activeWork.cover.height} className="mx-auto max-h-[65dvh] w-auto object-contain" />}
+              <Image src={activeWork.media[mediaIndex]?.type === "image" ? activeWork.media[mediaIndex].src : activeWork.cover.src} alt={activeWork.titleEn || activeWork.title} width={activeWork.cover.width} height={activeWork.cover.height} className="mx-auto max-h-[65dvh] w-auto object-contain" />}
             <div className="mt-4 flex items-center justify-between">
               <p className="text-sm text-muted">{mediaIndex + 1} / {Math.max(activeWork.media.length, 1)}</p>
               {activeWork.media.length > 1 ? <div className="flex gap-2">
@@ -406,7 +408,7 @@ export function EnglishPortfolio({ content }: Props) {
                 <button type="button" className="rounded-full border border-line px-4 py-2" onClick={() => setMediaIndex((mediaIndex + 1) % activeWork.media.length)} aria-label="Next image">→</button>
               </div> : null}
             </div>
-            {activeWork.summary ? <p className="mt-4 text-ink-2" dir="auto">{activeWork.summary}</p> : null}
+            {activeWork.summary ? <p className="mt-4 text-ink-2" dir="auto">{activeWork.summaryEn || activeWork.summary}</p> : null}
             <a href="#quote" className={btn + " mt-5 bg-petrol text-white"} onClick={() => { track("similar_project_click", { project: activeWork.id, category: activeWork.category, language: "en" }); setActiveWork(null); }}>Request a similar project</a>
           </div>
         </div>
