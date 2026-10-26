@@ -106,7 +106,6 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music }: Props) 
 
         <div className="flex items-center gap-1.5 sm:gap-2">
           {music?.src ? <MusicToggle {...music} /> : null}
-          <a href="/en" lang="en" dir="ltr" data-track="language_switch" data-track-language="en" data-track-location="header" className="inline-flex size-10 items-center justify-center rounded-full border border-current/25 font-latin text-xs font-semibold hover:border-cyan hover:text-cyan" aria-label="Switch to English">EN</a>
           <a href="#quote" className="btn btn-primary hidden !min-h-11 !px-5 text-[0.9rem] md:inline-flex">
             {ctaLabel}
           </a>
