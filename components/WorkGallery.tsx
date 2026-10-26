@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { WorkLightbox } from "@/components/WorkLightbox";
 import { ArrowIcon, InstagramIcon, PlayIcon } from "@/components/icons";
 import type { SiteContent, Work } from "@/lib/cms/types";
+import { track } from "@/lib/analytics";
 
 type Props = { works: SiteContent["works"]; instagram: string; instagramHandle: string };
 
@@ -45,7 +46,7 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
       <div className="reveal -mx-4 mt-12 sm:mx-0" data-lenis-prevent>
         <div role="group" aria-label="تصفية الأعمال حسب التصنيف" className="work-tabs flex gap-2 overflow-x-auto px-4 pb-2 sm:flex-wrap sm:overflow-visible sm:px-0">
           {tabs.map((t) => (
-            <button key={t.id} type="button" aria-pressed={filter === t.id} onClick={() => setFilter(t.id)} className="work-tab">
+            <button key={t.id} type="button" aria-pressed={filter === t.id} onClick={() => { setFilter(t.id); track("portfolio_filter", { category: t.id, gallery: "design" }); }} className="work-tab">
               {t.label}
               {works.items.length > 0 ? <span className="font-latin text-[0.72rem] opacity-60">{t.count}</span> : null}
             </button>
@@ -74,7 +75,7 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
           {featured.map((w) => {
             const hasVideo = w.media.some((m) => m.type === "video");
             return (
-              <button key={w.id} type="button" onClick={() => setOpen(w)} className="work-feature work-card-enter group" data-cursor="عرض" aria-label={`عرض مشروع «${w.title}»`}>
+              <button key={w.id} type="button" onClick={() => { setOpen(w); track("portfolio_open", { project: w.id, category: w.category, gallery: "design" }); }} className="work-feature work-card-enter group" data-cursor="عرض" aria-label={`عرض مشروع «${w.title}»`}>
                 <span className="work-feature-media">
                   <Image
                     src={w.cover.src}
@@ -113,7 +114,7 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
                 const hasVideo = w.media.some((m) => m.type === "video");
                 return (
                   <li key={w.id} className="work-card-enter">
-                    <button type="button" onClick={() => setOpen(w)} className="work-card group block w-full text-start" data-cursor="عرض" aria-label={`عرض مشروع «${w.title}»`}>
+                    <button type="button" onClick={() => { setOpen(w); track("portfolio_open", { project: w.id, category: w.category, gallery: "design" }); }} className="work-card group block w-full text-start" data-cursor="عرض" aria-label={`عرض مشروع «${w.title}»`}>
                       <span className="relative block overflow-hidden rounded-2xl border border-line bg-paper-2">
                         <Image
                           src={w.cover.src}
