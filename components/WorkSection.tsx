@@ -4,7 +4,7 @@ import type { SiteContent } from "@/lib/cms/types";
 
 export function WorkSection({ works, index, instagram, instagramHandle }: { works: SiteContent["works"]; index: string; instagram: string; instagramHandle: string }) {
   return (
-    <section id="works" className="section border-t border-line bg-paper" aria-labelledby="works-title">
+    <section id="works" className="section border-t border-line bg-white" aria-labelledby="works-title">
       <div className="container-x">
         <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
           <SectionHeading index={index} label={works.label} id="works-title" title={works.title} className="lg:col-span-6" />

@@ -6,7 +6,6 @@ import { WorkLightbox } from "@/components/WorkLightbox";
 import { ArrowIcon, InstagramIcon, PlayIcon } from "@/components/icons";
 import type { Category, SiteContent, VideoAsset, Work } from "@/lib/cms/types";
 import { track } from "@/lib/analytics";
-import { FloatingDesignFiles } from "@/components/FloatingDesignFiles";
 
 type Props = {
   video: SiteContent["video"];
@@ -140,28 +139,26 @@ export function VideoSection({ video, works, categories, items, index, instagram
   const tabs = [{ id: "all", label: video.allLabel, count: items.length }, ...categories.map((c) => ({ ...c, count: counts.get(c.id) ?? 0 }))];
 
   return (
-    <section id="video" className="section relative overflow-hidden bg-petrol text-white" aria-labelledby="video-title">
-      <div className="pointer-events-none absolute -top-40 left-[12%] size-[30rem] rounded-full bg-teal blur-3xl" aria-hidden="true" />
-      <FloatingDesignFiles files={["PRPROJ", "AEP"]} placement="video" />
+    <section id="video" className="section relative bg-white text-ink" aria-labelledby="video-title">
       <div className="container-x relative">
         <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
           <header className="reveal lg:col-span-6">
-            <p className="section-index !text-white/60">
-              <span className="num !text-cyan">{index}</span>
+            <p className="section-index">
+              <span className="num">{index}</span>
               <span className="rule" aria-hidden="true" />
               <span>{video.label}</span>
             </p>
-            <h2 id="video-title" className="headline mt-6 text-[clamp(1.9rem,4.2vw,3.25rem)] text-white">
+            <h2 id="video-title" className="headline mt-6 text-[clamp(1.9rem,4.2vw,3.25rem)] text-ink">
               {video.title}
             </h2>
           </header>
-          <p className="reveal text-[1.05rem] leading-9 text-white/70 lg:col-span-5 lg:col-start-8">{video.description}</p>
+          <p className="reveal text-[1.05rem] leading-9 text-muted lg:col-span-5 lg:col-start-8">{video.description}</p>
         </div>
 
         <div className="reveal -mx-4 mt-12 sm:mx-0">
           <div role="group" aria-label="تصفية أعمال الفيديو" className="work-tabs flex gap-2 overflow-x-auto px-4 pb-2 sm:flex-wrap sm:overflow-visible sm:px-0">
             {tabs.map((t) => (
-              <button key={t.id} type="button" aria-pressed={filter === t.id} onClick={() => { setFilter(t.id); track("portfolio_filter", { category: t.id, gallery: "video" }); }} className="work-tab is-dark">
+              <button key={t.id} type="button" aria-pressed={filter === t.id} onClick={() => { setFilter(t.id); track("portfolio_filter", { category: t.id, gallery: "video" }); }} className="work-tab">
                 {t.label}
                 {items.length > 0 ? <span className="font-latin text-[0.72rem] opacity-60">{t.count}</span> : null}
               </button>
@@ -170,10 +167,10 @@ export function VideoSection({ video, works, categories, items, index, instagram
         </div>
 
         {items.length === 0 ? (
-          <div className="reveal mt-10 flex flex-col gap-5 rounded-3xl border border-dashed border-white/15 px-6 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-10">
+          <div className="reveal mt-10 flex flex-col gap-5 rounded-3xl border border-dashed border-line px-6 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-10">
             <div>
               <p className="font-bold">{video.emptyTitle}</p>
-              <p className="mt-1 text-sm leading-7 text-white/65">{video.emptyBody}</p>
+              <p className="mt-1 text-sm leading-7 text-muted">{video.emptyBody}</p>
             </div>
             <a href={instagram} target="_blank" rel="noopener noreferrer" className="btn btn-ghost-light !min-h-12 shrink-0">
               <InstagramIcon />
@@ -182,7 +179,7 @@ export function VideoSection({ video, works, categories, items, index, instagram
             </a>
           </div>
         ) : visible.length === 0 ? (
-          <p className="mt-10 rounded-2xl border border-dashed border-white/15 p-8 text-center text-white/65" role="status">
+          <p className="mt-10 rounded-2xl border border-dashed border-white/15 p-8 text-center text-muted" role="status">
             {works.emptyCategory}
           </p>
         ) : (
@@ -190,10 +187,10 @@ export function VideoSection({ video, works, categories, items, index, instagram
             {reels.length ? (
               <div>
                 <div className="mb-5 flex items-center justify-between gap-4">
-                  <p className="text-sm text-white/55">{video.hint}</p>
+                  <p className="text-sm text-muted">{video.hint}</p>
                   {reels.length > 3 ? (
                     <div className="hidden gap-2 sm:flex">
-                      <button type="button" className="journey-arrow" onClick={() => scrollReels(-1)} aria-label="الريلز السابقة">
+                      <button type="button" className="journey-arrow gallery-arrow" onClick={() => scrollReels(-1)} aria-label="الريلز السابقة">
                         <ArrowIcon direction="right" />
                       </button>
                       <button type="button" className="journey-arrow" onClick={() => scrollReels(1)} aria-label="الريلز التالية">
@@ -222,9 +219,9 @@ export function VideoSection({ video, works, categories, items, index, instagram
               </ul>
             ) : null}
 
-            <div className="flex flex-col items-start gap-4 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-[1.02rem] text-white/80">تحتاج إلى ريلز أو إعلان مرئي لعلامتك؟</p>
-              <a href="#quote" className="btn btn-primary !min-h-12">
+            <div className="flex flex-col items-start gap-4 border-t border-line pt-8 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-[1.02rem] text-ink-2">تحتاج إلى ريلز أو إعلان مرئي لعلامتك؟</p>
+              <a href="#quote" className="btn btn-dark !min-h-12">
                 اطلب عرض سعر
               </a>
             </div>
