@@ -11,7 +11,7 @@ export type IconId =
 
 /** value null = not confirmed yet → hidden on the public site. */
 export type Stat = { value: number | null; suffix: string; label: string; mapLink: boolean; icon: IconId };
-export type Service = { title: string; description: string; icon: IconId };
+export type Service = { title: string; description: string; icon: IconId; titleEn?: string; descriptionEn?: string };
 export type ProcessStep = Service;
 export type Category = { id: string; label: string; group: "design" | "video" };
 
@@ -20,10 +20,13 @@ export type Client = { name: string; logo: ImageAsset; href?: string; demo?: boo
 export type Work = {
   id: string;
   title: string;
+  titleEn?: string;
   category: string;
   client?: string;
+  clientEn?: string;
   year?: string;
   summary?: string;
+  summaryEn?: string;
   featured: boolean;
   cover: ImageAsset;
   media: MediaItem[];
@@ -32,8 +35,8 @@ export type Work = {
   orientation?: "portrait" | "landscape" | "square";
 };
 
-export type Testimonial = { id: string; quote: string; name?: string; role?: string; company?: string; logo?: ImageAsset; demo?: boolean };
-export type FaqItem = { question: string; answer: string };
+export type Testimonial = { id: string; quote: string; quoteEn?: string; name?: string; role?: string; company?: string; logo?: ImageAsset; demo?: boolean };
+export type FaqItem = { question: string; answer: string; questionEn?: string; answerEn?: string };
 export type LegalPage = { title: string; intro: string; sections: { heading: string; body: string }[]; note: string };
 
 export type SiteContent = {
