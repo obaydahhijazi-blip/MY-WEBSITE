@@ -53,14 +53,11 @@ export function mergeSanityContent(local: SiteContent, data: Record<string, any>
       return {
         id: str(p.id, p.title),
         title: p.title,
-        titleEn: p.titleEn || undefined,
         category: p.category === "film" ? "ads" : p.category, // legacy «التصوير والمونتاج»
         orientation: p.orientation || orientationOf(cover),
         client: p.client || undefined,
-        clientEn: p.clientEn || undefined,
         year: p.year || undefined,
         summary: p.summary || undefined,
-        summaryEn: p.summaryEn || undefined,
         featured: Boolean(p.featured),
         demo: Boolean(p.demo),
         cover: { ...cover, alt: cover.alt || p.title },
@@ -74,7 +71,6 @@ export function mergeSanityContent(local: SiteContent, data: Record<string, any>
     .map((x: Raw) => ({
       id: x!.id,
       quote: x!.quote,
-      quoteEn: x!.quoteEn || undefined,
       name: x!.name || undefined,
       role: x!.role || undefined,
       company: x!.company || undefined,
@@ -170,7 +166,7 @@ export function mergeSanityContent(local: SiteContent, data: Record<string, any>
       headline: str(t?.expertise?.title, local.expertise.headline),
       intro: str(t?.expertise?.description, local.expertise.intro),
       items: data.servicesCount
-        ? data.services.map((x: Raw) => ({ title: x!.title, titleEn: x!.titleEn || undefined, description: x!.description ?? "", descriptionEn: x!.descriptionEn || undefined, icon: (x!.icon || "content") as IconId }))
+        ? data.services.map((x: Raw) => ({ title: x!.title, description: x!.description ?? "", icon: (x!.icon || "content") as IconId }))
         : local.expertise.items,
     },
     process: {

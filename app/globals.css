@@ -1811,3 +1811,132 @@ html[lang="ar"] .headline.words-in .w > span {
   }
   .headline .w > span { opacity: 1 !important; }
 }
+
+
+/* ───────── Arabic-only visual refinements | October 2026 ───────── */
+/* The free-consultation underline must clear all Arabic descenders and dots. */
+#consultation .free-mark {
+  display: inline-block;
+  position: relative;
+  padding-bottom: .18em;
+  line-height: 1.55;
+  isolation: isolate;
+}
+#consultation .free-mark::after {
+  inset-inline: .02em;
+  bottom: -.025em;
+  height: .075em;
+  z-index: -1;
+  opacity: .92;
+}
+#consultation .headline { overflow: visible; padding-bottom: .24em; }
+
+/* Keep the page white, giving each dark portfolio panel an intentional boundary. */
+.section-framed {
+  padding-block: clamp(44px, 5vw, 82px);
+  background: var(--color-paper);
+}
+.cinematic-panel {
+  background:
+    radial-gradient(90% 90% at 0% 98%, rgb(0 187 212 / .085), transparent 70%),
+    linear-gradient(145deg, #00313A 0%, #001E25 82%);
+  border: 1px solid rgb(0 187 212 / .15);
+  border-radius: clamp(24px, 3vw, 40px);
+  box-shadow: 0 24px 60px -42px rgb(0 30 37 / .25);
+  padding: clamp(28px, 4.4vw, 76px);
+}
+.section-framed + .section-framed { padding-top: clamp(52px, 6vw, 96px); }
+.process-cinematic { min-height: 0; }
+.process-ambient { position: absolute; inset: 0; pointer-events: none; overflow: hidden; opacity: .55; }
+.process-ambient span { position: absolute; display: block; border: 1px solid rgb(0 187 212 / .19); border-radius: 50%; }
+.process-ambient span:nth-child(1) { width: 44%; aspect-ratio: 1; top: -39%; left: -14%; animation: ambient-breathe 17s ease-in-out infinite alternate; }
+.process-ambient span:nth-child(2) { width: 34%; aspect-ratio: 1; bottom: -27%; right: -17%; animation: ambient-breathe 20s ease-in-out -4s infinite alternate-reverse; }
+.process-ambient span:nth-child(3) { width: 160px; aspect-ratio: 1; top: 27%; left: 43%; border-style: dashed; opacity: .26; animation: ambient-orbit 35s linear infinite; }
+@keyframes ambient-breathe { from { transform: translate3d(0,0,0) scale(.92); opacity: .3; } to { transform: translate3d(15px,-14px,0) scale(1.1); opacity: .9; } }
+@keyframes ambient-orbit { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+/* Fallback to translucent FILL: CSS text-stroke creates doubled lines on the "1" glyph. */
+.journey-big, .journey-digit {
+  -webkit-text-stroke: 0 !important;
+  color: rgb(255 255 255 / .085);
+  paint-order: normal;
+}
+.journey-big { line-height: 1; }
+.journey-num-desktop { gap: .035em; }
+
+/* Floating objects depict actual document files (folded sheet), not program badges. */
+.floating-design-files {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+  --file-px: 0px;
+  --file-py: 0px;
+}
+.design-file {
+  position: absolute;
+  display: block;
+  width: clamp(65px, 7.2vw, 107px);
+  filter: drop-shadow(12px 19px 15px rgb(0 10 14 / .3));
+  transform: translate3d(var(--file-px), var(--file-py), 0);
+  transition: transform 1.3s cubic-bezier(.2,.7,.2,1);
+  opacity: .86;
+}
+.design-file-float {
+  display: block;
+  width: 100%;
+  transform: perspective(490px) rotateY(-13deg) rotateX(8deg) rotateZ(-6deg);
+  transform-style: preserve-3d;
+  animation: document-float 10s ease-in-out infinite alternate;
+}
+.design-file svg { display: block; width: 100%; height: auto; overflow: visible; }
+@keyframes document-float {
+  0% { transform: translate3d(0,0,0) perspective(490px) rotateY(-13deg) rotateX(8deg) rotateZ(-6deg); }
+  100% { transform: translate3d(0,-13px,0) perspective(490px) rotateY(-6deg) rotateX(4deg) rotateZ(1deg); }
+}
+.floating-design-hero { z-index: 4; }
+.floating-design-hero .design-file-1 { --file-depth: 1.2; top: 21%; left: 5%; width: clamp(65px,6.8vw,96px); }
+.floating-design-video .design-file-1 { --file-depth: .8; top: 18px; left: 14px; opacity: .52; }
+.floating-design-video .design-file-2 { --file-depth: 1.1; bottom: 7px; right: 17px; opacity: .62; }
+.floating-design-video .design-file-2 .design-file-float { animation-delay: -4s; }
+.floating-design-process .design-file-1 { --file-depth: .75; top: 16px; left: 18px; opacity: .33; }
+.floating-design-process .design-file-1 .design-file-float { animation-delay: -2s; }
+@media (max-width: 1023.98px) {
+  .floating-design-hero { display: none; }
+  .floating-design-video .design-file, .floating-design-process .design-file { opacity: .24; width: 72px; }
+}
+@media (max-width: 639.98px) {
+  .cinematic-panel { padding: 26px 20px; }
+  .floating-design-video .design-file, .floating-design-process .design-file { display: none; }
+}
+
+/* Calm, recognizable entrance animations; links and hover actions remain responsive. */
+.reveal {
+  transition-duration: 1.3s, 1.3s;
+  transform: translateY(23px);
+}
+.headline .w > span {
+  transition-duration: 1.3s, 1.15s;
+  transition-delay: calc(var(--wi) * 90ms);
+}
+html[lang="ar"] .headline .w > span {
+  transition-duration: 1.3s, 1.15s;
+  transition-delay: calc(var(--wi) * 90ms);
+}
+.journey-panel-body { animation-duration: 1.05s; }
+.work-card-enter { animation-duration: 1.15s; }
+@media (prefers-reduced-motion: reduce) {
+  .floating-design-files, .process-ambient { display: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .headline .w > span { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .journey-panel-body, .work-card-enter { animation: none !important; }
+}
+
+/* Slightly slower entrance, not slower buttons or scrolling. */
+.hero-enter { animation-duration: 1.5s; }
+.hero-portrait-enter { animation-duration: 1.9s; }
+.marquee-track { animation-duration: 68s; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-enter, .hero-portrait-enter { animation: none !important; }
+}

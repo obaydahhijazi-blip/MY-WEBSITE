@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { ArrowIcon } from "@/components/icons";
+import { FloatingDesignFiles } from "@/components/FloatingDesignFiles";
 
 type Props = {
   eyebrow: string;
@@ -161,6 +162,7 @@ export function HeroScene(props: Props) {
         </div>
       </div>
       <div className="hero-vignette" aria-hidden="true" />
+      <FloatingDesignFiles files={["AI"]} placement="hero" />
 
       {/* Mobile / tablet: separate static composition */}
       <div className="hero-mobile-art" aria-hidden="true">
