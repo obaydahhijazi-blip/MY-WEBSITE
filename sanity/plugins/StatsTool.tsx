@@ -111,18 +111,38 @@ export function StatsTool() {
             {ANALYTICS_ON ? (
               <p style={{ margin: 0 }}>
                 تُسجَّل الزيارات والأحداث التالية في Umami: <code>whatsapp_click</code> (تواصل عام)، <code>consultation_whatsapp_click</code> (الاستشارة المجانية)،{" "}
-                <code>quote_whatsapp_click</code> (طلب عرض سعر)، <code>calendar_open</code>، <code>similar_project_click</code>.
+                <code>quote_whatsapp_click</code> (طلب عرض سعر)، <code>calendar_open</code>، <code>similar_project_click</code>، <code>portfolio_open</code> (فتح مشروع)، <code>portfolio_filter</code> (اختيار تصنيف)، <code>language_switch</code> (تغيير اللغة).
               </p>
             ) : (
               <p style={{ margin: 0 }}>
                 لا تُعرض أرقام زيارات قبل ربط أداة تحليلات حقيقية. راجع الملف <code>docs/ANALYTICS_AR.md</code> لإعداد Umami (مجاني) خلال دقائق.
               </p>
             )}
-            <p style={{ margin: 0, fontSize: 13, color: C.muted }}>النقرة على زر واتساب تعني فتح المحادثة فقط، ولا تعني أن الطلب أُرسل أو أن عميلاً جديداً تأكد.</p>
-            {ANALYTICS_URL ? (
+            <div style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
+              <div style={{ padding: 14, borderRadius: 12, background: "#f1f3f1" }}>
+                <strong>مصادر العملاء المحتملين</strong>
+                <p style={{ margin: "6px 0 0", fontSize: 13, color: C.muted }}>من Umami ← Referrers وUTM. تسجَّل وسوم المصدر والحملة مع الضغطات عند توفرها.</p>
+              </div>
+              <div style={{ padding: 14, borderRadius: 12, background: "#f1f3f1" }}>
+                <strong>الأعمال الأكثر جذباً للاهتمام</strong>
+                <p style={{ margin: "6px 0 0", fontSize: 13, color: C.muted }}>Umami ← Events ← portfolio_open، ثم تصفية اسم المشروع (project) والتصنيف.</p>
+              </div>
+              <div style={{ padding: 14, borderRadius: 12, background: "#f1f3f1" }}>
+                <strong>أزرار التواصل الأكثر استخداماً</strong>
+                <p style={{ margin: "6px 0 0", fontSize: 13, color: C.muted }}>قارن أحداث واتساب العام وطلب السعر والاستشارة والتقويم، وافصل النتائج حسب اللغة (ar/en).</p>
+              </div>
+            </div>
+            <p style={{ margin: 0, fontSize: 13, color: C.muted }}>النقرة على زر واتساب أو مشروع ليست رسالة مُرسلة أو عميلاً مؤكداً. لا تُرسل أي بيانات شخصية أو نصوص النماذج للتحليلات.</p>
+            {ANALYTICS_URL && ANALYTICS_URL.startsWith("https://") ? (
               <a href={ANALYTICS_URL} target="_blank" rel="noopener noreferrer" style={{ justifySelf: "start", background: C.teal, color: "#fff", borderRadius: 999, padding: "10px 18px", textDecoration: "none", fontWeight: 600 }}>
                 فتح لوحة الزيارات
               </a>
+            ) : null}
+            {ANALYTICS_URL && ANALYTICS_URL.startsWith("https://") ? (
+              <div style={{ border: "1px solid " + C.line, borderRadius: 12, overflow: "hidden", background: "#fff" }}>
+                <p style={{ padding: "10px 14px", margin: 0, color: C.muted, fontSize: 12 }}>عرض بيانات Umami المشتركة (للقراءة فقط). إذا حجبت الخدمة التضمين، استخدم زر «فتح لوحة الزيارات» بالأعلى.</p>
+                <iframe src={ANALYTICS_URL} title="لوحة زيارات Umami" loading="lazy" referrerPolicy="no-referrer" style={{ width: "100%", height: 480, border: 0 }} />
+              </div>
             ) : null}
           </div>
         </section>

@@ -9,7 +9,14 @@ export function TrackClicks() {
     const onClick = (e: MouseEvent) => {
       const el = (e.target as Element | null)?.closest?.("[data-track]");
       const name = el?.getAttribute("data-track");
-      if (name) track(name as TrackEvent);
+      if (name && el) {
+        const data: Record<string, string> = {};
+        for (const key of ["project", "category", "gallery", "language", "location", "service"]) {
+          const value = el.getAttribute("data-track-" + key);
+          if (value) data[key] = value;
+        }
+        track(name as TrackEvent, data);
+      }
     };
     document.addEventListener("click", onClick, { capture: true });
     return () => document.removeEventListener("click", onClick, { capture: true });
