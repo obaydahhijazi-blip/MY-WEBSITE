@@ -1,9 +1,10 @@
 import { StatsBand } from "@/components/about/StatsBand";
 import type { SiteContent } from "@/lib/cms/types";
 
-type Props = { about: SiteContent["about"]; index: string; demoMode: boolean; servicesCount: number };
+type Props = { about: SiteContent["about"]; index: string; demoMode: boolean; services: SiteContent["expertise"]["items"] };
 
-export function BioSection({ about, index, demoMode, servicesCount }: Props) {
+export function BioSection({ about, index, demoMode, services }: Props) {
+  const servicesCount = services.length;
   // Unconfirmed figures are dropped here so they never reach the public page or its data payload.
   const confirmed = about.stats.filter((s) => s.value !== null || demoMode);
   // «تخصصات» is counted from the expertise cards, so it is always true; inserted before any unconfirmed figure.
@@ -40,7 +41,7 @@ export function BioSection({ about, index, demoMode, servicesCount }: Props) {
           </div>
         </div>
 
-        <StatsBand stats={stats} countries={about.countries} countriesTitle={about.mapTitle} />
+        <StatsBand stats={stats} countries={about.countries} countriesTitle={about.mapTitle} services={services} />
       </div>
     </section>
   );
