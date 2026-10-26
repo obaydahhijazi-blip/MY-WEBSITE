@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import type { SiteContent, Work } from "@/lib/cms/types";
 import { track } from "@/lib/analytics";
@@ -243,7 +244,7 @@ export function EnglishPortfolio({ content }: Props) {
             {NAV.filter(([id]) => id !== "clients" && id !== "faq").map(([id, label]) => <a key={id} href={"#" + id} className="transition-colors hover:text-cyan">{label}</a>)}
           </nav>
           <div className="flex items-center gap-2">
-            <a href="/" lang="ar" dir="rtl" className="rounded-full border border-white/25 px-3 py-2 text-xs font-bold hover:border-cyan" aria-label="Switch to Arabic">العربية</a>
+            <Link href="/" lang="ar" dir="rtl" className="rounded-full border border-white/25 px-3 py-2 text-xs font-bold hover:border-cyan" aria-label="Switch to Arabic">العربية</Link>
             <a href="#quote" className={btn + " hidden bg-cyan !px-4 text-petrol sm:inline-flex"}>Request a quote</a>
             <button type="button" aria-expanded={menuOpen} aria-controls="english-nav" className="rounded-lg border border-white/25 p-2 lg:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">☰</button>
           </div>
@@ -297,7 +298,7 @@ export function EnglishPortfolio({ content }: Props) {
 
         {section("clients", "bg-paper-2", <>
           {sectionLabel(2, "Collaborations")}
-          <div className="grid gap-5 md:grid-cols-2 md:items-end"><h2 className="font-latin text-4xl font-semibold">Brands I've worked with</h2><p className="text-muted">Brands and organizations across different industries and markets.</p></div>
+          <div className="grid gap-5 md:grid-cols-2 md:items-end"><h2 className="font-latin text-4xl font-semibold">Brands I&apos;ve worked with</h2><p className="text-muted">Brands and organizations across different industries and markets.</p></div>
           {content.clients.items.length ? <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">{content.clients.items.map(c => <div key={c.name} className="flex min-h-32 flex-col items-center justify-center gap-3 rounded-2xl bg-white p-5 text-center">
             <Image src={c.logo.src} alt={c.logo.alt || c.name} width={Math.min(c.logo.width, 200)} height={Math.min(c.logo.height, 100)} className="max-h-14 w-auto object-contain" />
             <span className="text-xs text-muted" dir="auto">{c.name}</span>
@@ -383,7 +384,7 @@ export function EnglishPortfolio({ content }: Props) {
             <a href="/en/terms">Working terms</a><a href="/en/privacy">Privacy</a>
             <a href={safeLink(settings.instagram)} target="_blank" rel="noreferrer">Instagram</a>
             <a href={whatsappLink(quotePhone, "Hello Obaydah, I would like to discuss a project.")} data-track="whatsapp_click" target="_blank" rel="noreferrer">WhatsApp</a>
-            <a href="/" lang="ar" dir="rtl">العربية</a>
+            <Link href="/" lang="ar" dir="rtl">العربية</Link>
           </nav>
           <span className="text-xs text-white/50">© {year} Obaydah Hijazi</span>
         </div>
