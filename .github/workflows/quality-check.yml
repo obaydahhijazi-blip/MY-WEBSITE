@@ -21,3 +21,25 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: "1"
           NEXT_PUBLIC_DEMO_CONTENT: "0"
+      - name: Smoke test English and Arabic routes
+        run: |
+          set -eu
+          PORT=3100 npm run start >/tmp/obaydah-next.log 2>&1 &
+          APP_PID=$!
+          trap 'kill "$APP_PID" 2>/dev/null || true' EXIT
+          ready=0
+          for i in $(seq 1 45); do
+            if curl --silent --fail http://127.0.0.1:3100/en -o /tmp/en.html; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ready" -ne 1 ]; then cat /tmp/obaydah-next.log; exit 1; fi
+          grep -q "Request a project quote" /tmp/en.html
+          curl --silent --show-error --fail http://127.0.0.1:3100/ -o /tmp/ar.html
+          curl --silent --show-error --fail http://127.0.0.1:3100/en/terms -o /tmp/en-terms.html
+          curl --silent --show-error --fail http://127.0.0.1:3100/en/privacy -o /tmp/en-privacy.html
+          grep -q "Working Terms" /tmp/en-terms.html
+          grep -q "Privacy Policy" /tmp/en-privacy.html
+          echo "All public routes respond correctly."
