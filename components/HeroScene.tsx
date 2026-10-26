@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import { ArrowIcon } from "@/components/icons";
-import { FloatingDesignFiles } from "@/components/FloatingDesignFiles";
 
 type Props = {
   eyebrow: string;
@@ -26,9 +25,7 @@ const DEPTH: Record<string, number> = {
   bg: -4,
   sweep: 9,
   "star-lg": -10,
-  "ps-left": 18,
   portrait: -10,
-  "ps-right": 15,
   "star-sm": 13,
   text: 2,
 };
@@ -128,10 +125,7 @@ export function HeroScene(props: Props) {
         <div className="hero-layer decor-star-lg" data-depth="star-lg">
           <img src="/images/hero/cyan-glow-star-large.webp" alt="" width={700} height={672} loading="lazy" decoding="async" />
         </div>
-        <div className="hero-layer decor-ps-left" data-depth="ps-left">
-          <img src="/images/hero/floating-photoshop-left.webp" alt="" width={480} height={486} loading="lazy" decoding="async" className="hero-enter" style={{ ["--delay" as string]: "0.5s" }} />
-        </div>
-      </div>
+</div>
       <div className="hero-stage hero-stage-front" aria-hidden="true">
         <div className="hero-layer layer-portrait" data-depth="portrait">
           <picture>
@@ -154,15 +148,11 @@ export function HeroScene(props: Props) {
         </div>
       </div>
       <div className="hero-decor hero-decor-front" aria-hidden="true">
-        <div className="hero-layer decor-ps-right" data-depth="ps-right">
-          <img src="/images/hero/floating-photoshop-right.webp" alt="" width={480} height={777} loading="lazy" decoding="async" />
-        </div>
-        <div className="hero-layer decor-star-sm" data-depth="star-sm">
+<div className="hero-layer decor-star-sm" data-depth="star-sm">
           <img src="/images/hero/cyan-glow-star-small.webp" alt="" width={237} height={242} loading="lazy" decoding="async" />
         </div>
       </div>
       <div className="hero-vignette" aria-hidden="true" />
-      <FloatingDesignFiles files={["AI"]} placement="hero" />
 
       {/* Mobile / tablet: separate static composition */}
       <div className="hero-mobile-art" aria-hidden="true">
@@ -170,8 +160,7 @@ export function HeroScene(props: Props) {
           <source media="(min-width: 1024px)" srcSet={BLANK} />
           <img className="m-bg" src="/images/hero/bg-mobile.webp" alt="" width={1100} height={936} fetchPriority="high" />
         </picture>
-        <img className="m-ps hero-enter" src="/images/hero/floating-photoshop-left.webp" alt="" width={480} height={486} loading="lazy" style={{ ["--delay" as string]: "0.4s" }} />
-        <picture>
+<picture>
           <source media="(min-width: 1024px)" srcSet={BLANK} />
           <img className="m-portrait hero-portrait-enter" src="/images/hero/portrait-900.webp" alt="" width={900} height={1095} fetchPriority="high" />
         </picture>
