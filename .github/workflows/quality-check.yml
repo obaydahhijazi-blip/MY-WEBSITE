@@ -1,7 +1,7 @@
 name: Verify website
 on:
   push:
-    branches: [fix/complete-portfolio-review]
+    branches: [feature/arabic-only-visual-polish-20261026]
   pull_request:
     branches: [main]
 jobs:
@@ -29,22 +29,19 @@ jobs:
           trap 'kill "$APP_PID" 2>/dev/null || true' EXIT
           ready=0
           for i in $(seq 1 45); do
-            if curl --silent --fail http://127.0.0.1:3100/en -o /tmp/en.html; then
+            if curl --silent --fail http://127.0.0.1:3100/ -o /tmp/ar.html; then
               ready=1
               break
             fi
             sleep 1
           done
           if [ "$ready" -ne 1 ]; then cat /tmp/obaydah-next.log; exit 1; fi
-          grep -q "Request a project quote" /tmp/en.html
           curl --silent --show-error --fail http://127.0.0.1:3100/ -o /tmp/ar.html
-          curl --silent --show-error --fail http://127.0.0.1:3100/en/terms -o /tmp/en-terms.html
-          curl --silent --show-error --fail http://127.0.0.1:3100/en/privacy -o /tmp/en-privacy.html
-          grep -q "Working Terms" /tmp/en-terms.html
-          grep -q "Privacy Policy" /tmp/en-privacy.html
           OG_PATH=$(grep -oE "/opengraph-image-[a-zA-Z0-9]+" /tmp/ar.html | head -1)
           test -n "$OG_PATH"
           curl --silent --show-error --fail "http://127.0.0.1:3100$OG_PATH" -o /tmp/og-image.png
           test "$(wc -c </tmp/og-image.png)" -gt 3000
           grep -q "معاينة رسالة واتساب" /tmp/ar.html
-          echo "All public routes respond correctly."
+          # English pages must no longer be published.
+          test "$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3100/en)" = "404"
+          echo "Arabic pages and sharing preview respond correctly; English removed."
