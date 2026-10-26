@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { ArrowIcon, LineIcon } from "@/components/icons";
-import { FloatingDesignFiles } from "@/components/FloatingDesignFiles";
 import type { SiteContent } from "@/lib/cms/types";
 
 const AUTO_MS = 7200;
@@ -78,12 +77,9 @@ export function ProcessTimeline({ process, index }: { process: SiteContent["proc
   const pct = ((active + 1) / steps.length) * 100;
 
   return (
-    <section ref={section} id="process" className="section section-framed bg-paper text-white" aria-labelledby="process-title">
-      <div className="container-x">
-        <div className="cinematic-panel process-cinematic relative isolate overflow-hidden">
-          <div className="process-ambient" aria-hidden="true"><span/><span/><span/></div>
-          <FloatingDesignFiles files={["PSD"]} placement="process" />
-          <div className="relative z-10 grid gap-12 lg:grid-cols-12 lg:gap-10">
+    <section ref={section} id="process" className="section relative overflow-hidden bg-petrol text-white" aria-labelledby="process-title">
+      <div className="pointer-events-none absolute -bottom-40 left-[5%] size-[30rem] rounded-full bg-teal blur-3xl" aria-hidden="true" />
+      <div className="container-x relative grid gap-12 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-5">
           <header className="reveal">
             <p className="section-index !text-white/60">
@@ -177,8 +173,6 @@ export function ProcessTimeline({ process, index }: { process: SiteContent["proc
                 </button>
               </div>
             </div>
-          </div>
-        </div>
           </div>
         </div>
       </div>
