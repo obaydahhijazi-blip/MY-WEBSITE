@@ -1840,52 +1840,10 @@ html[lang="ar"] .headline.words-in .w > span {
 .journey-big { line-height: 1; }
 .journey-num-desktop { gap: .035em; }
 
-/* Floating objects depict actual document files (folded sheet), not program badges. */
-.floating-design-files {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  pointer-events: none;
-  user-select: none;
-  --file-px: 0px;
-  --file-py: 0px;
-}
-.design-file {
-  position: absolute;
-  display: block;
-  width: clamp(65px, 7.2vw, 107px);
-  filter: drop-shadow(12px 19px 15px rgb(0 10 14 / .3));
-  transform: translate3d(var(--file-px), var(--file-py), 0);
-  transition: transform 1.3s cubic-bezier(.2,.7,.2,1);
-  opacity: .86;
-}
-.design-file-float {
-  display: block;
-  width: 100%;
-  transform: perspective(490px) rotateY(-13deg) rotateX(8deg) rotateZ(-6deg);
-  transform-style: preserve-3d;
-  animation: document-float 10s ease-in-out infinite alternate;
-}
-.design-file svg { display: block; width: 100%; height: auto; overflow: visible; }
-@keyframes document-float {
-  0% { transform: translate3d(0,0,0) perspective(490px) rotateY(-13deg) rotateX(8deg) rotateZ(-6deg); }
-  100% { transform: translate3d(0,-13px,0) perspective(490px) rotateY(-6deg) rotateX(4deg) rotateZ(1deg); }
-}
-.floating-design-hero { z-index: 4; }
-.floating-design-hero .design-file-1 { --file-depth: 1.2; top: 21%; left: 5%; width: clamp(65px,6.8vw,96px); }
-.floating-design-video .design-file-1 { --file-depth: .8; top: 18px; left: 14px; opacity: .52; }
-.floating-design-video .design-file-2 { --file-depth: 1.1; bottom: 7px; right: 17px; opacity: .62; }
-.floating-design-video .design-file-2 .design-file-float { animation-delay: -4s; }
-.floating-design-process .design-file-1 { --file-depth: .75; top: 16px; left: 18px; opacity: .33; }
-.floating-design-process .design-file-1 .design-file-float { animation-delay: -2s; }
-@media (max-width: 1023.98px) {
-  .floating-design-hero { display: none; }
-  .floating-design-video .design-file, .floating-design-process .design-file { opacity: .24; width: 72px; }
-}
-@media (max-width: 639.98px) {
-  .floating-design-video .design-file, .floating-design-process .design-file { display: none; }
-}
-
+/* Gallery sections use full-width white backgrounds; only media tiles stay dark. */
+#works, #video { background: #fff; color: var(--color-ink); }
+#video .gallery-arrow { border-color: var(--color-line); color: var(--color-ink); }
+#video .gallery-arrow:hover { color: var(--color-petrol); border-color: var(--color-cyan); }
 /* Calm, recognizable entrance animations; links and hover actions remain responsive. */
 .reveal {
   transition-duration: 1.3s, 1.3s;
@@ -1902,7 +1860,6 @@ html[lang="ar"] .headline .w > span {
 .journey-panel-body { animation-duration: 1.05s; }
 .work-card-enter { animation-duration: 1.15s; }
 @media (prefers-reduced-motion: reduce) {
-  .floating-design-files { display: none !important; }
   .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
   .headline .w > span { opacity: 1 !important; transform: none !important; transition: none !important; }
   .journey-panel-body, .work-card-enter { animation: none !important; }
