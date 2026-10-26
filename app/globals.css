@@ -1737,10 +1737,15 @@ html[lang="ar"] .headline.words-in .w > span {
   display: inline-flex;
   direction: ltr;
   letter-spacing: normal;
-  gap: 0.035em;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
   white-space: nowrap;
+}
+.journey-num-desktop { display: inline-flex; gap: 0.035em; }
+.journey-num-mobile { display: none; }
+@media (max-width: 1023.98px) {
+  .journey-num-desktop { display: none; }
+  .journey-num-mobile { display: inline; }
 }
 .journey-digit {
   display: inline-block;
