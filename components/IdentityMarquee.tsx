@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { Star8 } from "@/components/icons";
 
-const BASE = 40; // px per second
+const BASE = 27; // px per second: calmer brand ribbon
 
 /**
  * Infinite text band under the hero. Drifts steadily; scrolling the page speeds it up and leans
