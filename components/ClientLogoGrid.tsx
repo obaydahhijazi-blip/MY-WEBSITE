@@ -58,12 +58,12 @@ export function ClientLogoGrid({ clients, index }: { clients: SiteContent["clien
 
       {items.length > 0 ? (
         <div className="reveal mt-12 grid gap-5">
-          <DragMarquee speed={22} label="شعارات الجهات — الصف الأول، يمكن سحبه">
+          <DragMarquee speed={22} label="شعارات الجهات — الصف الأول، يتوقف عند التركيز ويمكن سحبه">
             {fill(rowA).map((c, i) => (
               <Logo key={`a${i}`} c={c} />
             ))}
           </DragMarquee>
-          <DragMarquee speed={-14} label="شعارات الجهات — الصف الثاني، يمكن سحبه">
+          <DragMarquee speed={-14} label="شعارات الجهات — الصف الثاني، يتوقف عند التركيز ويمكن سحبه">
             {fill(rowB).map((c, i) => (
               <Logo key={`b${i}`} c={c} />
             ))}
