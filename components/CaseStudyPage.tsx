@@ -8,7 +8,7 @@ export function CaseStudyPage({ project, related, categories }: { project: Work;
   const category = (id: string) => categories.find(x => x.id === id)?.label || id;
   const images = project.media.length ? project.media : [{ type: "image" as const, ...project.cover }];
   return (
-    <main id="main" className="min-h-dvh bg-white pb-20 text-ink">
+    <main id="main" className="min-h-dvh overflow-x-clip bg-white pb-20 text-ink">
       <div className="container-x pb-4 pt-8 sm:pt-12">
         <nav aria-label="مسار الصفحة" className="flex flex-wrap items-center gap-2 text-sm text-muted">
           <Link href="/" className="hover:text-cyan-ink">الرئيسية</Link><span aria-hidden="true">/</span>
@@ -29,7 +29,7 @@ export function CaseStudyPage({ project, related, categories }: { project: Work;
         </dl>
       </header>
       <div className="container-x">
-        <div className="relative aspect-[16/10] overflow-hidden rounded-[28px] bg-paper-2 sm:rounded-[36px]">
+        <div className="relative aspect-[4/3] sm:aspect-[16/10] overflow-hidden rounded-[28px] bg-paper-2 sm:rounded-[36px]">
           <Image src={project.cover.src} alt={project.cover.alt || project.title} fill priority sizes="100vw" className="object-cover" />
           {project.demo ? <span className="demo-badge">نموذج تجريبي للمعاينة</span> : null}
         </div>
