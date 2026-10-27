@@ -198,6 +198,7 @@ export function HeroScene(props: Props) {
           <div className="hero-enter mt-7 grid gap-3 sm:flex sm:flex-wrap lg:mt-9" style={{ ["--delay" as string]: "0.5s" }}>
             <a href="#quote" className="btn btn-primary">
               {props.primaryCta}
+              <ArrowIcon direction="left" className="cta-arrow size-4" />
             </a>
             <a href="#consultation" className="btn btn-ghost-light">
               {props.secondaryCta}
