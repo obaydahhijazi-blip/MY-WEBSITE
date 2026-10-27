@@ -158,6 +158,7 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
             <p className="text-[1.02rem] text-ink-2">هل لديك مشروع مشابه؟</p>
             <a href="#quote" className="btn btn-dark !min-h-12">
               اطلب عرض سعر
+              <ArrowIcon direction="left" className="cta-arrow size-4" />
             </a>
           </div>
         </div>
