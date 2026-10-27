@@ -1904,3 +1904,107 @@ html[lang="ar"] .headline .w > span {
     }
   }
 }
+
+
+/* ───────── Premium micro-interactions: measured, not decorative ───────── */
+/* 1. Compact glass header after the hero, with preserved header anchor offsets. */
+.site-header { --header-h: 72px; }
+.site-header .header-inner {
+  height: var(--header-h);
+  transition: height 330ms var(--ease-out-soft);
+}
+.site-header[data-solid="true"] { --header-h: 62px; }
+.site-header[data-solid="true"] .nav-link[aria-current="true"] {
+  color: var(--color-cyan-ink);
+}
+/* 2. The existing active-section underline stays visible, with a clean focus ring. */
+.site-header .nav-link[aria-current="true"]::after {
+  transform: scaleX(1);
+}
+.site-header .nav-link:focus-visible { outline-offset: 7px; }
+
+/* 3. Only explicitly tagged CTA arrows move, not the entire button content. */
+.cta-arrow {
+  display: inline-block;
+  flex-shrink: 0;
+  transition: transform 250ms cubic-bezier(.22,1,.36,1);
+}
+.btn:hover .cta-arrow,
+.btn:focus-visible .cta-arrow,
+.mobile-quote-cta:hover .cta-arrow,
+.mobile-quote-cta:focus-visible .cta-arrow {
+  transform: translateX(-4px);
+}
+
+/* 4. Floating back-to-top button. Mobile position clears the quotation bar. */
+.back-top { right: 22px; left: auto; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); }
+.back-top:hover, .back-top:focus-visible {
+  background: var(--color-cyan);
+  color: var(--color-petrol);
+}
+
+/* 5. Email copy remains a secondary action in the contact footer. */
+.email-copy-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / .2);
+  color: var(--color-cyan);
+  transition: border-color 220ms ease, background-color 220ms ease;
+}
+.email-copy-btn:hover, .email-copy-btn:focus-visible {
+  border-color: var(--color-cyan);
+  background: rgb(0 187 212 / .12);
+}
+
+/* 6. Image contents keep their aspect ratios; opacity/filter never affect layout. */
+.media-enter:not([data-loaded="true"]) {
+  filter: blur(5px);
+  opacity: .82;
+}
+.media-enter[data-loaded="true"] {
+  filter: none;
+  opacity: 1;
+}
+.media-enter {
+  transition: opacity 820ms ease, filter 820ms ease, transform 900ms var(--ease-out-soft);
+}
+
+/* 7. The marquee already pauses on hover; give the active client a quiet accent. */
+.client-logo:hover, .client-logo:focus-visible {
+  outline-offset: 3px;
+  box-shadow: 0 20px 40px -28px rgb(0 30 37 / .4);
+}
+.client-logo:hover img, .client-logo:focus-visible img { opacity: 1; }
+
+/* 8. Sticky request-a-quote shortcut, mobile-only, clear of WhatsApp button. */
+.mobile-quote-cta {
+  right: 16px;
+  left: auto;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+}
+@media (max-width: 1023.98px) {
+  .back-top { right: 17px; left: auto; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+}
+@media (max-width: 359.98px) {
+  .mobile-quote-cta { padding-inline: 10px; font-size: .8rem; }
+  .back-top { bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
+}
+body:has(#mobile-menu:not([hidden])) .mobile-quote-cta,
+body:has(#mobile-menu:not([hidden])) .back-top {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+@media (min-width: 1024px) {
+  .mobile-quote-cta { display: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-header .header-inner, .cta-arrow, .media-enter {
+    transition: none !important;
+    animation: none !important;
+  }
+  .media-enter { filter: none !important; opacity: 1 !important; }
+  .back-top, .mobile-quote-cta { transition: none !important; }
+}

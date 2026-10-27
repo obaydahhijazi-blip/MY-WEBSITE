@@ -1,4 +1,6 @@
 import { BioSection } from "@/components/BioSection";
+import { BackToTop } from "@/components/BackToTop";
+import { MobileQuoteCTA } from "@/components/MobileQuoteCTA";
 import { ClientLogoGrid } from "@/components/ClientLogoGrid";
 import { ContactFooter } from "@/components/ContactFooter";
 import { Expertise } from "@/components/Expertise";
@@ -93,6 +95,8 @@ export default async function Home() {
       </main>
       <ContactFooter content={content} navigation={navigation} />
       <FloatingWhatsApp href={contactHref} />
+      <MobileQuoteCTA label={hero.primaryCta} />
+      <BackToTop />
       <RevealObserver />
       <SmoothScroll />
       <TrackClicks />

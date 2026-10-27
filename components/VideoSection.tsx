@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { markImageLoaded } from "@/lib/image-reveal";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { WorkLightbox } from "@/components/WorkLightbox";
 import { ArrowIcon, InstagramIcon, PlayIcon } from "@/components/icons";
@@ -61,7 +62,7 @@ function VideoCard({ w, label, onOpen, tall }: { w: Work; label: string; onOpen:
   return (
     <button ref={card} type="button" onClick={onOpen} className={`video-card group ${tall ? "is-tall" : ""}`} data-cursor="تشغيل" aria-label={`مشاهدة «${w.title}»`}>
       <span className="video-card-media" style={{ aspectRatio: `${w.cover.width} / ${w.cover.height}` }}>
-        <Image src={w.cover.src} alt={w.cover.alt} fill sizes={tall ? "(min-width: 1024px) 22vw, 70vw" : "(min-width: 1024px) 50vw, 100vw"} className="object-cover" />
+        <Image src={w.cover.src} alt={w.cover.alt} fill sizes={tall ? "(min-width: 1024px) 22vw, 70vw" : "(min-width: 1024px) 50vw, 100vw"} className="media-enter object-cover" onLoad={markImageLoaded} />
         {v ? <video ref={vid} src={v.src} muted loop playsInline preload="none" aria-hidden="true" tabIndex={-1} className="video-card-preview" /> : null}
         <span className="video-card-shade" aria-hidden="true" />
         {v ? (
@@ -223,6 +224,7 @@ export function VideoSection({ video, works, categories, items, index, instagram
               <p className="text-[1.02rem] text-ink-2">تحتاج إلى ريلز أو إعلان مرئي لعلامتك؟</p>
               <a href="#quote" className="btn btn-dark !min-h-12">
                 اطلب عرض سعر
+                <ArrowIcon direction="left" className="cta-arrow size-4" />
               </a>
             </div>
           </div>

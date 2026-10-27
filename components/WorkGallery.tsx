@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { markImageLoaded } from "@/lib/image-reveal";
 import { useMemo, useState } from "react";
 import { WorkLightbox } from "@/components/WorkLightbox";
 import { ArrowIcon, InstagramIcon, PlayIcon } from "@/components/icons";
@@ -85,7 +86,8 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
                     unoptimized={unopt(w.cover.src)}
                     placeholder={w.cover.lqip ? "blur" : "empty"}
                     blurDataURL={w.cover.lqip}
-                    className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.03]"
+                    className="media-enter object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.03]"
+                    onLoad={markImageLoaded}
                   />
                   {hasVideo ? (
                     <span className="work-play" aria-hidden="true">
@@ -125,7 +127,8 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
                           unoptimized={unopt(w.cover.src)}
                           placeholder={w.cover.lqip ? "blur" : "empty"}
                           blurDataURL={w.cover.lqip}
-                          className="h-auto w-full transition-transform duration-[900ms] ease-out group-hover:scale-[1.03]"
+                          className="media-enter h-auto w-full transition-transform duration-[900ms] ease-out group-hover:scale-[1.03]"
+                          onLoad={markImageLoaded}
                         />
                         <span className="work-card-shade" aria-hidden="true" />
                         {hasVideo ? (
@@ -155,6 +158,7 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
             <p className="text-[1.02rem] text-ink-2">هل لديك مشروع مشابه؟</p>
             <a href="#quote" className="btn btn-dark !min-h-12">
               اطلب عرض سعر
+              <ArrowIcon direction="left" className="cta-arrow size-4" />
             </a>
           </div>
         </div>

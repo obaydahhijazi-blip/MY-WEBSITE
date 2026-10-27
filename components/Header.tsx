@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CloseIcon, MenuIcon, WhatsAppIcon } from "@/components/icons";
+import { ArrowIcon, CloseIcon, MenuIcon, WhatsAppIcon } from "@/components/icons";
 import { MusicToggle } from "@/components/MusicToggle";
 import { lockScroll, unlockScroll } from "@/lib/scroll";
 import type { SiteContent } from "@/lib/cms/types";
@@ -32,17 +32,35 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music }: Props) 
     return () => io.disconnect();
   }, []);
 
-  // Scroll-spy for the current section.
+  // Stable section highlighting, including at section boundaries and after hash navigation.
   useEffect(() => {
     const sections = items.map((i) => document.getElementById(i.id)).filter(Boolean) as HTMLElement[];
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) if (e.isIntersecting) setActive(e.target.id);
-      },
-      { rootMargin: "-45% 0px -50% 0px" },
-    );
-    sections.forEach((s) => io.observe(s));
-    return () => io.disconnect();
+    if (!sections.length) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      if (window.scrollY < window.innerHeight * 0.35) {
+        setActive(null);
+        return;
+      }
+      const line = Math.min(window.innerHeight * 0.43, 320);
+      let current: string | null = null;
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= line) current = section.id;
+      }
+      setActive(current);
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    window.addEventListener("hashchange", onScroll);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("hashchange", onScroll);
+    };
   }, [items]);
 
   // Mobile menu: Escape to close, focus trap, scroll lock.
@@ -86,7 +104,7 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music }: Props) 
       className={`site-header fixed inset-x-0 top-0 z-50 border-b border-transparent ${isSolid ? "text-ink" : "text-white"}`}
       data-solid={isSolid}
     >
-      <div className="container-x flex h-[var(--header-h)] items-center justify-between gap-4 lg:gap-8">
+      <div className="header-inner container-x flex items-center justify-between gap-4 lg:gap-8">
         <a href="#top" className="flex shrink-0 items-center gap-3" aria-label={`${nameAr} — العودة إلى الأعلى`}>
           <img src="/images/brand/logo-white.webp" alt="" width={600} height={402} className={`h-10 w-auto sm:h-12 ${isSolid ? "hidden" : ""}`} />
           <img src="/images/brand/logo-dark.webp" alt="" width={600} height={402} className={`h-10 w-auto sm:h-12 ${isSolid ? "" : "hidden"}`} />
@@ -108,6 +126,7 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music }: Props) 
           {music?.src ? <MusicToggle {...music} /> : null}
           <a href="#quote" className="btn btn-primary hidden !min-h-11 !px-5 text-[0.9rem] md:inline-flex">
             {ctaLabel}
+            <ArrowIcon direction="left" className="size-4 cta-arrow" />
           </a>
           <a
             href={whatsappHref}
