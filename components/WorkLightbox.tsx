@@ -63,7 +63,7 @@ export function WorkLightbox({ work, categoryLabel, similarCta, onClose }: Props
       }}
       className="m-0 h-dvh max-h-none w-screen max-w-none bg-petrol p-0 text-white backdrop:bg-petrol/80"
     >
-      <div className="flex h-full flex-col">
+      <div className="flex h-full min-h-0 flex-col">
         <div className="flex items-center justify-between gap-4 px-4 py-3 sm:px-8">
           <p className="text-sm text-white/70" aria-live="polite">
             <span className="font-latin">
@@ -146,8 +146,8 @@ export function WorkLightbox({ work, categoryLabel, similarCta, onClose }: Props
               <span className="grid size-full place-items-center text-sm font-semibold">فيديو</span>}
           </button>)}
         </nav> : null}
-        <div className="flex flex-col gap-4 px-4 py-5 sm:flex-row sm:items-end sm:justify-between sm:px-8">
-          <div className="max-w-2xl">
+        <div className="max-h-[36vh] shrink-0 overflow-y-auto overscroll-contain px-4 py-5 sm:max-h-[28vh] sm:flex sm:items-end sm:justify-between sm:gap-4 sm:px-8">
+          <div className="max-w-2xl min-w-0">
             <p className="flex items-center gap-3 text-lg font-semibold">
               {work.title}
               {work.demo ? <span className="rounded bg-yellow px-2 py-0.5 text-xs font-bold text-petrol">نموذج تجريبي</span> : null}
