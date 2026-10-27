@@ -148,6 +148,7 @@ export function QuoteSection({ quote, whatsappNumber, index }: { quote: SiteCont
         {errors[key]}
       </p>
     ) : null;
+  const complete = [f.name.trim().length >= 2, Boolean(f.service), f.details.trim().length >= 10].filter(Boolean).length;
   const req = <span aria-hidden="true" className="text-cyan">*</span>;
   const opt = <span className="font-normal text-white/50">(اختياري)</span>;
 
@@ -248,6 +249,18 @@ export function QuoteSection({ quote, whatsappNumber, index }: { quote: SiteCont
                 </div> : null}
               </div>
               <div className="sm:col-span-2">
+                <div className="mb-4 rounded-xl border border-white/15 bg-white/5 px-4 py-3">
+                  <div className="flex items-center justify-between gap-3 text-xs text-white/75">
+                    <span>اكتمال المعلومات الأساسية</span><span className="font-latin" dir="ltr">{complete} / 3</span>
+                  </div>
+                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/15" role="progressbar" aria-label="اكتمال المعلومات الأساسية" aria-valuenow={complete} aria-valuemin={0} aria-valuemax={3}>
+                    <div className="h-full rounded-full bg-cyan transition-[width] duration-300" style={{ width: (complete / 3 * 100) + "%" }} />
+                  </div>
+                  <p className="mt-2 text-xs text-white/60">{complete === 3 ? "الحقول الأساسية مكتملة وجاهزة للمراجعة." : "أكمل الاسم ونوع الخدمة ووصف المشروع قبل الإرسال."} الوصف: {f.details.trim().length} حرفاً (الحد الأدنى 10).</p>
+                </div>
+                <div className="mb-5 flex flex-wrap gap-x-4 gap-y-2 text-xs text-white/70" aria-label="معلومات مهمة عن طلب السعر">
+                  <span>✓ استشارة أولية مجانية</span><span>✓ عرض حسب متطلبات المشروع</span><span>✓ مراحل عمل واضحة</span>
+                </div>
                 <button type="submit" className="btn btn-primary w-full !min-h-14 text-[1.05rem]">
                   <WhatsAppIcon className="size-5" />
                   {quote.cta}
