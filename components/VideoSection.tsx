@@ -224,6 +224,7 @@ export function VideoSection({ video, works, categories, items, index, instagram
               <p className="text-[1.02rem] text-ink-2">تحتاج إلى ريلز أو إعلان مرئي لعلامتك؟</p>
               <a href="#quote" className="btn btn-dark !min-h-12">
                 اطلب عرض سعر
+                <ArrowIcon direction="left" className="cta-arrow size-4" />
               </a>
             </div>
           </div>
