@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowIcon, CloseIcon } from "@/components/icons";
 import { announceMedia, lockScroll, unlockScroll } from "@/lib/scroll";
@@ -15,6 +16,7 @@ export function WorkLightbox({ work, categoryLabel, similarCta, onClose }: Props
   const ref = useRef<HTMLDialogElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [i, setI] = useState(0);
+  const [copied, setCopied] = useState(false);
   const touch = useRef<{ x: number; y: number; multi: boolean } | null>(null);
   const items = work.media;
   const count = items.length;
@@ -134,6 +136,16 @@ export function WorkLightbox({ work, categoryLabel, similarCta, onClose }: Props
           ) : null}
         </div>
 
+
+        {count > 1 ? <nav aria-label="معاينات صور وفيديوهات المشروع" className="flex gap-2 overflow-x-auto px-4 py-3 sm:px-8" data-lenis-prevent>
+          {items.map((m, n) => <button key={m.src + n} type="button" onClick={() => {stopVideo();setI(n);}}
+            aria-label={`عرض الوسيط ${n + 1}`} aria-current={i === n ? "true" : undefined}
+            className={`relative size-16 shrink-0 overflow-hidden rounded-lg border-2 bg-white/10 sm:size-20 ${i === n ? "border-cyan" : "border-white/20"}`}>
+            {m.type === "image" ? <Image src={m.src} alt="" fill sizes="80px" className="object-cover" /> :
+              m.poster ? <Image src={m.poster.src} alt="" fill sizes="80px" className="object-cover" /> :
+              <span className="grid size-full place-items-center text-sm font-semibold">فيديو</span>}
+          </button>)}
+        </nav> : null}
         <div className="flex flex-col gap-4 px-4 py-5 sm:flex-row sm:items-end sm:justify-between sm:px-8">
           <div className="max-w-2xl">
             <p className="flex items-center gap-3 text-lg font-semibold">
@@ -144,6 +156,13 @@ export function WorkLightbox({ work, categoryLabel, similarCta, onClose }: Props
               {[categoryLabel, work.client, work.year].filter(Boolean).join(" · ")}
             </p>
             {work.summary ? <p className="mt-3 text-sm leading-7 text-white/80">{work.summary}</p> : null}
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <Link href={`/projects/${encodeURIComponent(work.id)}`} className="rounded-full border border-white/30 px-4 py-2 text-sm font-semibold hover:border-cyan hover:text-cyan" onClick={onClose}>تفاصيل المشروع كاملة</Link>
+              {!work.demo ? <button type="button" className="rounded-full border border-white/30 px-4 py-2 text-sm hover:border-cyan hover:text-cyan" onClick={async () => {
+                const url = new URL(`/projects/${encodeURIComponent(work.id)}`, window.location.origin).toString();
+                try { await navigator.clipboard.writeText(url); setCopied(true); } catch { window.prompt("انسخ رابط المشروع", url); }
+              }}>{copied ? "تم نسخ الرابط" : "نسخ رابط المشروع"}</button> : null}
+            </div>
             <button
               type="button"
               className="btn btn-primary mt-4 !min-h-11 text-sm"
