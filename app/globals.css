@@ -2008,3 +2008,17 @@ body:has(#mobile-menu:not([hidden])) .back-top {
   .media-enter { filter: none !important; opacity: 1 !important; }
   .back-top, .mobile-quote-cta { transition: none !important; }
 }
+
+/* Portfolio-only enrichment: typography stays legible over a clean white gallery. */
+.work-hover-meta { opacity: 0; transform: translateY(8px); transition: opacity 320ms ease, transform 320ms var(--ease-out-soft); }
+.work-card:hover .work-hover-meta, .work-card:focus-visible .work-hover-meta { opacity: 1; transform: none; }
+@media (hover: none) { .work-hover-meta { display: none; } }
+.service-preview { opacity: 0; transform: translateY(9px); transition: opacity 450ms ease, transform 450ms ease; }
+.service-card:has(.service-preview) { isolation: isolate; }
+.service-card:hover .service-preview, .service-card:focus-within .service-preview { opacity: .16; transform: none; }
+.service-card:has(.service-preview) > :not(.service-preview) { position: relative; z-index: 1; }
+.hero-quick-link { border-bottom: 1px solid rgb(255 255 255 / .24); }
+.before-after-range:focus-visible { outline: 3px solid var(--color-cyan); outline-offset: -3px; opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .work-hover-meta, .service-preview { transition: none !important; transform: none !important; }
+}
