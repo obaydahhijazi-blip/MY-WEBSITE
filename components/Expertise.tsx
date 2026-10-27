@@ -1,8 +1,12 @@
 import { SectionHeading } from "@/components/SectionHeading";
+import Image from "next/image";
+import Link from "next/link";
 import { LineIcon } from "@/components/icons";
-import type { SiteContent } from "@/lib/cms/types";
+import type { SiteContent, Work } from "@/lib/cms/types";
 
-export function Expertise({ expertise, index }: { expertise: SiteContent["expertise"]; index: string }) {
+export function Expertise({ expertise, index, projects = [] }: { expertise: SiteContent["expertise"]; index: string; projects?: Work[] }) {
+  const maps: Record<string, string[]> = { identity: ["identity"], social: ["social"], direction: ["identity", "social"],
+    ai: ["ai"], print: ["print"], content: ["social", "ads"], film: ["reels", "ads"], motion: ["motion"] };
   return (
     <section id="expertise" className="section relative overflow-hidden bg-petrol text-white" aria-labelledby="expertise-title">
       <div className="pointer-events-none absolute -top-32 right-[10%] size-[26rem] rounded-full bg-teal/80 blur-3xl" aria-hidden="true" />
@@ -13,9 +17,12 @@ export function Expertise({ expertise, index }: { expertise: SiteContent["expert
         </div>
 
         <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-          {expertise.items.map((item, i) => (
+          {expertise.items.map((item, i) => {
+            const sample = projects.find(w => !w.demo && (maps[item.icon] || []).includes(w.category));
+            return (
             <li key={item.title} className="reveal" style={{ ["--delay" as string]: `${(i % 4) * 0.07}s` }}>
-              <article className="service-card h-full">
+              <article className="service-card group h-full">
+                {sample ? <div className="service-preview pointer-events-none absolute inset-x-4 top-4 h-32 overflow-hidden rounded-xl" aria-hidden="true"><Image src={sample.cover.src} alt="" fill sizes="240px" className="object-cover" /></div> : null}
                 <div className="flex items-start justify-between gap-4">
                   <span className="service-icon">
                     <LineIcon name={item.icon} className="size-[26px]" />
@@ -24,10 +31,11 @@ export function Expertise({ expertise, index }: { expertise: SiteContent["expert
                 </div>
                 <h3 className="mt-10 text-[1.22rem] font-bold leading-snug text-white">{item.title}</h3>
                 <p className="mt-3 leading-8 text-white/65">{item.description}</p>
+                <Link href={`/services/${item.icon}`} className="mt-6 inline-flex min-h-11 items-center text-sm font-semibold text-cyan hover:underline">استكشف الخدمة</Link>
                 <span className="service-line" aria-hidden="true" />
               </article>
             </li>
-          ))}
+          );})}
         </ul>
       </div>
     </section>
