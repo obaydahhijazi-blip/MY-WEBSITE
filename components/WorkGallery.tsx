@@ -28,6 +28,7 @@ function Meta({ w, label }: { w: Work; label: string }) {
 
 export function WorkGallery({ works, instagram, instagramHandle }: Props) {
   const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
   const [open, setOpen] = useState<Work | null>(null);
 
   const counts = useMemo(() => {
@@ -35,7 +36,9 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
     for (const w of works.items) m.set(w.category, (m.get(w.category) ?? 0) + 1);
     return m;
   }, [works.items]);
-  const visible = filter === "all" ? works.items : works.items.filter((w) => w.category === filter);
+  const byCategory = filter === "all" ? works.items : works.items.filter((w) => w.category === filter);
+  const q = search.trim().toLocaleLowerCase("ar");
+  const visible = q ? byCategory.filter(w => [w.title, w.client, w.summary, w.role, ...(w.tags || [])].filter(Boolean).join(" ").toLocaleLowerCase("ar").includes(q)) : byCategory;
   const featured = visible.filter((w) => w.featured);
   const rest = visible.filter((w) => !w.featured);
   const labelOf = (id: string) => works.categories.find((c) => c.id === id)?.label ?? id;
@@ -54,6 +57,13 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
           ))}
         </div>
       </div>
+
+      {works.items.length >= 12 ? <div className="mt-7 flex flex-wrap items-center gap-3">
+        <label htmlFor="work-search" className="text-sm font-semibold text-ink-2">ابحث في الأعمال</label>
+        <input id="work-search" type="search" value={search} onChange={e => setSearch(e.target.value)}
+          placeholder="مشروع، عميل، تخصص..." className="min-h-12 w-full max-w-lg rounded-xl border border-line bg-white px-4 text-ink outline-offset-4 focus:border-cyan" />
+        {search ? <button type="button" onClick={() => setSearch("")} className="text-sm text-cyan-ink underline">مسح البحث</button> : null}
+      </div> : null}
 
       {works.items.length === 0 ? (
         <div className="reveal mt-10 flex flex-col gap-5 rounded-3xl border border-dashed border-ink/15 px-6 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-10">
@@ -131,6 +141,10 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
                           onLoad={markImageLoaded}
                         />
                         <span className="work-card-shade" aria-hidden="true" />
+                        <span aria-hidden="true" className="work-hover-meta pointer-events-none absolute bottom-4 right-4 left-4 z-10 rounded-xl bg-petrol/85 p-3 text-sm text-white backdrop-blur-sm">
+                          <strong className="block">{w.title}</strong>
+                          <span className="text-white/80">{w.role || labelOf(w.category)}</span>
+                        </span>
                         {hasVideo ? (
                           <span className="work-play" aria-hidden="true">
                             <PlayIcon className="size-4" />
