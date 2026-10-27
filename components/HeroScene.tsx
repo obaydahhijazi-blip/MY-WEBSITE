@@ -200,10 +200,11 @@ export function HeroScene(props: Props) {
               {props.primaryCta}
               <ArrowIcon direction="left" className="cta-arrow size-4" />
             </a>
-            <a href="#consultation" className="btn btn-ghost-light">
-              {props.secondaryCta}
+            <a href="#works" className="btn btn-ghost-light">
+              استعرض أعمالي
             </a>
           </div>
+          <a href="#expertise" className="hero-quick-link mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-white/85 hover:text-cyan">اكتشف تخصصاتي <ArrowIcon direction="left" className="size-4" /></a>
           {props.availability ? (
             <p className="hero-enter mt-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[0.8rem] text-white/85 backdrop-blur-sm" style={{ ["--delay" as string]: "0.6s" }}>
               <span className={`avail-dot ${props.availability.status === "full" ? "is-full" : ""}`} aria-hidden="true" />

@@ -24,6 +24,12 @@ export type Work = {
   client?: string;
   year?: string;
   summary?: string;
+  /** Optional genuine project-specific descriptions from the owner. */
+  challenge?: string;
+  solution?: string;
+  role?: string;
+  beforeAfter?: { before: ImageAsset; after: ImageAsset };
+  tags?: string[];
   featured: boolean;
   cover: ImageAsset;
   media: MediaItem[];

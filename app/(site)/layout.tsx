@@ -25,6 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: s.seoTitle,
     description: s.seoDescription,
     applicationName: s.nameAr,
+    verification: process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : undefined,
     authors: [{ name: s.nameAr }],
     alternates: { canonical: "/" },
     openGraph: {

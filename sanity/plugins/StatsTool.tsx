@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useClient } from "sanity";
+import { QualityMetrics } from "@/components/admin/QualityMetrics";
 
 type Counts = {
   published: number;
@@ -111,7 +112,7 @@ export function StatsTool() {
             {ANALYTICS_ON ? (
               <p style={{ margin: 0 }}>
                 تُسجَّل الزيارات والأحداث التالية في Umami: <code>whatsapp_click</code> (تواصل عام)، <code>consultation_whatsapp_click</code> (الاستشارة المجانية)،{" "}
-                <code>quote_whatsapp_click</code> (طلب عرض سعر)، <code>calendar_open</code>، <code>similar_project_click</code>، <code>portfolio_open</code> (فتح مشروع)، <code>portfolio_filter</code> (اختيار تصنيف)، <code>language_switch</code> (تغيير اللغة).
+                <code>quote_whatsapp_click</code> (طلب عرض سعر)، <code>calendar_open</code>، <code>similar_project_click</code>، <code>portfolio_open</code> (فتح مشروع)، <code>portfolio_filter</code> (اختيار تصنيف).
               </p>
             ) : (
               <p style={{ margin: 0 }}>
@@ -129,7 +130,7 @@ export function StatsTool() {
               </div>
               <div style={{ padding: 14, borderRadius: 12, background: "#f1f3f1" }}>
                 <strong>أزرار التواصل الأكثر استخداماً</strong>
-                <p style={{ margin: "6px 0 0", fontSize: 13, color: C.muted }}>قارن أحداث واتساب العام وطلب السعر والاستشارة والتقويم، وافصل النتائج حسب اللغة (ar/en).</p>
+                <p style={{ margin: "6px 0 0", fontSize: 13, color: C.muted }}>قارن أحداث واتساب العام وطلب السعر والاستشارة والتقويم، مع مراعاة أن الموقع عربي فقط.</p>
               </div>
             </div>
             <p style={{ margin: 0, fontSize: 13, color: C.muted }}>النقرة على زر واتساب أو مشروع ليست رسالة مُرسلة أو عميلاً مؤكداً. لا تُرسل أي بيانات شخصية أو نصوص النماذج للتحليلات.</p>
@@ -147,6 +148,7 @@ export function StatsTool() {
           </div>
         </section>
 
+        <QualityMetrics />
         <section style={{ display: "grid", gap: 12 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <h2 style={h2}>حجوزات Cal.com المؤكدة</h2>

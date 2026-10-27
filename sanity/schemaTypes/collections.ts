@@ -37,6 +37,18 @@ export const project = defineType({
     defineField({ name: "client", title: "اسم العميل أو الجهة (اختياري — بعد موافقتها)", type: "string" }),
     defineField({ name: "year", title: "السنة", type: "string", validation: (r) => r.regex(/^\d{4}$/).warning("أربعة أرقام، مثل 2025") }),
     defineField({ name: "summary", title: "وصف مختصر", type: "text", rows: 3, validation: (r) => r.max(320) }),
+    defineField({ name: "role", title: "دوري في المشروع", type: "string", description: "مثلاً: الإخراج الفني والتصميم. اكتب دورك الفعلي فقط." }),
+    defineField({ name: "challenge", title: "تحدّي المشروع", type: "text", rows: 3 }),
+    defineField({ name: "solution", title: "الحل البصري", type: "text", rows: 4 }),
+    defineField({ name: "tags", title: "كلمات البحث الخاصة بالمشروع", type: "array", of: [defineArrayMember({ type: "string" })], options: { layout: "tags" } }),
+    defineField({
+      name: "beforeAfter", title: "مقارنة قبل وبعد (اختياري)", type: "object",
+      description: "استخدم صوراً حقيقية من نفس المشروع وبموافقة العميل. لا تُنشئ صور قبل/بعد وهمية.",
+      fields: [
+        defineField({ name: "before", title: "قبل", type: "imageWithAlt" }),
+        defineField({ name: "after", title: "بعد", type: "imageWithAlt" }),
+      ],
+    }),
     defineField({ name: "featured", title: "مشروع مميز (يظهر بحجم أكبر)", type: "boolean", initialValue: false }),
     defineField({
       name: "cover",
@@ -48,7 +60,7 @@ export const project = defineType({
     defineField({
       name: "media",
       title: "صور وفيديوهات المشروع",
-      description: "تُعرض في المعرض بعد صورة الغلاف. اسحب العناصر لتغيير ترتيبها. الصور: 2000px عرضاً تقريباً. الفيديو: MP4 (H.264) بحجم أقل من 20MB.",
+      description: "رتّب الصور والفيديو بالسحب. اختَر غلافاً مستقلاً من الحقل أعلاه. احفظ كمسودة للمراجعة، ثم انشر عند الجاهزية. المعاينة متاحة من تبويب معاينة في اللوحة.",
       type: "array",
       of: [defineArrayMember({ type: "imageWithAlt" }), defineArrayMember({ type: "videoItem" })],
     }),

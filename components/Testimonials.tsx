@@ -45,13 +45,13 @@ export function Testimonials({ testimonials, index }: { testimonials: SiteConten
           </span>
           <div key={t.id} className="quote-body" aria-live="polite">
             {t.demo ? <span className="demo-badge !static mb-6 inline-block">عينة تجريبية</span> : null}
-            <blockquote className="text-[clamp(1.35rem,2.6vw,2.15rem)] font-medium leading-[1.75] text-ink">{t.quote}</blockquote>
+            <blockquote className="max-w-4xl text-[clamp(1.35rem,2.6vw,2.15rem)] font-medium leading-[1.8] text-ink">{t.quote}</blockquote>
             {t.name || t.company ? (
               <figcaption className="mt-10 flex items-center gap-4">
                 {t.logo ? (
                   <Image src={t.logo.src} alt={t.logo.alt} width={t.logo.width} height={t.logo.height} className="h-10 w-auto max-w-28 object-contain" unoptimized={t.logo.src.endsWith(".svg")} />
                 ) : (
-                  <span className="block h-px w-10 bg-cyan" aria-hidden="true" />
+                  <span className="block h-12 w-1 rounded-full bg-cyan" aria-hidden="true" />
                 )}
                 <span>
                   {t.name ? <span className="block text-lg font-semibold text-ink">{t.name}</span> : null}

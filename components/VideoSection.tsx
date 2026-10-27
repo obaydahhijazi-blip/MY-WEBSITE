@@ -74,6 +74,7 @@ function VideoCard({ w, label, onOpen, tall }: { w: Work; label: string; onOpen:
         <span className="video-card-info">
           <span className="block text-[0.72rem] text-cyan">{label}</span>
           <span className="mt-1 block font-semibold leading-snug text-white">{w.title}</span>
+          {w.role ? <span className="mt-1 block text-xs text-white/70">{w.role}</span> : null}
         </span>
       </span>
     </button>
