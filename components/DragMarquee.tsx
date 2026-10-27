@@ -102,8 +102,20 @@ export function DragMarquee({ children, speed, label, className = "" }: Props) {
       drag = null;
       el.classList.remove("is-dragging");
     };
-    const slow = () => (target = 0);
-    const resume = () => (target = speed);
+    let hovered = false;
+    let focused = false;
+    const applyPause = () => {
+      target = hovered || focused ? 0 : speed;
+      if (hovered || focused) vel = 0;
+    };
+    const slow = () => { hovered = true; applyPause(); };
+    const resume = () => { hovered = false; applyPause(); };
+    const focusIn = () => { focused = true; applyPause(); };
+    const focusOut = (e: FocusEvent) => {
+      if (e.relatedTarget instanceof Node && el.contains(e.relatedTarget)) return;
+      focused = false;
+      applyPause();
+    };
 
     const ro = new ResizeObserver(() => {
       half = tr.scrollWidth / 2;
@@ -122,8 +134,8 @@ export function DragMarquee({ children, speed, label, className = "" }: Props) {
     el.addEventListener("pointercancel", onUp);
     el.addEventListener("pointerenter", slow);
     el.addEventListener("pointerleave", resume);
-    el.addEventListener("focusin", slow);
-    el.addEventListener("focusout", resume);
+    el.addEventListener("focusin", focusIn);
+    el.addEventListener("focusout", focusOut);
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
@@ -134,8 +146,8 @@ export function DragMarquee({ children, speed, label, className = "" }: Props) {
       el.removeEventListener("pointercancel", onUp);
       el.removeEventListener("pointerenter", slow);
       el.removeEventListener("pointerleave", resume);
-      el.removeEventListener("focusin", slow);
-      el.removeEventListener("focusout", resume);
+      el.removeEventListener("focusin", focusIn);
+      el.removeEventListener("focusout", focusOut);
     };
   }, [speed]);
 
