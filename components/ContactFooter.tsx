@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { BrandBars } from "@/components/BrandBars";
+import { CopyEmail } from "@/components/CopyEmail";
 import { ArrowIcon, InstagramIcon, WhatsAppIcon } from "@/components/icons";
 import type { SiteContent } from "@/lib/cms/types";
 import { whatsappLink } from "@/lib/whatsapp";
@@ -49,9 +50,7 @@ export function ContactFooter({ content, navigation }: { content: SiteContent; n
             <bdi dir="ltr" className="font-latin">@{s.instagramHandle}</bdi>
           </a>
           {email ? (
-            <a href={`mailto:${email}`} className="text-white/80 hover:text-white">
-              <bdi dir="ltr" className="font-latin">{email}</bdi>
-            </a>
+            <CopyEmail email={email} />
           ) : null}
         </div>
       </div>
