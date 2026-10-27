@@ -1937,7 +1937,7 @@ html[lang="ar"] .headline .w > span {
 }
 
 /* 4. Floating back-to-top button. Mobile position clears the quotation bar. */
-.back-top { inset-inline-end: 22px; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); }
+.back-top { right: 22px; left: auto; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); }
 .back-top:hover, .back-top:focus-visible {
   background: var(--color-cyan);
   color: var(--color-petrol);
@@ -1981,12 +1981,12 @@ html[lang="ar"] .headline .w > span {
 
 /* 8. Sticky request-a-quote shortcut, mobile-only, clear of WhatsApp button. */
 .mobile-quote-cta {
-  inset-inline-start: auto;
-  inset-inline-end: 16px;
+  right: 16px;
+  left: auto;
   bottom: calc(18px + env(safe-area-inset-bottom, 0px));
 }
 @media (max-width: 1023.98px) {
-  .back-top { inset-inline-end: 17px; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+  .back-top { right: 17px; left: auto; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
 }
 @media (max-width: 359.98px) {
   .mobile-quote-cta { padding-inline: 10px; font-size: .8rem; }
