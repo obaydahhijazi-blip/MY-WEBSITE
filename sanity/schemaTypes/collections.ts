@@ -60,7 +60,7 @@ export const project = defineType({
     defineField({
       name: "media",
       title: "صور وفيديوهات المشروع",
-      description: "تُعرض في المعرض بعد صورة الغلاف. اسحب العناصر لتغيير ترتيبها. الصور: 2000px عرضاً تقريباً. الفيديو: MP4 (H.264) بحجم أقل من 20MB.",
+      description: "رتّب الصور والفيديو بالسحب. اختَر غلافاً مستقلاً من الحقل أعلاه. احفظ كمسودة للمراجعة، ثم انشر عند الجاهزية. المعاينة متاحة من تبويب معاينة في اللوحة.",
       type: "array",
       of: [defineArrayMember({ type: "imageWithAlt" }), defineArrayMember({ type: "videoItem" })],
     }),
