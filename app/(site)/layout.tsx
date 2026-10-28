@@ -4,6 +4,7 @@ import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import { VisualEditing } from "next-sanity/visual-editing";
 import Script from "next/script";
 import "@/styles/ko-sans.css";
+import "@/styles/ko-sans-generated.css";
 import "@/styles/outfit.css";
 import "../globals.css";
 import { getSiteContent } from "@/lib/cms";
