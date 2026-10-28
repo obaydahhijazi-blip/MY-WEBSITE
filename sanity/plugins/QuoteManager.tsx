@@ -12,7 +12,6 @@ const S={
   input:{width:"100%",border:"1px solid #c6d6d9",borderRadius:10,padding:"10px 12px",font:"inherit",color:"#16363c",background:"#fff",minHeight:44} as React.CSSProperties,
   button:{border:0,borderRadius:12,padding:"10px 16px",fontWeight:700,cursor:"pointer",background:"#00373e",color:"#fff"} as React.CSSProperties,
 };
-const pad=(n:number)=>String(n).padStart(2,"0");
 const today=()=>new Date().toISOString().slice(0,10);
 const uid=()=>Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,"0")).join("");
 const blank=():CustomerQuote=>({
@@ -41,7 +40,14 @@ export function QuoteManager(){
       setQuotes(docs);
     }catch(e){setError(e instanceof Error?e.message:"تعذّر تحميل العروض");}
   },[client]);
-  useEffect(()=>{void load();},[load]);
+  useEffect(()=>{
+    if(!client)return;
+    let active=true;
+    client.fetch<CustomerQuote[]>('*[_type=="customerQuote"]|order(_createdAt desc){_id,_type,reference,title,clientName,clientCompany,createdDate,validUntil,currency,items[]{_key,label,quantity,unitPrice},discount,notes,terms,accent,shareEnabled,shareToken,status}')
+      .then(docs=>{if(active)setQuotes(docs);})
+      .catch(e=>{if(active)setError(e instanceof Error?e.message:"تعذّر تحميل العروض");});
+    return()=>{active=false;};
+  },[client]);
   const patch=(fields:Partial<CustomerQuote>)=>setForm(old=>old?{...old,...fields}:old);
   const patchItem=(key:string,fields:Partial<QuoteLine>)=>patch({items:(form?.items||[]).map(x=>x._key===key?{...x,...fields}:x)});
   const addItem=(service="")=>patch({items:[...(form?.items||[]),{_key:crypto.randomUUID(),label:service,quantity:1,unitPrice:0}]});
