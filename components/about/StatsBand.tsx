@@ -66,7 +66,7 @@ export function StatsBand({ stats, countries, countriesTitle, services }: { stat
           onPointerEnter={e => { if (e.pointerType === "mouse" && !touchOpen && canOpen) setActive(i); }}
           onPointerLeave={e => { if (e.pointerType === "mouse" && !touchOpen) setActive(null); }}
           onBlur={e => { if (!touchOpen && !e.currentTarget.contains(e.relatedTarget as Node | null)) setActive(null); }}>
-          <button type="button" className="stat-toggle" aria-controls={id} aria-expanded={open}
+          <button type="button" className="stat-toggle" data-cursor={s.mapLink ? "الدول" : "تفاصيل"} aria-controls={id} aria-expanded={open}
             aria-label={String(s.value ?? "") + s.suffix + " " + s.label + " — عرض التفاصيل"}
             onFocus={() => { if (!touchOpen && canOpen) setActive(i); }}
             onClick={() => {
