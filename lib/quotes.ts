@@ -18,7 +18,7 @@ export async function getSharedQuote(token: string): Promise<CustomerQuote | nul
   const client = createClient({projectId,dataset:privateDataset,apiVersion,token:apiToken,useCdn:false,perspective:"published"});
   const raw = await client.fetch<CustomerQuote | null>(
     '*[_type=="customerQuote" && shareToken==$token && shareEnabled==true && status in ["sent","accepted"]][0]{_id,_type,reference,title,clientName,clientCompany,createdDate,validUntil,currency,items[]{_key,label,quantity,unitPrice},discount,notes,terms,accent,shareEnabled,shareToken,status}',
-    {token}, {cache:"no-store"},
+    {token},
   );
   if (!raw || !Array.isArray(raw.items) || !raw.clientName || raw.items.length > 60
     || raw.items.some(i => !Number.isFinite(i.quantity)||!Number.isFinite(i.unitPrice) ||i.quantity<0||i.unitPrice<0)) return null;
