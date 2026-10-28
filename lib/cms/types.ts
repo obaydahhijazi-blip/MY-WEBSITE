@@ -38,7 +38,7 @@ export type Work = {
   orientation?: "portrait" | "landscape" | "square";
 };
 
-export type Testimonial = { id: string; quote: string; name?: string; role?: string; company?: string; logo?: ImageAsset; demo?: boolean };
+export type Testimonial = { id: string; quote: string; name?: string; role?: string; company?: string; photo?: ImageAsset; logo?: ImageAsset; rating?: number; demo?: boolean };
 export type FaqItem = { question: string; answer: string };
 export type LegalPage = { title: string; intro: string; sections: { heading: string; body: string }[]; note: string };
 

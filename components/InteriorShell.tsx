@@ -11,7 +11,7 @@ export async function InteriorShell({ children }: { children: ReactNode }) {
   const contact = whatsappLink(site.settings.whatsappNumber, site.settings.whatsappMessage);
   const navigation = site.navigation.filter(item => ["about", "clients", "expertise", "works", "video", "process", "quote", "consultation"].includes(item.id));
   return <>
-    <Header interior items={navigation} nameAr={site.settings.nameAr} whatsappHref={contact} ctaLabel={site.hero.primaryCta} music={site.settings.music} />
+    <Header interior items={navigation} nameAr={site.settings.nameAr} whatsappHref={contact} ctaLabel={site.hero.primaryCta} music={site.settings.music} services={site.expertise.items} categories={site.works.categories} />
     <div className="pt-[var(--header-h)]">{children}</div>
     <ContactFooter interior content={site} navigation={navigation} />
     <MotionFX />

@@ -63,7 +63,6 @@ export function MotionFX() {
     let my = -200;
     let cx = mx;
     let cy = my;
-    let angle = 0;
     let stretch = 0;
     let raf = 0;
     let visible = false;
@@ -108,9 +107,7 @@ export function MotionFX() {
       const speed = Math.hypot(vx, vy);
       const goal = Math.min(.07, speed / 180);
       stretch += (goal - stretch) * .17;
-      if (speed > 1.5) angle = Math.atan2(vy, vx) * 180 / Math.PI;
       r.style.transform = `translate3d(${cx.toFixed(1)}px,${cy.toFixed(1)}px,0)`;
-      r.style.setProperty("--cursor-angle", `${angle.toFixed(1)}deg`);
       r.style.setProperty("--cursor-stretch", (1 + stretch).toFixed(3));
       if (speed > .15 || stretch > .003) raf = requestAnimationFrame(animate);
     };
@@ -148,9 +145,11 @@ export function MotionFX() {
       const interactive = target?.closest("a, button, [role='tab'], summary, [role='button']");
       const label = labelled?.dataset.cursor || "";
       const drag = /اسحب|drag/i.test(label);
-      t.textContent = label;
-      r.dataset.eye = label === "عرض" ? "true" : "false";
-        r.dataset.state = label === "عرض" ? "eye" : drag ? "drag" : labelled ? "label" : interactive ? "link" : "default";
+      const eye = label === "عرض" || label === "eye";
+      const play = label === "تشغيل" || label === "play";
+      t.textContent = eye || play ? "" : label;
+      r.dataset.eye = eye ? "true" : "false";
+      r.dataset.state = eye ? "eye" : play ? "play" : drag ? "drag" : labelled ? "label" : interactive ? "link" : "default";
       d.dataset.state = r.dataset.state;
       updateTone(target);
 
@@ -221,11 +220,11 @@ export function MotionFX() {
         <div className="cursor-orbit-shell">
           <svg className="cursor-orbit-type" viewBox="0 0 112 112" focusable="false" aria-hidden="true">
             <defs>
-              <path id="obaydah-type-orbit" d="M56 56 m-43 0 a43 43 0 1 1 86 0 a43 43 0 1 1 -86 0" />
+              <path id="obaydah-type-orbit" d="M56 10 a46 46 0 1 1 -.001 0 Z" />
             </defs>
-            <circle cx="56" cy="56" r="34" fill="none" stroke="currentColor" strokeWidth=".65" strokeOpacity=".45" />
-            <text fill="currentColor" fontSize="11.2" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" letterSpacing=".45" textLength="254" lengthAdjust="spacing">
-              <textPath href="#obaydah-type-orbit" startOffset="2%">OBAYDAH GRAPHIC • OBAYDAH GRAPHIC •</textPath>
+            <circle cx="56" cy="56" r="35" fill="none" stroke="currentColor" strokeWidth=".65" strokeOpacity=".45" />
+            <text fill="currentColor" fontSize="11.4" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" letterSpacing="0" textLength="252" lengthAdjust="spacing">
+              <textPath href="#obaydah-type-orbit" startOffset="4%">OBAYDAH GRAPHIC · OBAYDAH GRAPHIC ·</textPath>
             </text>
           </svg>
           <span className="cursor-orbit-core">
@@ -233,6 +232,7 @@ export function MotionFX() {
               <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
               <circle cx="12" cy="12" r="2.5" />
             </svg>
+            <svg className="cursor-orbit-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M8 5.2a1 1 0 0 1 1.52-.85l10 6.8a1 1 0 0 1 0 1.7l-10 6.8A1 1 0 0 1 8 18.8Z" /></svg>
             <span ref={tag} className="cursor-orbit-label" />
             <span className="cursor-orbit-drag" aria-hidden="true">↔</span>
           </span>

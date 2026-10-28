@@ -60,7 +60,7 @@ function VideoCard({ w, label, onOpen, tall }: { w: Work; label: string; onOpen:
   }, []);
 
   return (
-    <button ref={card} type="button" onClick={onOpen} className={`video-card group ${tall ? "is-tall" : ""}`} data-cursor="تشغيل" aria-label={`مشاهدة «${w.title}»`}>
+    <button ref={card} type="button" onClick={onOpen} className={`video-card group ${tall ? "is-tall" : ""}`} data-cursor="play" aria-label={`مشاهدة «${w.title}»`}>
       <span className="video-card-media" style={{ aspectRatio: `${w.cover.width} / ${w.cover.height}` }}>
         <Image src={w.cover.src} alt={w.cover.alt} fill sizes={tall ? "(min-width: 1024px) 22vw, 70vw" : "(min-width: 1024px) 50vw, 100vw"} className="media-enter object-cover" onLoad={markImageLoaded} />
         {v ? <video ref={vid} src={v.src} muted loop playsInline preload="none" aria-hidden="true" tabIndex={-1} className="video-card-preview" /> : null}
@@ -84,6 +84,20 @@ function VideoCard({ w, label, onOpen, tall }: { w: Work; label: string; onOpen:
 export function VideoSection({ video, works, categories, items, index, instagram, instagramHandle }: Props) {
   const [filter, setFilter] = useState("all");
   const [open, setOpen] = useState<Work | null>(null);
+  useEffect(() => {
+    const sync = () => {
+      const selected = new URLSearchParams(window.location.search).get("workCategory") || "all";
+      if (window.location.hash === "#video" && (selected === "all" || categories.some(c => c.id === selected))) setFilter(selected);
+    };
+    const onPick = (event: Event) => {
+      const detail = (event as CustomEvent<{ category: string; group: string }>).detail;
+      if (detail?.group === "video" && (detail.category === "all" || categories.some(c => c.id === detail.category))) setFilter(detail.category);
+    };
+    const raf = requestAnimationFrame(sync);
+    window.addEventListener("popstate", sync);
+    window.addEventListener("portfolio:filter", onPick);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("popstate", sync); window.removeEventListener("portfolio:filter", onPick); };
+  }, [categories]);
   const reelRow = useRef<HTMLUListElement>(null);
 
   const visible = filter === "all" ? items : items.filter((w) => w.category === filter);

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { markImageLoaded } from "@/lib/image-reveal";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { WorkLightbox } from "@/components/WorkLightbox";
 import { ArrowIcon, InstagramIcon, PlayIcon } from "@/components/icons";
 import type { SiteContent, Work } from "@/lib/cms/types";
@@ -30,6 +30,20 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState<Work | null>(null);
+  useEffect(() => {
+    const sync = () => {
+      const selected = new URLSearchParams(window.location.search).get("workCategory") || "all";
+      if (selected === "all" || works.categories.some(c => c.id === selected)) setFilter(selected);
+    };
+    const onPick = (event: Event) => {
+      const detail = (event as CustomEvent<{ category: string; group: string }>).detail;
+      if (detail?.group === "design" && (detail.category === "all" || works.categories.some(c => c.id === detail.category))) setFilter(detail.category);
+    };
+    const raf = requestAnimationFrame(sync);
+    window.addEventListener("popstate", sync);
+    window.addEventListener("portfolio:filter", onPick);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("popstate", sync); window.removeEventListener("portfolio:filter", onPick); };
+  }, [works.categories]);
 
   const counts = useMemo(() => {
     const m = new Map<string, number>();
@@ -86,7 +100,7 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
           {featured.map((w) => {
             const hasVideo = w.media.some((m) => m.type === "video");
             return (
-              <button key={w.id} type="button" onClick={() => { setOpen(w); track("portfolio_open", { project: w.id, category: w.category, gallery: "design" }); }} className="work-feature work-card-enter group" data-cursor="عرض" aria-label={`عرض مشروع «${w.title}»`}>
+              <button key={w.id} type="button" onClick={() => { setOpen(w); track("portfolio_open", { project: w.id, category: w.category, gallery: "design" }); }} className="work-feature work-card-enter group" data-cursor="eye" aria-label={`عرض مشروع «${w.title}»`}>
                 <span className="work-feature-media">
                   <Image
                     src={w.cover.src}
@@ -126,7 +140,7 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
                 const hasVideo = w.media.some((m) => m.type === "video");
                 return (
                   <li key={w.id} className="work-card-enter">
-                    <button type="button" onClick={() => { setOpen(w); track("portfolio_open", { project: w.id, category: w.category, gallery: "design" }); }} className="work-card group block w-full text-start" data-cursor="عرض" aria-label={`عرض مشروع «${w.title}»`}>
+                    <button type="button" onClick={() => { setOpen(w); track("portfolio_open", { project: w.id, category: w.category, gallery: "design" }); }} className="work-card group block w-full text-start" data-cursor="eye" aria-label={`عرض مشروع «${w.title}»`}>
                       <span className="relative block overflow-hidden rounded-2xl border border-line bg-paper-2">
                         <Image
                           src={w.cover.src}

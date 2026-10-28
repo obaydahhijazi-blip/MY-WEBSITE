@@ -23,7 +23,7 @@ export const SITE_QUERY = defineQuery(`{
     name, "href": url, "demo": coalesce(isDemo, false), "logo": logo{ "alt": "", "src": asset->url, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height }
   },
   "testimonials": *[_type == "testimonial" && published != false && consent == true] | order(orderRank) {
-    "id": _id, quote, name, role, company, "demo": coalesce(isDemo, false), "logo": logo{ "alt": "", "src": asset->url, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height }
+    "id": _id, quote, name, role, company, rating, "demo": coalesce(isDemo, false), "photo": photo{ "alt": "", "src": asset->url, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height }, "logo": logo{ "alt": "", "src": asset->url, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height }
   },
   "faq": *[_type == "faqItem" && published != false] | order(orderRank) { question, answer },
   "faqCount": count(*[_type == "faqItem"])

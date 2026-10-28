@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { ArrowIcon } from "@/components/icons";
-import type { SiteContent } from "@/lib/cms/types";
+import type { SiteContent, Testimonial } from "@/lib/cms/types";
 
 function MetalStar({ n, progress }: { n: number; progress: number }) {
   const step = n - 2;
@@ -28,12 +27,43 @@ function MetalStar({ n, progress }: { n: number; progress: number }) {
   </span>;
 }
 
-/** Five sculpted gold stars separate as the testimonial section scrolls into view. */
+
+/** A testimonial stays readable without a photo; never invent a customer's face. */
+function ReviewCard({ review }: { review: Testimonial }) {
+  const rating = Math.max(1, Math.min(5, Math.round(review.rating ?? 5)));
+  const initials = (review.name || "عميل").trim().split(/\s+/).slice(0, 2).map(part => part[0]).join("");
+  return (
+    <article className="review-card">
+      <header className="review-card-header">
+        <div className="review-avatar" aria-hidden={review.photo ? undefined : true}>
+          {review.photo
+            ? <Image src={review.photo.src} alt={review.photo.alt || `صورة ${review.name || "صاحب التقييم"}`} width={review.photo.width} height={review.photo.height} sizes="64px" className="h-full w-full object-cover" unoptimized={review.photo.src.endsWith(".svg")} />
+            : <span className="review-avatar-initials" aria-hidden="true">{initials}</span>}
+        </div>
+        <div className="min-w-0 flex-1">
+          <h3 className="review-name">{review.name || "عميل"}</h3>
+          {(review.role || review.company) && <p className="review-role">{[review.role, review.company].filter(Boolean).join(" · ")}</p>}
+        </div>
+        {review.demo && <span className="review-demo-tag">تجريبي</span>}
+      </header>
+      <div className="review-rating" role="img" aria-label={`التقييم ${rating} من 5 نجوم`}>
+        {Array.from({ length: 5 }, (_, n) => (
+          <svg key={n} viewBox="0 0 24 24" aria-hidden="true" focusable="false" className={n < rating ? "review-star is-active" : "review-star"}>
+            <path d="M12 1.8 15.05 8l6.85 1.02-4.95 4.82 1.17 6.81L12 17.44 5.88 20.65l1.17-6.81L2.1 9.02 8.95 8Z" />
+          </svg>
+        ))}
+        <span className="review-rating-number" dir="ltr">{rating}.0 / 5</span>
+      </div>
+      <blockquote className="review-copy">{review.quote}</blockquote>
+      {review.logo && <div className="review-company-logo"><Image src={review.logo.src} alt={review.logo.alt || "شعار الجهة"} width={review.logo.width} height={review.logo.height} sizes="110px" className="max-h-9 w-auto max-w-28 object-contain" unoptimized={review.logo.src.endsWith(".svg")} /></div>}
+    </article>
+  );
+}
+
+/** Five metallic stars separate on scroll; responsive review cards follow in a grid. */
 export function Testimonials({ testimonials, index }: { testimonials: SiteContent["testimonials"]; index: string }) {
   const items = testimonials.items;
-  const [i, setI] = useState(0);
   const [progress, setProgress] = useState(0);
-  const touch = useRef<number | null>(null);
   const root = useRef<HTMLElement>(null);
   useEffect(() => {
     if (!items.length) return;
@@ -54,12 +84,8 @@ export function Testimonials({ testimonials, index }: { testimonials: SiteConten
     return () => { window.removeEventListener("scroll", scroll); window.removeEventListener("resize", scroll); cancelAnimationFrame(raf); };
   }, [items.length]);
   if (!items.length) return null;
-  const count = items.length;
-  const go = (n: number) => setI((n + count) % count);
-  const t = items[i];
-
   return (
-    <section ref={root} id="testimonials" className="section testimonial-cinema bg-paper-2" aria-labelledby="testimonials-title" onPointerMove={e => { if (e.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; const rect=e.currentTarget.getBoundingClientRect(); e.currentTarget.style.setProperty("--star-parallax-x",`${((e.clientX-rect.left)/rect.width-.5)*13}px`); e.currentTarget.style.setProperty("--star-parallax-y",`${((e.clientY-rect.top)/rect.height-.5)*10}px`); }} onPointerLeave={e => {e.currentTarget.style.setProperty("--star-parallax-x","0px");e.currentTarget.style.setProperty("--star-parallax-y","0px");}}>
+    <section ref={root} id="testimonials" className="section testimonial-cinema bg-paper-2" aria-labelledby="testimonials-title" onPointerMove={e => { if (e.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; const rect=e.currentTarget.getBoundingClientRect(); e.currentTarget.style.setProperty("--star-parallax-x",`${((e.clientX-rect.left)/rect.width-.5)*13}px`); e.currentTarget.style.setProperty("--star-parallax-y",`${((e.clientY-rect.top)/rect.height-.5)*10}px`); }} onPointerLeave={e => { e.currentTarget.style.setProperty("--star-parallax-x","0px"); e.currentTarget.style.setProperty("--star-parallax-y","0px"); }}>
       <div className="container-x">
         <header className="reveal">
           <p className="section-index"><span className="num">{index}</span><span className="rule" aria-hidden="true" /><span>{testimonials.label}</span></p>
@@ -68,26 +94,9 @@ export function Testimonials({ testimonials, index }: { testimonials: SiteConten
         <div className="metal-stars-wrap" aria-label="خمس نجوم ذهبية">
           {[0,1,2,3,4].map(n => <MetalStar key={n} n={n} progress={progress} />)}
         </div>
-        <figure className="quote-stage testimonial-quote-stage" style={{ opacity: Math.max(0, Math.min(1, (progress - .24) / .65)), transform: `translateY(${(1-progress)*24}px)` }}
-          onTouchStart={e => (touch.current = e.touches[0].clientX)}
-          onTouchEnd={e => { if (touch.current === null) return; const dx = e.changedTouches[0].clientX - touch.current; touch.current = null; if (Math.abs(dx) > 50) go(i + (dx > 0 ? 1 : -1)); }}>
-          <span className="quote-mark font-latin" aria-hidden="true">&rdquo;</span>
-          <div key={t.id} className="quote-body" aria-live="polite">
-            {t.demo ? <span className="demo-badge !static mb-6 inline-block">عينة تجريبية</span> : null}
-            <blockquote className="max-w-4xl text-[clamp(1.35rem,2.6vw,2.15rem)] font-medium leading-[1.8] text-ink">{t.quote}</blockquote>
-            {t.name || t.company ? <figcaption className="mt-10 flex items-center gap-4">
-              {t.logo ? <Image src={t.logo.src} alt={t.logo.alt} width={t.logo.width} height={t.logo.height} className="h-10 w-auto max-w-28 object-contain" unoptimized={t.logo.src.endsWith(".svg")} /> : <span className="block h-12 w-1 rounded-full bg-cyan" aria-hidden="true" />}
-              <span>{t.name ? <span className="block text-lg font-semibold text-ink">{t.name}</span> : null}<span className="block text-sm text-muted">{[t.role, t.company].filter(Boolean).join("، ")}</span></span>
-            </figcaption> : null}
-          </div>
-          {count > 1 ? <div className="mt-12 flex items-center justify-between gap-6 border-t border-line pt-6">
-            <div className="flex gap-2" role="group" aria-label="اختيار الشهادة">{items.map((x, n) => <button key={x.id} type="button" className="quote-dot" aria-label={`الشهادة ${n+1}`} aria-current={n === i || undefined} onClick={() => go(n)} />)}</div>
-            <div className="flex items-center gap-3"><span className="font-latin text-sm text-muted" aria-hidden="true">{String(i+1).padStart(2,"0")} / {String(count).padStart(2,"0")}</span>
-              <button type="button" onClick={() => go(i - 1)} className="carousel-btn" aria-label="الشهادة السابقة"><ArrowIcon direction="right" /></button>
-              <button type="button" onClick={() => go(i + 1)} className="carousel-btn" aria-label="الشهادة التالية"><ArrowIcon direction="left" /></button>
-            </div>
-          </div> : null}
-        </figure>
+        <div className="reviews-grid" style={{opacity: Math.max(.15, Math.min(1, (progress - .13) / .7)), transform: `translateY(${(1-progress)*16}px)`}}>
+          {items.map(review => <ReviewCard key={review.id} review={review} />)}
+        </div>
       </div>
     </section>
   );
