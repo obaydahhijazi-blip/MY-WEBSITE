@@ -23,5 +23,5 @@ export async function getSharedQuote(token: string): Promise<CustomerQuote | nul
   );
   if (!raw || !Array.isArray(raw.items) || !raw.clientName || raw.items.length > 60
     || raw.items.some(i => !Number.isFinite(i.quantity)||!Number.isFinite(i.unitPrice) ||i.quantity<0||i.unitPrice<0)) return null;
-  return raw;
+  return {...raw,expired:!!raw.validUntil&&Date.parse(raw.validUntil+"T23:59:59")<Date.now()};
 }
