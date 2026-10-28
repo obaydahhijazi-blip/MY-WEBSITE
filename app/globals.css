@@ -1367,8 +1367,7 @@ img {
   transform: none;
 }
 
-/* ───────── Branded OBAYDAH GRAPHIC cursor (fine pointer devices) ───────── */
-/* Only the pointer and its typographic orbit; never covers or blocks a real control. */
+/* ───────── Compact branded cursor (desktop mouse only) ───────── */
 .cursor-orbit, .cursor-point {
   position: fixed;
   inset: 0 auto auto 0;
@@ -1386,69 +1385,88 @@ img {
 .cursor-orbit[data-state="hidden"], .cursor-point[data-state="hidden"] { opacity: 0 !important; }
 .cursor-orbit-shell {
   position: absolute;
-  width: 140px;
-  height: 140px;
-  left: -70px;
-  top: -70px;
+  width: 88px;
+  height: 88px;
+  left: -44px;
+  top: -44px;
   transform: rotate(var(--cursor-angle, 0deg)) scaleX(var(--cursor-stretch, 1));
   transform-origin: center;
-  transition: scale 280ms var(--ease-out-soft);
+  transition: scale 240ms var(--ease-out-soft);
 }
 .cursor-orbit-type {
   position: absolute;
   inset: 0;
-  width: 140px;
-  height: 140px;
+  width: 88px;
+  height: 88px;
+  overflow: visible;
   color: inherit;
-  animation: cursor-type-spin 19s linear infinite;
-  transition: opacity 280ms ease;
+  animation: cursor-type-spin 16s linear infinite;
 }
 @keyframes cursor-type-spin { to { transform: rotate(360deg); } }
-.cursor-orbit[data-state="link"] .cursor-orbit-shell { scale: 1.08; }
+.cursor-orbit[data-state="link"] .cursor-orbit-shell { scale: 1.06; }
 .cursor-orbit[data-state="label"] .cursor-orbit-shell,
-.cursor-orbit[data-state="drag"] .cursor-orbit-shell { scale: 1.13; }
-.cursor-orbit[data-state="label"] .cursor-orbit-type,
-.cursor-orbit[data-state="drag"] .cursor-orbit-type { animation-play-state: paused; }
+.cursor-orbit[data-state="drag"] .cursor-orbit-shell { scale: 1.14; }
 .cursor-orbit-core {
   position: absolute;
   top: 50%;
   left: 50%;
   display: grid;
   place-items: center;
-  width: 35px;
-  height: 35px;
-  border: 1px solid currentColor;
+  width: 14px;
+  height: 14px;
+  border: 0;
   border-radius: 999px;
-  background: color-mix(in srgb, currentColor 9%, transparent);
+  background: transparent;
   transform: translate(-50%,-50%);
-  transition: width 270ms ease, height 270ms ease, background 270ms ease;
+  transition: width 240ms ease, height 240ms ease, background 240ms ease;
 }
 .cursor-orbit[data-state="label"] .cursor-orbit-core,
-.cursor-orbit[data-state="drag"] .cursor-orbit-core { width: 56px; height: 56px; }
+.cursor-orbit[data-state="drag"] .cursor-orbit-core {
+  width: 42px;
+  height: 42px;
+  border: 1px solid currentColor;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
 .cursor-orbit-label {
   position: absolute;
-  width: max-content;
-  max-width: 68px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
   text-align: center;
-  line-height: 1.4;
-  font-size: 12px;
+  line-height: 1.2;
+  font-size: 10px;
   font-weight: 700;
   white-space: nowrap;
   opacity: 0;
 }
 .cursor-orbit[data-state="label"] .cursor-orbit-label { opacity: 1; }
-.cursor-orbit-drag { position: absolute; font-family: Arial, sans-serif; font-size: 27px; line-height: 1; opacity: 0; }
+.cursor-orbit-eye {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+}
+.cursor-orbit[data-eye="true"] .cursor-orbit-eye { opacity: 1; }
+.cursor-orbit[data-eye="true"] .cursor-orbit-label {
+  top: auto;
+  bottom: 4px;
+  transform: translateX(-50%);
+  font-size: 9px;
+}
+.cursor-orbit-drag { position: absolute; font-family: Arial, sans-serif; font-size: 21px; line-height: 1; opacity: 0; }
 .cursor-orbit[data-state="drag"] .cursor-orbit-drag { opacity: 1; }
 .cursor-orbit-ripple {
   position: absolute;
-  inset: 31px;
-  border: 1.5px solid currentColor;
+  inset: 21px;
+  border: 1px solid currentColor;
   border-radius: 50%;
   opacity: 0;
   transform: scale(.55);
 }
 .cursor-orbit.is-down .cursor-orbit-ripple { animation: cursor-click-ripple .43s ease-out both; }
-.cursor-orbit.is-down .cursor-orbit-core { width: 29px; height: 29px; }
 @keyframes cursor-click-ripple {
   12% { opacity: .9; transform: scale(.5); }
   100% { opacity: 0; transform: scale(1.4); }
@@ -1456,25 +1474,24 @@ img {
 .cursor-point { z-index: 96; }
 .cursor-point span {
   position: absolute;
-  left: -3px;
-  top: -3px;
-  width: 6px;
-  height: 6px;
+  left: -2px;
+  top: -2px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: currentColor;
 }
 .cursor-point[data-state="label"] span, .cursor-point[data-state="drag"] span { opacity: 0; }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  /* Keep text editing native; decorative cursor only replaces the normal pointer. */
+@media (min-width: 768px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  /* Native caret in forms and native cursor in modal dialogs. */
   html.has-cursor :not(input):not(textarea):not(select):not([contenteditable="true"]) { cursor: none !important; }
   html.has-cursor input, html.has-cursor textarea, html.has-cursor [contenteditable="true"] { cursor: text !important; }
   html.has-cursor select { cursor: default !important; }
-  /* Native dialogs render in the browser top layer above fixed cursors. */
   html.has-cursor dialog[open], html.has-cursor dialog[open] * { cursor: auto !important; }
   html.has-cursor dialog[open] a, html.has-cursor dialog[open] button { cursor: pointer !important; }
   html.has-cursor dialog[open] input, html.has-cursor dialog[open] textarea { cursor: text !important; }
 }
-@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+@media (max-width: 767px), (pointer: coarse), (hover: none), (prefers-reduced-motion: reduce) {
   .cursor-orbit, .cursor-point { display: none !important; }
   .cursor-orbit-type { animation: none !important; }
 }

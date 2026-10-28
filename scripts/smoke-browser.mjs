@@ -37,6 +37,21 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
     await page.waitForTimeout(100);
     if (await page.locator(".cursor-orbit").getAttribute("data-tone") !== "dark") throw Error("Cursor must be cyan above white");
     await page.locator("#cursor-tone-probe").evaluate(e=>e.remove());
+    const rendered = await page.locator(".cursor-orbit-type").evaluate(el => ({
+      size: parseFloat(getComputedStyle(el).width), // CSS size, not the rotated transform bounding box
+      text: el.querySelector("text")?.getComputedTextLength() || 0,
+      css: getComputedStyle(el).animationDuration,
+    }));
+    if (rendered.size > 90) throw Error("Cursor is too large: "+rendered.size);
+    if (rendered.text > 267 || rendered.text < 230) throw Error("Circular text must fit its path: "+rendered.text);
+    if (rendered.css !== "16s") throw Error("Circular text animation must be active");
+  });
+  if (kind === "mobile") await check("custom cursor disabled on phones", async () => {
+    const details = await page.evaluate(() => ({
+      active: document.documentElement.classList.contains("has-cursor"),
+      display: getComputedStyle(document.querySelector(".cursor-orbit")).display,
+    }));
+    if (details.active || details.display !== "none") throw Error("Mobile cursor must be disabled: "+JSON.stringify(details));
   });
   await check(kind+" service page has common header and footer", async () => {
     const resp = await page.goto(base+"/services/identity",{waitUntil:"domcontentloaded"});
