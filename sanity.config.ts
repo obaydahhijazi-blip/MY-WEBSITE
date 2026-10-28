@@ -8,6 +8,7 @@ import { apiVersion, dataset, projectId } from "./sanity/env";
 import { schemaTypes, SINGLETONS } from "./sanity/schemaTypes";
 import { structure } from "./sanity/structure";
 import { statsTool } from "./sanity/plugins/stats";
+import { quotesTool } from "./sanity/plugins/quotes";
 
 // Petrol / cyan Studio theme matching the site identity.
 const theme = buildLegacyTheme({
@@ -53,6 +54,7 @@ export default defineConfig({
   plugins: [
     structureTool({ structure, title: "المحتوى" }),
     statsTool(),
+    quotesTool(),
     presentationTool({
       title: "معاينة",
       previewUrl: { origin: typeof window !== "undefined" ? window.location.origin : undefined, previewMode: { enable: "/api/draft-mode/enable" } },

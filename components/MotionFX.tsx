@@ -150,7 +150,7 @@ export function MotionFX() {
       const drag = /اسحب|drag/i.test(label);
       t.textContent = label;
       r.dataset.eye = label === "عرض" ? "true" : "false";
-      r.dataset.state = drag ? "drag" : labelled ? "label" : interactive ? "link" : "default";
+        r.dataset.state = label === "عرض" ? "eye" : drag ? "drag" : labelled ? "label" : interactive ? "link" : "default";
       d.dataset.state = r.dataset.state;
       updateTone(target);
 
