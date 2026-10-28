@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { QuoteQR } from "@/components/QuoteQR";
 import { QuotePrintButton } from "@/components/QuotePrintButton";
 import { calculateQuote, getSharedQuote } from "@/lib/quotes";
@@ -16,10 +17,10 @@ export default async function OfferPage({params}:P){
   if(!quote)notFound();
   const values=calculateQuote(quote);
   const verificationUrl=`${siteUrl}/verify/${encodeURIComponent(token)}`;
-  const expired=Boolean(quote.validUntil&&Date.parse(quote.validUntil+"T23:59:59")<Date.now());
+  const expired=Boolean(quote.expired);
   const accent=/^#[0-9a-f]{6}$/i.test(quote.accent||"")?quote.accent:"#00373e";
   return <main className="offer-page" dir="rtl" style={{"--offer-accent":accent} as React.CSSProperties}>
-    <div className="offer-actions"><a href="/" className="offer-back-link">الرئيسية</a><QuotePrintButton /></div>
+    <div className="offer-actions"><Link href="/" className="offer-back-link">الرئيسية</Link><QuotePrintButton /></div>
     <article className="offer-sheet">
       <header className="offer-header">
         <div><p className="offer-kicker">OBAYDAH.GRAPHIC</p><h1>عرض سعر</h1><p>تصميم وإنتاج بصري باهتمام بالتفاصيل</p></div>
