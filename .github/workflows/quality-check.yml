@@ -28,10 +28,10 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Smoke test published Arabic routes and SEO pages
         run: |
-          set -eu
+          set -euxo pipefail
           PORT=3100 npm run start >/tmp/obaydah-next.log 2>&1 &
           APP_PID=$!
-          trap 'kill "$APP_PID" 2>/dev/null || true' EXIT
+          trap 'rc=$?; if [ "$rc" -ne 0 ]; then tail -n 80 /tmp/obaydah-next.log || true; fi; kill "$APP_PID" 2>/dev/null || true' EXIT
           ready=0
           for i in $(seq 1 45); do
             if curl --silent --fail http://127.0.0.1:3100/ -o /tmp/ar.html; then
