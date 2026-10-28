@@ -8,7 +8,7 @@ type P={params:Promise<{token:string}>};
 export default async function VerifyPage({params}:P){
   const {token}=await params;
   const quote=await getSharedQuote(token).catch(()=>null);
-  const expired=!!quote?.validUntil&&Date.parse(quote.validUntil+"T23:59:59")<Date.now();
+  const expired=Boolean(quote?.expired);
   return <main className="flex min-h-dvh items-center justify-center bg-paper-2 px-5 py-14" dir="rtl"><section className="w-full max-w-xl rounded-3xl border border-line bg-white p-8 text-center shadow-xl">
     <p className="mb-3 text-sm font-bold tracking-widest text-cyan-ink">OBAYDAH.GRAPHIC</p>
     <div className={`mx-auto mb-5 grid size-16 place-items-center rounded-full text-3xl ${quote?"bg-teal/10 text-teal":"bg-red-50 text-red-600"}`} aria-hidden="true">{quote?"✓":"!"}</div>
