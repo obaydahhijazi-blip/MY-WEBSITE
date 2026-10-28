@@ -5,12 +5,12 @@ import { useEffect, useRef } from "react";
 /**
  * Site-wide micro-interactions, all disabled for reduced motion:
  * - Section headings reveal word by word (words stay whole, so Arabic letters keep joining).
- * - On mouse devices: a cursor ring that grows over links and shows a label over
- *   elements marked data-cursor="…", magnetic primary buttons, and a light that follows
- *   the pointer inside service cards.
+ * - On fine-pointer devices: branded SVG typography cursor with adaptive contrast, magnetic
+ *   CTAs, work/drag labels, click ripple and speed stretch. Service card spotlight remains.
  */
 export function MotionFX() {
   const ring = useRef<HTMLDivElement>(null);
+  const dot = useRef<HTMLDivElement>(null);
   const tag = useRef<HTMLSpanElement>(null);
 
   // Word-by-word headings
@@ -49,88 +49,189 @@ export function MotionFX() {
     return () => io.disconnect();
   }, []);
 
-  // Cursor, magnetic buttons, card spotlight
+  // Adaptive branded cursor, magnetic buttons, and light inside service cards.
   useEffect(() => {
-    const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!fine || reduce) return;
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+    if (!mq.matches) return;
     const r = ring.current;
+    const d = dot.current;
     const t = tag.current;
-    if (!r || !t) return;
+    if (!r || !d || !t) return;
     document.documentElement.classList.add("has-cursor");
 
-    let mx = -100;
-    let my = -100;
+    let mx = -200;
+    let my = -200;
     let cx = mx;
     let cy = my;
+    let angle = 0;
+    let stretch = 0;
     let raf = 0;
+    let visible = false;
     let magnet: HTMLElement | null = null;
+    let prevTarget: Element | null = null;
+    let timer: ReturnType<typeof setTimeout> | null = null;
 
-    const loop = () => {
-      cx += (mx - cx) * 0.2;
-      cy += (my - cy) * 0.2;
-      r.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
-      raf = Math.abs(mx - cx) + Math.abs(my - cy) > 0.1 ? requestAnimationFrame(loop) : 0;
+    /** Pick contrast from the first visible painted ancestor (including gradient themes). */
+    const toneFor = (el: Element | null): "light" | "dark" => {
+      for (let node: Element | null = el; node; node = node.parentElement) {
+        if (node instanceof HTMLElement) {
+          const css = getComputedStyle(node);
+          const bg = css.backgroundColor;
+          const match = bg.match(/rgba?\\(\\s*([\\d.]+)[,\\s]+([\\d.]+)[,\\s]+([\\d.]+)(?:[,\\s/]+([\\d.]+))?/i);
+          if (match && (match[4] === undefined || Number(match[4]) > .25)) {
+            const [red, green, blue] = [Number(match[1]), Number(match[2]), Number(match[3])];
+            return (.2126 * red + .7152 * green + .0722 * blue) < 148 ? "light" : "dark";
+          }
+          // When a painted background uses a gradient, parent backgroundColor may be transparent.
+          if (css.backgroundImage !== "none") {
+            if (/#001e25|#00373e|rgb\\(0[,\\s]+30[,\\s]+37|rgb\\(0[,\\s]+55[,\\s]+62/i.test(css.backgroundImage)) return "light";
+          }
+        }
+      }
+      return "dark";
     };
 
+    const updateTone = (target: Element | null) => {
+      if (target === prevTarget) return;
+      prevTarget = target;
+      const tone = toneFor(target);
+      r.dataset.tone = tone;
+      d.dataset.tone = tone;
+    };
+
+    const animate = () => {
+      raf = 0;
+      const vx = mx - cx;
+      const vy = my - cy;
+      cx += vx * .18;
+      cy += vy * .18;
+      const speed = Math.hypot(vx, vy);
+      const goal = Math.min(.23, speed / 115);
+      stretch += (goal - stretch) * .17;
+      if (speed > 1.5) angle = Math.atan2(vy, vx) * 180 / Math.PI;
+      r.style.transform = `translate3d(${cx.toFixed(1)}px,${cy.toFixed(1)}px,0)`;
+      r.style.setProperty("--cursor-angle", `${angle.toFixed(1)}deg`);
+      r.style.setProperty("--cursor-stretch", (1 + stretch).toFixed(3));
+      if (speed > .15 || stretch > .003) raf = requestAnimationFrame(animate);
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(animate); };
+
+    const resetMagnet = () => {
+      if (magnet) magnet.style.transform = "";
+      magnet = null;
+    };
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
       mx = e.clientX;
       my = e.clientY;
-      if (!raf) raf = requestAnimationFrame(loop);
-      r.classList.add("is-on");
-      const target = e.target as Element | null;
-
-      // Label / hover state
+      // The center point follows immediately; typography catches up gently.
+      d.style.transform = `translate3d(${mx}px,${my}px,0)`;
+      const target = e.target instanceof Element ? e.target : null;
+      const editable = target?.closest("input, textarea, select, [contenteditable='true'], [role='textbox']");
+      if (editable) {
+        r.dataset.state = "hidden";
+        d.dataset.state = "hidden";
+        resetMagnet();
+        return;
+      }
+      r.dataset.state = "default";
+      d.dataset.state = "default";
+      if (!visible) {
+        visible = true;
+        r.classList.add("is-on");
+        d.classList.add("is-on");
+      }
       const labelled = target?.closest<HTMLElement>("[data-cursor]");
-      const interactive = target?.closest("a, button, [role=tab], select, input, textarea, label");
-      t.textContent = labelled?.dataset.cursor ?? "";
-      r.dataset.state = labelled ? "label" : interactive ? "link" : "";
+      const interactive = target?.closest("a, button, [role='tab'], summary, [role='button']");
+      const label = labelled?.dataset.cursor || "";
+      const drag = /اسحب|drag/i.test(label);
+      t.textContent = label;
+      r.dataset.state = drag ? "drag" : labelled ? "label" : interactive ? "link" : "default";
+      d.dataset.state = r.dataset.state;
+      updateTone(target);
 
-      // Spotlight inside service cards
       const card = target?.closest<HTMLElement>(".service-card");
       if (card) {
-        const b = card.getBoundingClientRect();
-        card.style.setProperty("--mx", `${e.clientX - b.left}px`);
-        card.style.setProperty("--my", `${e.clientY - b.top}px`);
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+        card.style.setProperty("--my", `${e.clientY - rect.top}px`);
       }
 
-      // Magnetic buttons
       const m = target?.closest<HTMLElement>(".btn-primary, [data-magnetic]") ?? null;
-      if (magnet && magnet !== m) magnet.style.transform = "";
+      if (magnet !== m) resetMagnet();
       magnet = m;
       if (m) {
-        const b = m.getBoundingClientRect();
-        const dx = (e.clientX - (b.left + b.width / 2)) / (b.width / 2);
-        const dy = (e.clientY - (b.top + b.height / 2)) / (b.height / 2);
-        m.style.transform = `translate3d(${(dx * 7).toFixed(1)}px, ${(dy * 5).toFixed(1)}px, 0)`;
+        const rect = m.getBoundingClientRect();
+        const dx = (e.clientX - (rect.left + rect.width / 2)) / Math.max(1, rect.width / 2);
+        const dy = (e.clientY - (rect.top + rect.height / 2)) / Math.max(1, rect.height / 2);
+        m.style.transform = `translate3d(${(dx * 6).toFixed(1)}px, ${(dy * 4).toFixed(1)}px, 0)`;
       }
+      kick();
     };
+
     const onLeave = () => {
       r.classList.remove("is-on");
-      if (magnet) magnet.style.transform = "";
-      magnet = null;
+      d.classList.remove("is-on");
+      visible = false;
+      prevTarget = null;
+      resetMagnet();
     };
-    const onDown = () => r.classList.add("is-down");
-    const onUp = () => r.classList.remove("is-down");
-
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse" || r.dataset.state === "hidden") return;
+      if (timer) clearTimeout(timer);
+      r.classList.remove("is-down");
+      // Restart click ripple on repeated clicks.
+      void r.offsetWidth;
+      r.classList.add("is-down");
+      timer = setTimeout(() => r.classList.remove("is-down"), 430);
+    };
+    const onScroll = () => {
+      if (!visible || mx < 0 || my < 0) return;
+      // The element below a stationary cursor can change after scrolling.
+      const target = document.elementFromPoint(mx, my);
+      updateTone(target);
+    };
+    const onVisibility = () => { if (document.hidden) onLeave(); };
     window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerdown", onDown, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
     document.documentElement.addEventListener("pointerleave", onLeave);
-    window.addEventListener("pointerdown", onDown);
-    window.addEventListener("pointerup", onUp);
+    document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
       cancelAnimationFrame(raf);
+      if (timer) clearTimeout(timer);
+      resetMagnet();
       document.documentElement.classList.remove("has-cursor");
       window.removeEventListener("pointermove", onMove);
-      document.documentElement.removeEventListener("pointerleave", onLeave);
       window.removeEventListener("pointerdown", onDown);
-      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("scroll", onScroll);
+      document.documentElement.removeEventListener("pointerleave", onLeave);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
 
   return (
-    <div ref={ring} className="cursor-ring" aria-hidden="true">
-      <span ref={tag} className="cursor-tag" />
-    </div>
+    <>
+      <div ref={ring} className="cursor-orbit" data-tone="dark" data-state="default" aria-hidden="true">
+        <div className="cursor-orbit-shell">
+          <svg className="cursor-orbit-type" viewBox="0 0 140 140" focusable="false" aria-hidden="true">
+            <defs>
+              <path id="obaydah-type-orbit" d="M70 70 m-52 0 a52 52 0 1 1 104 0 a52 52 0 1 1 -104 0" />
+            </defs>
+            <circle cx="70" cy="70" r="51" fill="none" stroke="currentColor" strokeWidth=".6" strokeOpacity=".5" />
+            <text fill="currentColor" fontSize="12.4" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" letterSpacing="1.55">
+              <textPath href="#obaydah-type-orbit">OBAYDAH GRAPHIC • OBAYDAH GRAPHIC • </textPath>
+            </text>
+          </svg>
+          <span className="cursor-orbit-core">
+            <span ref={tag} className="cursor-orbit-label" />
+            <span className="cursor-orbit-drag" aria-hidden="true">↔</span>
+          </span>
+          <span className="cursor-orbit-ripple" />
+        </div>
+      </div>
+      <div ref={dot} className="cursor-point" data-tone="dark" data-state="default" aria-hidden="true"><span /></div>
+    </>
   );
 }
