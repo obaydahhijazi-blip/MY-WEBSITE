@@ -52,13 +52,16 @@ export function StatsBand({ stats, countries, countriesTitle, services }: { stat
   const detail = (stat: Stat) => {
     if (stat.mapLink) return <><p className="stat-detail-title">{countriesTitle}</p><ul className="stat-chip-list">{countries.map(id => <li key={id} className="stat-chip">{COUNTRY_NAMES_AR[id] ?? id}</li>)}</ul></>;
     if (stat.icon === "grid" || stat.label.includes("تخصص")) return <><p className="stat-detail-title">مجالات التخصص</p><ul className="stat-specialties">{services.map((s, i) => <li key={i}><LineIcon name={s.icon} className="size-4 shrink-0 text-cyan"/><span>{s.title}</span></li>)}</ul></>;
-    if (stat.icon === "users") return <p className="stat-detail-copy">ثقة أكثر من 150 عميلاً وجهة بمختلف القطاعات</p>;
+    if (stat.icon === "users") return <p className="stat-detail-copy">تعاون مع علامات وجهات متنوعة في مجالات التصميم والإنتاج المرئي.</p>;
+    if (stat.icon === "layers") return <><p className="stat-detail-title">المشاريع المنجزة</p><p className="stat-detail-copy">تصميمات وهويات بصرية ومحتوى وإنتاج فيديو ومشاريع بالذكاء الاصطناعي.</p>{stat.value === null ? <p className="stat-demo-note">120+ رقم توضيحي مؤقت؛ استبدله بالعدد الفعلي من لوحة التحكم.</p> : null}</>;
     if (stat.icon === "clock") return <><p className="stat-detail-title">المسيرة المهنية</p><ol className="stat-career"><li><span>البداية</span><strong>التصميم الإعلاني</strong></li><li><span>التوسع</span><strong>الهوية البصرية والإخراج الفني</strong></li><li><span>اليوم</span><strong>الإنتاج المرئي والذكاء الاصطناعي</strong></li></ol></>;
     return null;
   };
   return <div ref={rootRef} className="stats-band reveal">
     <dl className="stats-grid" style={{ ["--n" as string]: stats.length }} data-active={active !== null || undefined}>
       {stats.map((s, i) => {
+        const displayValue = s.value ?? (s.icon === "layers" ? 120 : null);
+        const isSample = s.value === null && s.icon === "layers";
         const canOpen = Boolean(detail(s));
         const open = active === i && canOpen;
         const id = uid + "-detail-" + i;
@@ -66,8 +69,8 @@ export function StatsBand({ stats, countries, countriesTitle, services }: { stat
           onPointerEnter={e => { if (e.pointerType === "mouse" && !touchOpen && canOpen) setActive(i); }}
           onPointerLeave={e => { if (e.pointerType === "mouse" && !touchOpen) setActive(null); }}
           onBlur={e => { if (!touchOpen && !e.currentTarget.contains(e.relatedTarget as Node | null)) setActive(null); }}>
-          <button type="button" className="stat-toggle" data-cursor={s.mapLink ? "الدول" : "تفاصيل"} aria-controls={id} aria-expanded={open}
-            aria-label={String(s.value ?? "") + s.suffix + " " + s.label + " — عرض التفاصيل"}
+          <button type="button" className="stat-toggle" data-cursor-icon={s.icon} aria-controls={id} aria-expanded={open}
+            aria-label={String(displayValue ?? "") + s.suffix + " " + s.label + (isSample ? " — عدد تجريبي" : "") + " — عرض التفاصيل"}
             onFocus={() => { if (!touchOpen && canOpen) setActive(i); }}
             onClick={() => {
               if (!canOpen) return;
@@ -78,8 +81,8 @@ export function StatsBand({ stats, countries, countriesTitle, services }: { stat
               setActive(next);
             }}>
             <span className="stat-icon" aria-hidden="true"><LineIcon name={s.icon} className="size-[18px]"/></span>
-            <span className="stat-value">{s.value !== null ? <CountUp value={s.value} suffix={s.suffix}/> : <span className="font-latin opacity-40">—</span>}</span>
-            <span className="stat-label">{s.label}</span>
+            <span className="stat-value">{displayValue !== null ? <CountUp value={displayValue} suffix={s.suffix}/> : <span className="font-latin opacity-40">—</span>}</span>
+            <span className="stat-label">{s.label}</span>{isSample ? <span className="stat-demo-note-inline">رقم تجريبي</span> : null}
           </button>
           <div id={id} className="stat-detail" data-open={open || undefined} inert={!open} role="region" aria-label={"تفاصيل " + s.label}>{detail(s)}</div>
         </div>;
