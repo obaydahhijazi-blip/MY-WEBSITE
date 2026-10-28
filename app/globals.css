@@ -1469,6 +1469,10 @@ img {
   html.has-cursor :not(input):not(textarea):not(select):not([contenteditable="true"]) { cursor: none !important; }
   html.has-cursor input, html.has-cursor textarea, html.has-cursor [contenteditable="true"] { cursor: text !important; }
   html.has-cursor select { cursor: default !important; }
+  /* Native dialogs render in the browser top layer above fixed cursors. */
+  html.has-cursor dialog[open], html.has-cursor dialog[open] * { cursor: auto !important; }
+  html.has-cursor dialog[open] a, html.has-cursor dialog[open] button { cursor: pointer !important; }
+  html.has-cursor dialog[open] input, html.has-cursor dialog[open] textarea { cursor: text !important; }
 }
 @media (pointer: coarse), (prefers-reduced-motion: reduce) {
   .cursor-orbit, .cursor-point { display: none !important; }
