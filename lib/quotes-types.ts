@@ -4,5 +4,5 @@ export type CustomerQuote = {
   _id: string; _type: "customerQuote"; reference: string; title: string; clientName: string;
   clientCompany?: string; createdDate: string; validUntil?: string; currency: "USD"|"SYP"|"EUR";
   items: QuoteLine[]; discount: number; notes?: string; terms?: string; accent?: string;
-  shareEnabled: boolean; shareToken: string; status: "draft"|"sent"|"accepted"|"revoked";
+  expired?: boolean; shareEnabled: boolean; shareToken: string; status: "draft"|"sent"|"accepted"|"revoked";
 };
