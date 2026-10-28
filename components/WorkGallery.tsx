@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { markImageLoaded } from "@/lib/image-reveal";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { WorkLightbox } from "@/components/WorkLightbox";
 import { ArrowIcon, InstagramIcon, PlayIcon } from "@/components/icons";
 import type { SiteContent, Work } from "@/lib/cms/types";
@@ -30,6 +30,20 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState<Work | null>(null);
+  useEffect(() => {
+    const sync = () => {
+      const selected = new URLSearchParams(window.location.search).get("workCategory") || "all";
+      if (selected === "all" || works.categories.some(c => c.id === selected)) setFilter(selected);
+    };
+    const onPick = (event: Event) => {
+      const detail = (event as CustomEvent<{ category: string; group: string }>).detail;
+      if (detail?.group === "design" && (detail.category === "all" || works.categories.some(c => c.id === detail.category))) setFilter(detail.category);
+    };
+    const raf = requestAnimationFrame(sync);
+    window.addEventListener("popstate", sync);
+    window.addEventListener("portfolio:filter", onPick);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("popstate", sync); window.removeEventListener("portfolio:filter", onPick); };
+  }, [works.categories]);
 
   const counts = useMemo(() => {
     const m = new Map<string, number>();
