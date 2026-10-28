@@ -2271,3 +2271,29 @@ body:has(#mobile-menu:not([hidden])) .back-top {
 @media (min-width: 720px) and (max-width:1100px) {.reviews-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media (max-width:719px) {.reviews-grid{display:flex;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;gap:12px;padding-bottom:16px;margin-inline:-16px;padding-inline:16px;scrollbar-width:thin;}.review-card{flex:0 0 min(86vw,360px);scroll-snap-align:start;min-height:260px;}}
 @media (prefers-reduced-motion:reduce) {.reviews-grid{opacity:1!important;transform:none!important;transition:none}.review-card{transition:none}.review-card:hover{transform:none}}
+
+
+/* Cursor v4: independent, undistorted typography; fixed-orientation eye and play glyphs. */
+.cursor-orbit-shell { transform:scaleX(var(--cursor-stretch,1)); }
+.cursor-orbit-type { overflow:visible; transform-origin:50% 50%; }
+.cursor-orbit-type text { paint-order:normal; dominant-baseline:auto; }
+.cursor-orbit[data-state="eye"] .cursor-orbit-type,
+.cursor-orbit[data-state="play"] .cursor-orbit-type { display:none; }
+.cursor-orbit[data-state="eye"] .cursor-orbit-shell,
+.cursor-orbit[data-state="play"] .cursor-orbit-shell { scale:1; transform:none !important; }
+.cursor-orbit[data-state="eye"] .cursor-orbit-core,
+.cursor-orbit[data-state="play"] .cursor-orbit-core {
+ width:40px;height:40px;border:0;background:transparent;box-shadow:none;
+ transform:translate(-50%,-50%);
+}
+.cursor-orbit[data-state="eye"] .cursor-orbit-eye {
+ display:block; position:absolute; top:50%;left:50%;width:32px;height:32px;
+ transform:translate(-50%,-50%); opacity:1;
+}
+.cursor-orbit[data-state="eye"] .cursor-orbit-label,
+.cursor-orbit[data-state="play"] .cursor-orbit-label,
+.cursor-orbit[data-state="eye"] .cursor-orbit-drag { display:none !important; }
+.cursor-orbit-play {display:none;position:absolute;top:50%;left:50%;width:27px;height:27px;transform:translate(-50%,-50%);}
+.cursor-orbit[data-state="play"] .cursor-orbit-play {display:block;}
+.cursor-orbit[data-state="play"] .cursor-orbit-eye {display:none;}
+.cursor-point[data-state="play"] span,.cursor-point[data-state="eye"] span {opacity:0;}
