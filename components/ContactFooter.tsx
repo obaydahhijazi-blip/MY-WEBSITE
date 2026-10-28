@@ -6,9 +6,10 @@ import type { SiteContent } from "@/lib/cms/types";
 import { whatsappLink } from "@/lib/whatsapp";
 
 /** Compact footer after the final section: identity, short navigation, contact links, rights. */
-export function ContactFooter({ content, navigation }: { content: SiteContent; navigation: SiteContent["navigation"] }) {
+export function ContactFooter({ content, navigation, interior = false }: { content: SiteContent; navigation: SiteContent["navigation"]; interior?: boolean }) {
   const s = content.settings;
   const email = s.email.trim();
+  const anchor = (id: string) => `${interior ? "/" : ""}#${id}`;
 
   return (
     <footer id="contact" className="bg-petrol text-white">
@@ -27,13 +28,13 @@ export function ContactFooter({ content, navigation }: { content: SiteContent; n
           <ul className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm text-white/70 sm:grid-cols-3">
             {navigation.map((n) => (
               <li key={n.id}>
-                <a href={`#${n.id}`} className="transition-colors hover:text-white">
+                <a href={anchor(n.id)} className="transition-colors hover:text-white">
                   {n.label}
                 </a>
               </li>
             ))}
             <li>
-              <a href="#quote" className="text-cyan transition-colors hover:text-white">
+              <a href={anchor("quote")} className="text-cyan transition-colors hover:text-white">
                 اطلب عرض سعر
               </a>
             </li>
@@ -65,7 +66,7 @@ export function ContactFooter({ content, navigation }: { content: SiteContent; n
             <a href="/terms" className="hover:text-white">سياسة العمل</a>
             <a href="/privacy" className="hover:text-white">الخصوصية</a>
           </span>
-          <a href="#top" className="grid size-10 place-items-center rounded-full border border-line-dark text-white/80 hover:border-white/50" aria-label="العودة إلى الأعلى">
+          <a href={interior ? "/" : "#top"} className="grid size-10 place-items-center rounded-full border border-line-dark text-white/80 hover:border-white/50" aria-label="العودة إلى الأعلى">
             <ArrowIcon direction="up" />
           </a>
         </div>
