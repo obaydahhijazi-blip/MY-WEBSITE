@@ -2,12 +2,11 @@ import type { Client, Testimonial, Work } from "@/lib/cms/types";
 
 /**
  * Demo mode shows clearly-labelled SAMPLE content so the layout can be judged before real
- * material exists. On by default only in `npm run dev`; a preview deployment can opt in with
- * NEXT_PUBLIC_DEMO_CONTENT=1. Production builds never include it unless that flag is set.
+ * material exists. Samples are temporarily enabled on the public portfolio so its galleries
+ * can be reviewed before approved work is uploaded. They are prominently labelled and yield
+ * to genuine work per section. Set NEXT_PUBLIC_DEMO_CONTENT=0 to hide all samples.
  */
-export const demoMode =
-  process.env.NEXT_PUBLIC_DEMO_CONTENT === "1" ||
-  (process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_DEMO_CONTENT !== "0");
+export const demoMode = process.env.NEXT_PUBLIC_DEMO_CONTENT !== "0";
 
 const img = (n: number, w: number, h: number, alt: string) => ({ src: `/demo/work-${n}.svg`, width: w, height: h, alt });
 
@@ -56,7 +55,7 @@ export const DEMO_CLIENTS: Client[] = Array.from({ length: 8 }, (_, i) => ({
 export const DEMO_TESTIMONIALS: Testimonial[] = [
   { id: "demo-t1", quote: "نص تجريبي يوضّح شكل الشهادة في الموقع. تُستبدل هذه البطاقة بشهادة حقيقية بعد الحصول على موافقة صاحبها.", name: "اسم تجريبي", role: "المنصب", company: "جهة تجريبية", demo: true },
   { id: "demo-t2", quote: "نص تجريبي ثانٍ لاختبار طول النص والتمرير الأفقي على الهاتف.", name: "اسم تجريبي", role: "المنصب", company: "جهة تجريبية", demo: true },
-  { id: "demo-t3", quote: "نص تجريبي ثالث. لا يظهر أي من هذه البطاقات في الموقع المنشور.", name: "اسم تجريبي", demo: true },
+  { id: "demo-t3", quote: "نص تجريبي ثالث لعرض تنسيق الشهادات فقط، وليس رأياً من عميل حقيقي.", name: "اسم تجريبي", demo: true },
 ];
 
 /**
