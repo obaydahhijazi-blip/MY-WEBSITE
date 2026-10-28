@@ -8,7 +8,7 @@ import type { SiteContent } from "@/lib/cms/types";
 function MetalStar({ n, progress }: { n: number; progress: number }) {
   const step = n - 2;
   const drift = progress * step * 32;
-  return <span className="metal-star" style={{ transform: `translate3d(${drift}px,${-Math.abs(step) * 12 * progress}px,0) rotateY(${step * progress * 13}deg) rotateZ(${step * progress * 7}deg)` }}>
+  return <span className="metal-star" style={{ transform: `translate3d(calc(${drift}px + var(--star-parallax-x, 0px)),calc(${-Math.abs(step) * 12 * progress}px + var(--star-parallax-y, 0px)),0) rotateY(${step * progress * 13}deg) rotateZ(${step * progress * 7}deg)` }}>
     <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
       <defs>
         <linearGradient id={`gold-metal-${n}`} x1="0" y1="0" x2="1" y2="1">
@@ -59,7 +59,7 @@ export function Testimonials({ testimonials, index }: { testimonials: SiteConten
   const t = items[i];
 
   return (
-    <section ref={root} id="testimonials" className="section testimonial-cinema bg-paper-2" aria-labelledby="testimonials-title">
+    <section ref={root} id="testimonials" className="section testimonial-cinema bg-paper-2" aria-labelledby="testimonials-title" onPointerMove={e => { if (e.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; const rect=e.currentTarget.getBoundingClientRect(); e.currentTarget.style.setProperty("--star-parallax-x",`${((e.clientX-rect.left)/rect.width-.5)*13}px`); e.currentTarget.style.setProperty("--star-parallax-y",`${((e.clientY-rect.top)/rect.height-.5)*10}px`); }} onPointerLeave={e => {e.currentTarget.style.setProperty("--star-parallax-x","0px");e.currentTarget.style.setProperty("--star-parallax-y","0px");}}>
       <div className="container-x">
         <header className="reveal">
           <p className="section-index"><span className="num">{index}</span><span className="rule" aria-hidden="true" /><span>{testimonials.label}</span></p>
