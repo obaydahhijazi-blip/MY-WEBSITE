@@ -38,7 +38,7 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
     if (await page.locator(".cursor-orbit").getAttribute("data-tone") !== "dark") throw Error("Cursor must be cyan above white");
     await page.locator("#cursor-tone-probe").evaluate(e=>e.remove());
     const rendered = await page.locator(".cursor-orbit-type").evaluate(el => ({
-      size: el.getBoundingClientRect().width,
+      size: parseFloat(getComputedStyle(el).width), // CSS size, not the rotated transform bounding box
       text: el.querySelector("text")?.getComputedTextLength() || 0,
       css: getComputedStyle(el).animationDuration,
     }));
