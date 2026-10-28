@@ -9,7 +9,10 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm run lint && npm run build",
-    "cms:seed": "tsx scripts/sanity-seed.ts"
+    "cms:seed": "tsx scripts/sanity-seed.ts",
+    "prebuild": "node scripts/prepare-fonts.mjs",
+    "predev": "node scripts/prepare-fonts.mjs",
+    "fonts:check": "node scripts/prepare-fonts.mjs"
   },
   "dependencies": {
     "@sanity/icons": "^5.2.3",
