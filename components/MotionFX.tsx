@@ -51,7 +51,7 @@ export function MotionFX() {
 
   // Adaptive branded cursor, magnetic buttons, and light inside service cards.
   useEffect(() => {
-    const mq = window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+    const mq = window.matchMedia("(min-width: 768px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
     if (!mq.matches) return;
     const r = ring.current;
     const d = dot.current;
@@ -106,7 +106,7 @@ export function MotionFX() {
       cx += vx * .18;
       cy += vy * .18;
       const speed = Math.hypot(vx, vy);
-      const goal = Math.min(.23, speed / 115);
+      const goal = Math.min(.07, speed / 180);
       stretch += (goal - stretch) * .17;
       if (speed > 1.5) angle = Math.atan2(vy, vx) * 180 / Math.PI;
       r.style.transform = `translate3d(${cx.toFixed(1)}px,${cy.toFixed(1)}px,0)`;
@@ -149,6 +149,7 @@ export function MotionFX() {
       const label = labelled?.dataset.cursor || "";
       const drag = /اسحب|drag/i.test(label);
       t.textContent = label;
+      r.dataset.eye = label === "عرض" ? "true" : "false";
       r.dataset.state = drag ? "drag" : labelled ? "label" : interactive ? "link" : "default";
       d.dataset.state = r.dataset.state;
       updateTone(target);
@@ -218,16 +219,20 @@ export function MotionFX() {
     <>
       <div ref={ring} className="cursor-orbit" data-tone="dark" data-state="default" aria-hidden="true">
         <div className="cursor-orbit-shell">
-          <svg className="cursor-orbit-type" viewBox="0 0 140 140" focusable="false" aria-hidden="true">
+          <svg className="cursor-orbit-type" viewBox="0 0 112 112" focusable="false" aria-hidden="true">
             <defs>
-              <path id="obaydah-type-orbit" d="M70 70 m-52 0 a52 52 0 1 1 104 0 a52 52 0 1 1 -104 0" />
+              <path id="obaydah-type-orbit" d="M56 56 m-43 0 a43 43 0 1 1 86 0 a43 43 0 1 1 -86 0" />
             </defs>
-            <circle cx="70" cy="70" r="51" fill="none" stroke="currentColor" strokeWidth=".6" strokeOpacity=".5" />
-            <text fill="currentColor" fontSize="12.4" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" letterSpacing="1.55">
-              <textPath href="#obaydah-type-orbit">OBAYDAH GRAPHIC • OBAYDAH GRAPHIC • </textPath>
+            <circle cx="56" cy="56" r="34" fill="none" stroke="currentColor" strokeWidth=".65" strokeOpacity=".45" />
+            <text fill="currentColor" fontSize="11.2" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" letterSpacing=".45" textLength="254" lengthAdjust="spacing">
+              <textPath href="#obaydah-type-orbit" startOffset="2%">OBAYDAH GRAPHIC • OBAYDAH GRAPHIC •</textPath>
             </text>
           </svg>
           <span className="cursor-orbit-core">
+            <svg className="cursor-orbit-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+              <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
+              <circle cx="12" cy="12" r="2.5" />
+            </svg>
             <span ref={tag} className="cursor-orbit-label" />
             <span className="cursor-orbit-drag" aria-hidden="true">↔</span>
           </span>
