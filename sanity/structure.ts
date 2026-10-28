@@ -40,7 +40,7 @@ export const structure: StructureResolver = (S, context) =>
         .child(
           S.list()
             .title("الاستشارات وطلب عرض السعر")
-            .items([singleton(S, "consultationSection", "الاستشارة المجانية", CalendarIcon), singleton(S, "quoteSection", "طلب عرض السعر", DocumentTextIcon)]),
+            .items([singleton(S, "consultationSection", "الاستشارة المجانية", CalendarIcon), singleton(S, "quoteSection", "طلب عرض السعر", DocumentTextIcon), singleton(S, "promotionSettings", "حملة الخصم والعداد", StarIcon)]),
         ),
       singleton(S, "legalPages", "سياسة العمل والخصوصية", DocumentTextIcon),
       S.divider(),
