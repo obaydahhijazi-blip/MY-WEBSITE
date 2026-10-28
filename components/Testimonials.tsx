@@ -1,32 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import type { PointerEvent } from "react";
 import type { SiteContent, Testimonial } from "@/lib/cms/types";
-
-function MetalStar({ n, progress }: { n: number; progress: number }) {
-  const step = n - 2;
-  const drift = progress * step * 32;
-  return <span className="metal-star" style={{ transform: `translate3d(calc(${drift}px + var(--star-parallax-x, 0px)),calc(${-Math.abs(step) * 12 * progress}px + var(--star-parallax-y, 0px)),0) rotateY(${step * progress * 13}deg) rotateZ(${step * progress * 7}deg)` }}>
-    <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-      <defs>
-        <linearGradient id={`gold-metal-${n}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#fff4b9" />
-          <stop offset="18%" stopColor="#e9a827" />
-          <stop offset="40%" stopColor="#fff5c0" />
-          <stop offset="54%" stopColor="#99600d" />
-          <stop offset="72%" stopColor="#fbd365" />
-          <stop offset="100%" stopColor="#8a490a" />
-        </linearGradient>
-      </defs>
-      <path d="M50 2L61.7 36.5L98 36.5L68.8 58L80 94L50 73L20 94L31.2 58L2 36.5L38.3 36.5Z" fill={`url(#gold-metal-${n})`} stroke="#ad7413" strokeWidth="1.25" strokeLinejoin="miter" />
-      <path d="M50 2L50 73L38.3 36.5Z" fill="#fff5c0" opacity=".38"/>
-      <path d="M50 2L61.7 36.5L50 73Z" fill="#562e05" opacity=".13"/>
-      <path d="M50 73L80 94L68.8 58Z" fill="#fff8d4" opacity=".30"/>
-    </svg>
-  </span>;
-}
-
 
 /** A testimonial stays readable without a photo; never invent a customer's face. */
 function ReviewCard({ review }: { review: Testimonial }) {
@@ -60,41 +37,68 @@ function ReviewCard({ review }: { review: Testimonial }) {
   );
 }
 
-/** Five metallic stars separate on scroll; responsive review cards follow in a grid. */
+
+/** Scrollable review cards with mouse drag, native touch swiping and keyboard-accessible controls. */
 export function Testimonials({ testimonials, index }: { testimonials: SiteContent["testimonials"]; index: string }) {
   const items = testimonials.items;
-  const [progress, setProgress] = useState(0);
-  const root = useRef<HTMLElement>(null);
-  useEffect(() => {
-    if (!items.length) return;
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) { requestAnimationFrame(() => setProgress(1)); return; }
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const box = root.current?.getBoundingClientRect();
-      if (!box) return;
-      const p = Math.max(0, Math.min(1, ((window.innerHeight * .74) - box.top) / Math.min(430, window.innerHeight * .59)));
-      setProgress(prev => Math.abs(prev - p) > .005 ? p : prev);
-    };
-    const scroll = () => { if (!raf) raf = requestAnimationFrame(update); };
-    scroll();
-    window.addEventListener("scroll", scroll, { passive: true });
-    window.addEventListener("resize", scroll);
-    return () => { window.removeEventListener("scroll", scroll); window.removeEventListener("resize", scroll); cancelAnimationFrame(raf); };
-  }, [items.length]);
+  const carousel = useRef<HTMLDivElement>(null);
+  const drag = useRef<{x:number;left:number;active:boolean}|null>(null);
+  const [current,setCurrent] = useState(0);
   if (!items.length) return null;
+  const go = (next:number) => {
+    const el=carousel.current;
+    if(!el)return;
+    const index=Math.max(0,Math.min(items.length-1,next));
+    const card=el.querySelector<HTMLElement>(".review-card");
+    if(!card)return;
+    const gap=parseFloat(getComputedStyle(el).columnGap)||16;
+    el.scrollTo({left:-(card.offsetWidth+gap)*index,behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth"});
+    setCurrent(index);
+  };
+  const onDown=(e:PointerEvent<HTMLDivElement>)=>{
+    if(e.pointerType!=="mouse" || e.button!==0)return;
+    const el=e.currentTarget;
+    drag.current={x:e.clientX,left:el.scrollLeft,active:false};
+  };
+  const onMove=(e:PointerEvent<HTMLDivElement>)=>{
+    const item=drag.current;
+    if(!item || e.pointerType!=="mouse")return;
+    const dx=e.clientX-item.x;
+    if(Math.abs(dx)>5 && !item.active){item.active=true;e.currentTarget.setPointerCapture(e.pointerId);e.currentTarget.classList.add("is-dragging");}
+    if(item.active)e.currentTarget.scrollLeft=item.left-dx;
+  };
+  const onUp=(e:PointerEvent<HTMLDivElement>)=>{
+    if(drag.current?.active){
+      e.currentTarget.classList.remove("is-dragging");
+      if(e.currentTarget.hasPointerCapture(e.pointerId))e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+    drag.current=null;
+  };
+  const onScroll=()=>{
+    const el=carousel.current;
+    const card=el?.querySelector<HTMLElement>(".review-card");
+    if(!el||!card)return;
+    const gap=parseFloat(getComputedStyle(el).columnGap)||16;
+    setCurrent(Math.max(0,Math.min(items.length-1,Math.round(Math.abs(el.scrollLeft)/(card.offsetWidth+gap)))));
+  };
   return (
-    <section ref={root} id="testimonials" className="section testimonial-cinema bg-paper-2" aria-labelledby="testimonials-title" onPointerMove={e => { if (e.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; const rect=e.currentTarget.getBoundingClientRect(); e.currentTarget.style.setProperty("--star-parallax-x",`${((e.clientX-rect.left)/rect.width-.5)*13}px`); e.currentTarget.style.setProperty("--star-parallax-y",`${((e.clientY-rect.top)/rect.height-.5)*10}px`); }} onPointerLeave={e => { e.currentTarget.style.setProperty("--star-parallax-x","0px"); e.currentTarget.style.setProperty("--star-parallax-y","0px"); }}>
+    <section id="testimonials" className="section testimonial-cinema bg-paper-2" aria-labelledby="testimonials-title">
       <div className="container-x">
         <header className="reveal">
           <p className="section-index"><span className="num">{index}</span><span className="rule" aria-hidden="true" /><span>{testimonials.label}</span></p>
           <h2 id="testimonials-title" className="headline mt-6 text-[clamp(1.9rem,4vw,3rem)] text-ink">{testimonials.title}</h2>
+          <p className="mt-3 text-sm text-muted">اسحب البطاقات يميناً ويساراً لتصفح آراء العملاء.</p>
         </header>
-        <div className="metal-stars-wrap" aria-label="خمس نجوم ذهبية">
-          {[0,1,2,3,4].map(n => <MetalStar key={n} n={n} progress={progress} />)}
+        <div className="reviews-controls">
+          <span className="reviews-count font-latin" dir="ltr">{String(current+1).padStart(2,"0")} / {String(items.length).padStart(2,"0")}</span>
+          <div className="reviews-arrows">
+            <button type="button" className="review-nav" onClick={()=>go(current-1)} disabled={current===0} aria-label="الرأي السابق">→</button>
+            <button type="button" className="review-nav" onClick={()=>go(current+1)} disabled={current===items.length-1} aria-label="الرأي التالي">←</button>
+          </div>
         </div>
-        <div className="reviews-grid" style={{opacity: Math.max(.15, Math.min(1, (progress - .13) / .7)), transform: `translateY(${(1-progress)*16}px)`}}>
+        <div ref={carousel} className="reviews-grid reviews-carousel" dir="rtl" role="region" aria-roledescription="carousel" aria-label="آراء وتجارب العملاء" tabIndex={0}
+          onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onScroll={onScroll}
+          onKeyDown={e=>{if(e.key==="ArrowRight"){e.preventDefault();go(current-1);}else if(e.key==="ArrowLeft"){e.preventDefault();go(current+1);}}}>
           {items.map(review => <ReviewCard key={review.id} review={review} />)}
         </div>
       </div>

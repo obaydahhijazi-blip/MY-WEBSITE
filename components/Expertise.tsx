@@ -49,7 +49,7 @@ export function Expertise({ expertise, index, projects = [] }: { expertise: Site
                   </div>
                   <h3 className="relative z-[1] mt-10 text-[1.22rem] font-bold leading-snug text-white">{item.title}</h3>
                   <p className="relative z-[1] mt-3 leading-8 text-white/65">{item.description}</p>
-                  <span className="relative z-[1] mt-6 inline-flex min-h-11 items-center text-sm font-semibold text-cyan group-hover:underline">استكشف الخدمة</span>
+                  <span className="service-card-cta relative z-[1] mt-auto inline-flex min-h-11 items-center gap-2 pt-5 text-sm font-semibold text-cyan group-hover:underline"><span>استكشف الخدمة</span><span className="service-card-arrow" aria-hidden="true">↖</span></span>
                   <span className="service-line" aria-hidden="true" />
                 </Link>
               </li>

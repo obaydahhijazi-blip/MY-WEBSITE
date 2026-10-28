@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { QUOTE_PREFILL } from "@/lib/quote-bus";
 
 export type Promotion = { enabled: boolean; percent: number; start: string; end: string; headline: string; subtitle: string; cta: string };
 const remaining = (end: number, now: number) => {
@@ -9,14 +11,17 @@ const remaining = (end: number, now: number) => {
 };
 const pad = (n: number) => String(n).padStart(2, "0");
 
-export function PromotionExperience({ campaign }: { campaign: Promotion }) {
+export function PromotionExperience({ campaign, services = [] }: { campaign: Promotion; services?: string[] }) {
   const [now, setNow] = useState(0);
   const [open, setOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState(services[0] ?? "");
   const close = useRef<HTMLButtonElement>(null);
+  const modal = useRef<HTMLElement>(null);
   const valid = campaign.enabled && Number.isFinite(Date.parse(campaign.start)) && Number.isFinite(Date.parse(campaign.end))
     && Date.parse(campaign.end) > Date.parse(campaign.start) && campaign.percent > 0 && campaign.percent <= 100;
-  const active = valid && now >= Date.parse(campaign.start) && now < Date.parse(campaign.end);
+  const start = Date.parse(campaign.start);
   const end = Date.parse(campaign.end);
+  const active = valid && now >= start && now < end;
   useEffect(() => {
     const update = () => setNow(Date.now());
     update();
@@ -32,13 +37,78 @@ export function PromotionExperience({ campaign }: { campaign: Promotion }) {
   }, [active, campaign.end, campaign.percent]);
   useEffect(() => {
     if (!open) return;
-    const key = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
-    document.addEventListener("keydown", key);
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const oldOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { e.preventDefault(); setOpen(false); return; }
+      if (e.key !== "Tab" || !modal.current) return;
+      const controls = Array.from(modal.current.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], input:not([disabled])')).filter(el => el.getClientRects().length > 0);
+      if (!controls.length) return;
+      const first = controls[0], last = controls[controls.length-1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    };
+    document.addEventListener("keydown", handleKey);
     close.current?.focus();
-    return () => document.removeEventListener("keydown", key);
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      document.body.style.overflow = oldOverflow;
+      previous?.focus();
+    };
   }, [open]);
   if (!active) return null;
   const time = remaining(end, now);
+  const progress = Math.max(0, Math.min(100, (now-start)/(end-start)*100));
+  const features = ["هوية بصرية مؤثرة", "تنفيذ بصري احترافي", "حلول مناسبة للمشروع"];
+  const chooseOffer = () => {
+    setOpen(false);
+    if (selectedService) window.dispatchEvent(new CustomEvent(QUOTE_PREFILL, {detail:{service:selectedService}}));
+    window.setTimeout(() => document.getElementById("quote")?.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth"}), 60);
+  };
+  const dialog = open && (
+    <div className="promo-backdrop" onPointerDown={e => { if (e.target === e.currentTarget) setOpen(false); }}>
+      <div className="promo-shell">
+        <div className="promo-cosmos" aria-hidden="true">
+          <span className="promo-halo promo-halo-one"/><span className="promo-halo promo-halo-two"/>
+          <span className="promo-orb promo-orb-a"/><span className="promo-orb promo-orb-b"/><span className="promo-orb promo-orb-c"/>
+          <span className="promo-satellite promo-satellite-one">✦</span><span className="promo-satellite promo-satellite-two">✧</span>
+        </div>
+        <section ref={modal} role="dialog" aria-modal="true" aria-labelledby="promo-title" aria-describedby="promo-description"
+          className="promo-modal promo-modal-premium" dir="rtl"
+          onPointerMove={e => { if (e.pointerType !== "mouse") return; const rect=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty("--promo-x",`${((e.clientX-rect.left)/rect.width*100).toFixed(1)}%`);e.currentTarget.style.setProperty("--promo-y",`${((e.clientY-rect.top)/rect.height*100).toFixed(1)}%`); }}>
+          <div className="promo-shine" aria-hidden="true"/>
+          <button ref={close} onClick={() => setOpen(false)} type="button" className="promo-close" aria-label="إغلاق الإعلان">×</button>
+          <div className="promo-modal-top"><span className="promo-label"><span className="promo-pulse" aria-hidden="true"/>لفترة محدودة فقط</span><span className="font-latin">OBAYDAH.GRAPHIC</span></div>
+          <div className="promo-featured">
+            <div className="promo-offer-seal" aria-label={`خصم ${campaign.percent} بالمئة`}><span>OFF</span><strong dir="ltr">{campaign.percent}%</strong><small>على الخدمات</small></div>
+            <div className="promo-featured-text">
+              <span className="promo-eyebrow">THE CREATIVE WEEK</span>
+              <h2 id="promo-title" className="promo-headline">{campaign.headline}</h2>
+              <p id="promo-description" className="promo-subtitle">{campaign.subtitle}</p>
+            </div>
+          </div>
+          <div className="promo-benefits">{features.map(x=><span key={x}><span aria-hidden="true">✓</span>{x}</span>)}</div>
+          {services.length > 0 && <div className="promo-services" aria-label="اختيار خدمة للعرض">
+            <span className="promo-choose-label">اختر الخدمة التي تهمّك</span>
+            <div className="promo-service-list">
+              {services.slice(0,4).map(service=><button type="button" key={service} className="promo-service-choice" aria-pressed={selectedService===service} onClick={()=>setSelectedService(service)}>{service}</button>)}
+            </div>
+          </div>}
+          <div className="promo-clock-row">
+            <span>ينتهي العرض خلال</span><span className="promo-live-indicator"><span aria-hidden="true"/>عداد مباشر</span>
+          </div>
+          <div className="promo-counter" dir="ltr">
+            {([[time.days,"يوم"],[time.hours,"ساعة"],[time.minutes,"دقيقة"],[time.seconds,"ثانية"]] as [number,string][]).map(([value,label])=><span className="promo-counter-unit" key={label}><strong>{pad(value)}</strong><small>{label}</small></span>)}
+          </div>
+          <div className="promo-progress" role="progressbar" aria-label="الوقت المنقضي من العرض" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}><span style={{width:`${progress}%`}}/></div>
+          <button type="button" className="promo-button" onClick={chooseOffer}><span>{campaign.cta}</span><span aria-hidden="true">↗</span></button>
+          <button type="button" className="promo-later" onClick={()=>setOpen(false)}>استكشاف الموقع أولاً</button>
+          <p className="promo-legal">الخصم لفترة الحملة فقط؛ السعر النهائي ونطاق العمل يتم تحديدهما في عرض السعر.</p>
+        </section>
+      </div>
+    </div>
+  );
   return <>
     <aside className="promo-marquee" aria-label={`خصم ${campaign.percent}% لمدة محدودة`}>
       <div className="promo-track">
@@ -46,27 +116,12 @@ export function PromotionExperience({ campaign }: { campaign: Promotion }) {
           {Array.from({length:4},(_,i)=><span key={i} className="promo-track-item">
             <span className="promo-spark" aria-hidden="true">✦</span>
             <strong>خصم {campaign.percent}%</strong>
-            <span>على خدمات التصميم والإنتاج البصري</span>
+            <span>على خدمات التصميم والإنتاج البصري • لفترة محدودة</span>
             <span className="promo-spark" aria-hidden="true">✦</span>
           </span>)}
         </span>)}
       </div>
-      <a href="#quote" className="promo-marquee-cta">اطلب عرض سعر</a>
     </aside>
-    {open && <div className="promo-backdrop" onPointerDown={e => { if (e.target === e.currentTarget) setOpen(false); }}>
-      <section role="dialog" aria-modal="true" aria-labelledby="promo-title" aria-describedby="promo-description" className="promo-modal" dir="rtl">
-        <button ref={close} onClick={() => setOpen(false)} type="button" className="promo-close" aria-label="إغلاق الإعلان">×</button>
-        <div className="promo-modal-top"><span>عرض لفترة محدودة</span><span>OBAYDAH.GRAPHIC</span></div>
-        <div className="promo-big-number" dir="ltr"><span>%</span>{campaign.percent}</div>
-        <h2 id="promo-title" className="promo-headline">{campaign.headline}</h2>
-        <p id="promo-description" className="promo-subtitle">{campaign.subtitle}</p>
-        <p className="promo-count-label">الوقت المتبقي لانتهاء العرض</p>
-        <div className="promo-counter" dir="ltr">
-          {([[time.days,"يوم"],[time.hours,"ساعة"],[time.minutes,"دقيقة"],[time.seconds,"ثانية"]] as [number,string][]).map(([value,label])=><span className="promo-counter-unit" key={label}><strong>{pad(value)}</strong><small>{label}</small></span>)}
-        </div>
-        <a href="#quote" className="promo-button" onClick={() => setOpen(false)}>{campaign.cta} <span aria-hidden="true">↖</span></a>
-        <p className="promo-legal">يسري العرض خلال الفترة المحددة فقط. تفاصيل الخدمات والسعر النهائي تُوضَّح في عرض السعر.</p>
-      </section>
-    </div>}
+    {dialog && createPortal(dialog, document.body)}
   </>;
 }

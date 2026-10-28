@@ -70,15 +70,52 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
     await page.locator("#cursor-state-probe").evaluate(el=>el.remove());
   });
   if (kind === "desktop") await check("navigation mega menus expose real sections", async () => {
-    const expert=page.locator(".nav-mega-parent").filter({has:page.locator("a[href='#expertise']")});
-    if(await expert.count() !== 1) throw Error("Expertise mega menu missing");
-    await expert.hover();
-    const menu=expert.locator(".nav-mega-panel");
-    await menu.waitFor({state:"visible",timeout:2500});
-    if(await menu.locator("a[href='/services/identity']").count() !== 1) throw Error("Expertise destinations not linked");
+    if(await page.locator("header.site-header a[href='#expertise']").count() !== 0) throw Error("Removed specialty header item returned");
     const works=page.locator(".nav-mega-parent").filter({has:page.locator("a[href='#works']")});
     await works.hover();
     if(await works.locator("a[href*='workCategory=identity']").count() !== 1) throw Error("Work categories missing");
+  });
+  if(kind === "desktop") await check("promotional ticker and modal cursor layering", async () => {
+    const ticker=page.locator(".promo-marquee");
+    if(await ticker.count() === 0)return; // Campaign not active.
+    if(await ticker.locator(".promo-marquee-cta").count()!==0)throw Error("Removed ticker CTA returned");
+    const location=await page.evaluate(()=>{
+      const ticker=document.querySelector(".promo-marquee");
+      const quote=document.querySelector("#quote");
+      return Boolean(ticker&&quote&&(ticker.compareDocumentPosition(quote)&Node.DOCUMENT_POSITION_FOLLOWING));
+    });
+    if(!location)throw Error("Promo strip should be placed before quote section");
+    const popup=page.locator(".promo-backdrop");
+    await popup.waitFor({state:"visible",timeout:6000});
+    const top=await page.evaluate(()=>({
+      cursor:Number(getComputedStyle(document.querySelector(".cursor-orbit")).zIndex),
+      overlay:Number(getComputedStyle(document.querySelector(".promo-backdrop")).zIndex),
+      orbs:document.querySelectorAll(".promo-orb").length
+    }));
+    if(top.cursor<=top.overlay||top.orbs<2)throw Error("Cursor should appear above animated popup: "+JSON.stringify(top));
+    const choices=popup.locator(".promo-service-choice");
+    if(await choices.count()>1){
+      await choices.nth(1).click();
+      if(await choices.nth(1).getAttribute("aria-pressed")!=="true")throw Error("Promo service choice does not update");
+    }
+    await popup.locator(".promo-close").click();
+    await popup.waitFor({state:"hidden",timeout:2000});
+  });
+  if(kind === "desktop") await check("service CTA alignment and centered stat details", async () => {
+    const cards = page.locator("#expertise .service-card-cta");
+    if(await cards.count() < 4) throw Error("Missing service CTAs");
+    const positions = await cards.evaluateAll(nodes=>nodes.map(n=>n.getBoundingClientRect().bottom));
+    if(Math.max(...positions.slice(0,4))-Math.min(...positions.slice(0,4))>8) throw Error("First-row CTAs not aligned: "+positions.slice(0,4));
+    const stat = page.locator(".stats-band .stat-cell").first();
+    await stat.hover();
+    const tooltip = stat.locator(".stat-detail");
+    await tooltip.waitFor({state:"visible",timeout:2500});
+    const center = await page.evaluate(() => {
+      const rect=document.querySelector(".stats-band").getBoundingClientRect();
+      const detail=document.querySelector(".stat-detail[data-open]").getBoundingClientRect();
+      return {diff:Math.abs(rect.x+rect.width/2-(detail.x+detail.width/2)), overflow:getComputedStyle(document.querySelector(".stats-band")).overflow};
+    });
+    if(center.diff>15||center.overflow==="hidden") throw Error("Stat detail must be centered and unclipped: "+JSON.stringify(center));
   });
   if (kind === "mobile") await check("custom cursor disabled on phones", async () => {
     const details = await page.evaluate(() => ({

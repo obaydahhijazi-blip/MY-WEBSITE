@@ -141,15 +141,18 @@ export function MotionFX() {
         r.classList.add("is-on");
         d.classList.add("is-on");
       }
+      const symbolTarget = target?.closest<HTMLElement>("[data-cursor-icon]");
       const labelled = target?.closest<HTMLElement>("[data-cursor]");
       const interactive = target?.closest("a, button, [role='tab'], summary, [role='button']");
       const label = labelled?.dataset.cursor || "";
       const drag = /اسحب|drag/i.test(label);
       const eye = label === "عرض" || label === "eye";
       const play = label === "تشغيل" || label === "play";
-      t.textContent = eye || play ? "" : label;
+      const symbol = symbolTarget?.dataset.cursorIcon || "";
+      t.textContent = eye || play || symbol ? "" : label;
+      r.dataset.icon = symbol;
       r.dataset.eye = eye ? "true" : "false";
-      r.dataset.state = eye ? "eye" : play ? "play" : drag ? "drag" : labelled ? "label" : interactive ? "link" : "default";
+      r.dataset.state = eye ? "eye" : play ? "play" : symbol ? "symbol" : drag ? "drag" : labelled ? "label" : interactive ? "link" : "default";
       d.dataset.state = r.dataset.state;
       updateTone(target);
 
@@ -233,6 +236,13 @@ export function MotionFX() {
               <circle cx="12" cy="12" r="2.5" />
             </svg>
             <svg className="cursor-orbit-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M8 5.2a1 1 0 0 1 1.52-.85l10 6.8a1 1 0 0 1 0 1.7l-10 6.8A1 1 0 0 1 8 18.8Z" /></svg>
+            <span className="cursor-orbit-symbol" aria-hidden="true">
+              <svg className="cursor-symbol cursor-symbol-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+              <svg className="cursor-symbol cursor-symbol-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/></svg>
+              <svg className="cursor-symbol cursor-symbol-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+              <svg className="cursor-symbol cursor-symbol-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6m2 9v-2a6 6 0 0 0-2-4.5"/></svg>
+              <svg className="cursor-symbol cursor-symbol-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>
+            </span>
             <span ref={tag} className="cursor-orbit-label" />
             <span className="cursor-orbit-drag" aria-hidden="true">↔</span>
           </span>

@@ -57,7 +57,7 @@ export default async function Home() {
     ...(content.faq.items.length ? ["faq"] : []),
   ];
   const idx = (id: string) => String(order.indexOf(id) + 1).padStart(2, "0");
-  const navigation = content.navigation.filter((n) => order.includes(n.id));
+  const navigation = content.navigation.filter((n) => order.includes(n.id) && n.id !== "expertise");
 
   return (
     <>
@@ -76,7 +76,6 @@ export default async function Home() {
           availability={availability}
         />
         <IdentityMarquee items={content.marquee} />
-        <PromotionExperience campaign={campaign} />
         <BioSection about={content.about} index={idx("about")} demoMode={content.demoMode} services={content.expertise.items} />
         <ClientLogoGrid clients={content.clients} index={idx("clients")} />
         <Expertise expertise={content.expertise} index={idx("expertise")} projects={content.works.items} />
@@ -92,6 +91,7 @@ export default async function Home() {
         />
         {content.testimonials.items.length ? <Testimonials testimonials={content.testimonials} index={idx("testimonials")} /> : null}
         <ProcessTimeline process={content.process} index={idx("process")} />
+        <PromotionExperience campaign={campaign} services={content.quote.services} />
         <QuoteSection quote={content.quote} whatsappNumber={settings.whatsappNumber} index={idx("quote")} />
         <BookingSection consultation={content.consultation} whatsappNumber={settings.whatsappNumber} index={idx("consultation")} />
         <FaqSection faq={content.faq} index={idx("faq")} />
