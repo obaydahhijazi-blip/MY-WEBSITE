@@ -1,0 +1,45 @@
+name: Encrypted Sanity backup
+on:
+  schedule:
+    - cron: "13 3 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SANITY_AUTH_TOKEN: ${{ secrets.SANITY_BACKUP_TOKEN }}
+      BACKUP_ENCRYPTION_PASSPHRASE: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
+      SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID }}
+      SANITY_DATASET: ${{ vars.SANITY_DATASET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - name: Export with assets, encrypt and erase plaintext
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "$SANITY_AUTH_TOKEN" ] || [ -z "$BACKUP_ENCRYPTION_PASSPHRASE" ] || [ "${#BACKUP_ENCRYPTION_PASSPHRASE}" -lt 24 ] || [ -z "$SANITY_PROJECT_ID" ]; then
+            echo "::error::Configure secrets SANITY_BACKUP_TOKEN, BACKUP_ENCRYPTION_PASSPHRASE (24+ characters), and variable SANITY_PROJECT_ID."
+            exit 1
+          fi
+          DATASET="${SANITY_DATASET:-production}"
+          OUT="$RUNNER_TEMP/sanity-${DATASET}-${GITHUB_RUN_ID}.tar.gz"
+          trap 'rm -f "$OUT"' EXIT
+          npx sanity datasets export "$DATASET" "$OUT" --project-id "$SANITY_PROJECT_ID"
+          test -s "$OUT"
+          openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in "$OUT" -out "$RUNNER_TEMP/sanity-backup.tar.gz.enc" -pass env:BACKUP_ENCRYPTION_PASSPHRASE
+          test -s "$RUNNER_TEMP/sanity-backup.tar.gz.enc"
+          rm -f "$OUT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: encrypted-sanity-backup-${{ github.run_number }}
+          path: ${{ runner.temp }}/sanity-backup.tar.gz.enc
+          retention-days: 30
+          if-no-files-found: error
