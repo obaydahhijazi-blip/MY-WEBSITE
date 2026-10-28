@@ -8,7 +8,7 @@
 2. نفّذ أحد الأمرين من جذر المشروع:
    - Windows: `powershell -ExecutionPolicy Bypass -File .\scripts\setup-ko-sans.ps1 -SourceFolder "C:\Fonts\KOSans"`
    - macOS/Linux: `bash scripts/setup-ko-sans.sh ~/Fonts/KOSans`
-3. أو انسخها يدوياً بهذه الأسماء داخل `public/fonts/`:
+3. أو انسخها يدوياً بهذه الأسماء داخل `public/fonts/` ضمن بيئة البناء (لا ترفعها لمستودع عام دون إذن الترخيص):
 
 | الوزن | اسم الملف |
 |---|---|
@@ -20,15 +20,15 @@
 | 600 SemiBold | `KO-Sans-600.otf` |
 | 700 Bold | `KO-Sans-700.otf` |
 
-4. أعد تشغيل `npm run dev`، وتحقق في DevTools ← Network أن ملفات `KO-Sans-*.otf` تُحمَّل بحالة 200.
+4. شغّل `npm run fonts:check` أو أعد تشغيل `npm run dev`، وتحقق في DevTools ← Network أن ملفات `KO-Sans-*.otf` تُحمَّل بحالة 200.
 
-التعريفات موجودة في `styles/ko-sans.css` ومستوردة في `app/layout.tsx`. سلسلة الخطوط:
+التعريفات الفعلية تُنشأ وقت البناء بواسطة `scripts/prepare-fonts.mjs` داخل `styles/ko-sans-generated.css`، وهي مستوردة في `app/(site)/layout.tsx`. سلسلة الخطوط:
 `"KO Sans" ← IBM Plex Sans Arabic ← Tahoma ← Arial`.
 
 ## ملاحظات
 - قبل النشر تأكد أن ترخيصك يشمل **استضافة الخط على الويب** (Webfont)، لأن ملفات `public/` تُنزَّل إلى متصفح كل زائر.
 - لأداء أفضل يمكن تحويل الملفات إلى WOFF2 (إن سمح الترخيص) وتعديل المسارات في `styles/ko-sans.css`.
-- إلى أن تُضاف الملفات سيظهر في Console طلبات 404 لملفات `KO-Sans-*.otf`؛ هذا متوقع ولا يؤثر في العرض.
+- إذا لم تُضَف ملفات الخط، لا يتم إنشاء أي `@font-face` يشير إلى مسار مفقود، وبالتالي لا تظهر طلبات 404 للخط. سيظهر IBM Plex Sans Arabic كبديل بشكل تلقائي.
 
 ## WOFF2 (اختياري — أخف بكثير)
-يقرأ الموقع ملفات `.woff2` أولاً إن وُجدت بالاسم نفسه داخل `public/fonts/` (مثل `KO-Sans-400.woff2` أو `Outfit-Regular.woff2`)، وإلا يستخدم ملفات OTF/TTF تلقائياً. يمكن التحويل محلياً بأداة مثل `woff2_compress` ضمن حدود ترخيص الخط، ولا تُرفع ملفات الخطوط إلى مستودع عام.
+يقرأ السكربت يفضّل ملف `.woff2` إن وجد بالاسم نفسه داخل `public/fonts/` (مثل `KO-Sans-400.woff2`)، وإلا يختار ملف `.otf` المتوفر فقط. يمكن التحويل محلياً بأداة مثل `woff2_compress` ضمن حدود ترخيص الخط، ولا تُرفع ملفات الخطوط إلى مستودع عام.

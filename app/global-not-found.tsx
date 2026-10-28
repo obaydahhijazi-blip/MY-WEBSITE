@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import "@/styles/ko-sans.css";
+import "@/styles/ko-sans-generated.css";
 import "./globals.css";
 
 const fallbackArabic = IBM_Plex_Sans_Arabic({ subsets: ["arabic"], weight: ["400", "700"], variable: "--font-fallback-arabic" });

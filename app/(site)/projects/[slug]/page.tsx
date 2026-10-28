@@ -13,7 +13,7 @@ const getOne = async (slug: string) => {
 export async function generateMetadata({ params }: P): Promise<Metadata> {
   const { slug } = await params;
   const { site, work } = await getOne(slug);
-  if (!work) return { title: "المشروع غير موجود", robots: { index: false } };
+  if (!work) notFound();
   const title = `${work.title} | أعمال ${site.settings.nameAr}`;
   const description = work.summary || `تفاصيل مشروع ${work.title} في ${site.works.categories.find(c=>c.id===work.category)?.label ?? "التصميم"}`;
   const url = `${siteUrl}/projects/${encodeURIComponent(work.id)}`;
