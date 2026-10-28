@@ -57,7 +57,7 @@ export default async function Home() {
     ...(content.faq.items.length ? ["faq"] : []),
   ];
   const idx = (id: string) => String(order.indexOf(id) + 1).padStart(2, "0");
-  const navigation = content.navigation.filter((n) => order.includes(n.id));
+  const navigation = content.navigation.filter((n) => order.includes(n.id) && n.id !== "expertise");
 
   return (
     <>
