@@ -135,6 +135,8 @@ export const testimonial = defineType({
     defineField({ name: "name", title: "اسم صاحب الشهادة (اختياري)", type: "string" }),
     defineField({ name: "role", title: "المنصب (اختياري)", type: "string" }),
     defineField({ name: "company", title: "الجهة (اختياري)", type: "string" }),
+    defineField({ name: "rating", title: "التقييم من خمس نجوم", type: "number", initialValue: 5, validation: r => r.required().integer().min(1).max(5) }),
+    defineField({ name: "photo", title: "صورة صاحب التقييم (بموافقته)", type: "image", options: { hotspot: true }, description: "تظهر داخل بطاقة الرأي. إذا لم تُرفع صورة، يظهر رمز الاسم بدلاً منها." }),
     defineField({ name: "logo", title: "شعار الجهة (اختياري)", type: "image" }),
     defineField({
       name: "consent",
