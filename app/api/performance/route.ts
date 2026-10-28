@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { siteUrl } from "@/lib/site";
+import { authorizeDiagnostics } from "@/lib/diagnostics-auth";
+
+export const runtime = "nodejs";
 
 /**
  * Read-only Lighthouse lab and CrUX field metrics for THIS site only.
@@ -7,6 +10,8 @@ import { siteUrl } from "@/lib/site";
  * Cached for an hour and only fetched when an admin clicks the diagnostics button.
  */
 export async function GET(request: Request) {
+  const denied = authorizeDiagnostics(request);
+  if (denied) return denied;
   const url = new URL(request.url);
   const strategy = url.searchParams.get("strategy") === "desktop" ? "desktop" : "mobile";
   if (!/^https:\/\//.test(siteUrl)) return NextResponse.json({ ok: false, message: "حدّد NEXT_PUBLIC_SITE_URL على رابط الموقع المنشور أولاً." }, { status: 503 });
@@ -29,7 +34,7 @@ export async function GET(request: Request) {
       lab: { lcpMs: value("largest-contentful-paint"), cls: typeof audits["cumulative-layout-shift"]?.numericValue === "number" ? Number(audits["cumulative-layout-shift"].numericValue.toFixed(3)) : null },
       field: { inpMs: typeof field.INTERACTION_TO_NEXT_PAINT?.percentile === "number" ? field.INTERACTION_TO_NEXT_PAINT.percentile : null },
       note: "نتائج المختبر تقديرية؛ INP ميداني لا يظهر إلا إذا توفرت بيانات كافية."
-    }, { headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=600" } });
+    }, { headers: { "Cache-Control": "private, no-store" } });
   } catch {
     return NextResponse.json({ ok: false, message: "تعذّر الاتصال بخدمة PageSpeed حالياً." }, { status: 503 });
   }
