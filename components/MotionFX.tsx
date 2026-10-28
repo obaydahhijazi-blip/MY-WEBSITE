@@ -127,7 +127,7 @@ export function MotionFX() {
       // The center point follows immediately; typography catches up gently.
       d.style.transform = `translate3d(${mx}px,${my}px,0)`;
       const target = e.target instanceof Element ? e.target : null;
-      const editable = target?.closest("input, textarea, select, [contenteditable='true'], [role='textbox']");
+      const editable = target?.closest("input, textarea, select, [contenteditable='true'], [role='textbox'], dialog[open]");
       if (editable) {
         r.dataset.state = "hidden";
         d.dataset.state = "hidden";
