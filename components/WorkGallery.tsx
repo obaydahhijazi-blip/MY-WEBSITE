@@ -86,7 +86,7 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
           {featured.map((w) => {
             const hasVideo = w.media.some((m) => m.type === "video");
             return (
-              <button key={w.id} type="button" onClick={() => { setOpen(w); track("portfolio_open", { project: w.id, category: w.category, gallery: "design" }); }} className="work-feature work-card-enter group" data-cursor="عرض" aria-label={`عرض مشروع «${w.title}»`}>
+              <button key={w.id} type="button" onClick={() => { setOpen(w); track("portfolio_open", { project: w.id, category: w.category, gallery: "design" }); }} className="work-feature work-card-enter group" data-cursor="eye" aria-label={`عرض مشروع «${w.title}»`}>
                 <span className="work-feature-media">
                   <Image
                     src={w.cover.src}
@@ -126,7 +126,7 @@ export function WorkGallery({ works, instagram, instagramHandle }: Props) {
                 const hasVideo = w.media.some((m) => m.type === "video");
                 return (
                   <li key={w.id} className="work-card-enter">
-                    <button type="button" onClick={() => { setOpen(w); track("portfolio_open", { project: w.id, category: w.category, gallery: "design" }); }} className="work-card group block w-full text-start" data-cursor="عرض" aria-label={`عرض مشروع «${w.title}»`}>
+                    <button type="button" onClick={() => { setOpen(w); track("portfolio_open", { project: w.id, category: w.category, gallery: "design" }); }} className="work-card group block w-full text-start" data-cursor="eye" aria-label={`عرض مشروع «${w.title}»`}>
                       <span className="relative block overflow-hidden rounded-2xl border border-line bg-paper-2">
                         <Image
                           src={w.cover.src}
