@@ -1,13 +1,14 @@
 name: Verify website
 on:
   push:
-    branches: [feature/portfolio-case-studies-10-improvements]
+    branches: [main, fix/stabilization-security-tests-20261028]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,6 +22,10 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: "1"
           NEXT_PUBLIC_DEMO_CONTENT: "0"
+      - name: Install headless Chromium for interactive QA
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
       - name: Smoke test published Arabic routes and SEO pages
         run: |
           set -eu
@@ -52,3 +57,50 @@ jobs:
           # English pages must no longer be published.
           test "$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3100/en)" = "404"
           echo "Arabic pages and sharing preview respond correctly; English removed."
+      - name: Browser regression tests (desktop, tablet and mobile)
+        env:
+          SMOKE_SCREENSHOTS: ${{ runner.temp }}/site-screenshots
+        run: |
+          set -euo pipefail
+          PORT=3100 npm run start >/tmp/obaydah-browser.log 2>&1 &
+          APP_PID=$!
+          trap 'kill "$APP_PID" 2>/dev/null || true' EXIT
+          for i in $(seq 1 45); do
+            if curl -sSf http://127.0.0.1:3100/ >/dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/smoke-browser.mjs
+      - name: Save screenshots if browser QA fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-qa-failure-${{ github.run_number }}
+          path: ${{ runner.temp }}/site-screenshots
+          if-no-files-found: ignore
+
+  verify-production:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    env:
+      PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
+    steps:
+      - name: Confirm hosting is serving this exact GitHub commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          SITE="${PUBLIC_SITE_URL:-https://sensational-syrniki-faa950.netlify.app}"
+          SITE="${SITE%/}"
+          for i in $(seq 1 18); do
+            if curl -fsS --max-time 12 "$SITE/api/site-version" -o /tmp/site-version.json; then
+              if node -e "const d=require('/tmp/site-version.json');process.exit(d.commit===process.env.GITHUB_SHA?0:1)"; then
+                echo "Confirmed production deploy: $GITHUB_SHA"
+                exit 0
+              fi
+            fi
+            echo "Production is not yet serving the latest commit (attempt $i/18)"
+            sleep 25
+          done
+          echo "::error::Netlify does not serve the newest GitHub commit. Check repository link, build logs, and deploy settings."
+          exit 1
