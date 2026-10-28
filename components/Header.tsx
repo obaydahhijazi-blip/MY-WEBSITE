@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowIcon, CloseIcon, MenuIcon, WhatsAppIcon } from "@/components/icons";
+import { ArrowIcon, CloseIcon, MenuIcon, WhatsAppIcon, LineIcon } from "@/components/icons";
 import { MusicToggle } from "@/components/MusicToggle";
 import { lockScroll, unlockScroll } from "@/lib/scroll";
-import type { SiteContent } from "@/lib/cms/types";
+import type { Category, Service, SiteContent } from "@/lib/cms/types";
 
 type NavItem = { id: string; label: string };
 
@@ -14,11 +14,13 @@ type Props = {
   whatsappHref: string;
   ctaLabel: string;
   music: SiteContent["settings"]["music"];
+  services?: Service[];
+  categories?: Category[];
   /** Subpages need absolute section targets and a solid header without a hero. */
   interior?: boolean;
 };
 
-export function Header({ items, nameAr, whatsappHref, ctaLabel, music, interior = false }: Props) {
+export function Header({ items, nameAr, whatsappHref, ctaLabel, music, services = [], categories = [], interior = false }: Props) {
   const [solid, setSolid] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
@@ -100,6 +102,17 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music, interior 
 
   const isSolid = interior || solid || open;
   const anchor = (id: string) => `${interior ? "/" : ""}#${id}`;
+  const isMega = (id: string) => (id === "expertise" && services.length > 0) || ((id === "works" || id === "video") && categories.length > 0);
+  const workCategories = (id: string) => categories.filter(category => category.group === (id === "works" ? "design" : "video"));
+  const categoryHref = (id: string, category: string) => `/?workCategory=${encodeURIComponent(category)}#${id}`;
+  const handleWorkLink = (event: React.MouseEvent<HTMLAnchorElement>, id: string, category: string) => {
+    if (interior || event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+    event.preventDefault();
+    const href = categoryHref(id, category);
+    window.history.pushState({}, "", href);
+    window.dispatchEvent(new CustomEvent("portfolio:filter", { detail: { category, group: id === "works" ? "design" : "video" } }));
+    document.getElementById(id)?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
+  };
 
   /* eslint-disable @next/next/no-img-element -- tiny static logo, both variants preloaded to avoid a swap flash */
   return (
@@ -114,12 +127,36 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music, interior 
         </a>
 
         <nav aria-label="التنقل الرئيسي" className="hidden lg:block">
-          <ul className="flex items-center gap-6 text-[0.92rem] font-medium xl:gap-8">
+          <ul className="flex items-center gap-5 text-[0.92rem] font-medium xl:gap-7">
             {items.map((item) => (
-              <li key={item.id}>
-                <a href={anchor(item.id)} className="nav-link" aria-current={active === item.id ? "true" : undefined}>
+              <li key={item.id} className={isMega(item.id) ? "nav-mega-parent" : undefined}>
+                <a href={anchor(item.id)} className="nav-link nav-top-link" aria-current={active === item.id ? "true" : undefined} aria-haspopup={isMega(item.id) ? "true" : undefined}>
                   {item.label}
+                  {isMega(item.id) && <span className="nav-chevron" aria-hidden="true">⌄</span>}
                 </a>
+                {isMega(item.id) && <div className="nav-mega-panel" dir="rtl">
+                  <div className="nav-mega-heading">
+                    <strong>{item.id === "expertise" ? "استكشف تخصصاتي" : item.id === "works" ? "معرض أعمال التصميم" : "الفيديو والإنتاج المرئي"}</strong>
+                    <span>{item.id === "expertise" ? "اختر الخدمة المناسبة لمشروعك" : "انتقل مباشرة إلى التصنيف الذي يهمك"}</span>
+                  </div>
+                  <div className="nav-mega-grid">
+                    {item.id === "expertise" ? services.map(service => (
+                      <a key={service.icon} href={`/services/${service.icon}`} className="nav-mega-item">
+                        <span className="nav-mega-symbol"><LineIcon name={service.icon} className="size-5" /></span>
+                        <span className="min-w-0"><strong>{service.title}</strong><small>{service.description}</small></span>
+                      </a>
+                    )) : <>
+                      <a href={categoryHref(item.id, "all")} onClick={e => handleWorkLink(e,item.id,"all")} className="nav-mega-item">
+                        <span className="nav-mega-symbol"><LineIcon name="grid" className="size-5" /></span>
+                        <span><strong>جميع الأعمال</strong><small>استعراض كل المشاريع ضمن القسم</small></span>
+                      </a>
+                      {workCategories(item.id).map((category, i) => <a key={category.id} href={categoryHref(item.id,category.id)} onClick={e => handleWorkLink(e,item.id,category.id)} className="nav-mega-item">
+                        <span className="nav-mega-symbol nav-mega-number">{String(i+1).padStart(2,"0")}</span>
+                        <span><strong>{category.label}</strong><small>تصفّح مشاريع {category.label}</small></span>
+                      </a>)}
+                    </>}
+                  </div>
+                </div>}
               </li>
             ))}
           </ul>
@@ -166,10 +203,21 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music, interior 
           <ul className="divide-y divide-line">
             {items.map((item, i) => (
               <li key={item.id}>
-                <a href={`#${item.id}`} onClick={() => setOpen(false)} className="flex min-h-14 items-center justify-between py-3 text-xl font-semibold">
-                  {item.label}
-                  <span className="font-latin text-xs tracking-[0.2em] text-muted">{String(i + 1).padStart(2, "0")}</span>
-                </a>
+                <div className="flex items-center justify-between gap-3">
+                  <a href={anchor(item.id)} onClick={() => setOpen(false)} className="flex min-h-14 flex-1 items-center justify-between py-3 text-xl font-semibold">
+                    {item.label}<span className="font-latin text-xs tracking-[0.2em] text-muted">{String(i + 1).padStart(2, "0")}</span>
+                  </a>
+                </div>
+                {isMega(item.id) && <details className="nav-mobile-details">
+                  <summary>عرض أقسام {item.label}</summary>
+                  <div className="nav-mobile-subitems">
+                    {item.id === "expertise" ? services.map(service => <a key={service.icon} href={`/services/${service.icon}`} onClick={() => setOpen(false)}>{service.title}</a>) :
+                    <>
+                      <a href={categoryHref(item.id,"all")} onClick={() => setOpen(false)}>جميع الأعمال</a>
+                      {workCategories(item.id).map(category => <a key={category.id} href={categoryHref(item.id,category.id)} onClick={() => setOpen(false)}>{category.label}</a>)}
+                    </>}
+                  </div>
+                </details>}
               </li>
             ))}
           </ul>
