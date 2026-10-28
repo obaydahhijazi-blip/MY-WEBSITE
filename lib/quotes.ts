@@ -2,27 +2,7 @@ import "server-only";
 import { createClient } from "next-sanity";
 import { apiVersion, projectId, dataset as websiteDataset } from "@/sanity/env";
 
-export type QuoteLine = { _key: string; label: string; quantity: number; unitPrice: number };
-export type CustomerQuote = {
-  _id: string;
-  _type: "customerQuote";
-  reference: string;
-  title: string;
-  clientName: string;
-  clientCompany?: string;
-  createdDate: string;
-  validUntil?: string;
-  currency: "USD" | "SYP" | "EUR";
-  items: QuoteLine[];
-  discount: number;
-  notes?: string;
-  terms?: string;
-  accent?: string;
-  shareEnabled: boolean;
-  shareToken: string;
-  status: "draft" | "sent" | "accepted" | "revoked";
-};
-
+import type { CustomerQuote } from "@/lib/quotes-types";
 export const calculateQuote = (q: Pick<CustomerQuote,"items"|"discount">) => {
   const subtotal = q.items.reduce((sum,i) => sum + Math.max(0,i.quantity || 0)*Math.max(0,i.unitPrice || 0),0);
   const discountValue = subtotal * Math.max(0,Math.min(100,q.discount||0)) / 100;
