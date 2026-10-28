@@ -2341,13 +2341,13 @@ body:has(#mobile-menu:not([hidden])) .back-top {
 .stats-grid .stat-cell:first-child {border-inline-start:0;}
 .stats-grid .stat-cell::before {display:none !important;}
 .stat-detail,.stat-cell:last-child .stat-detail {
-  position:absolute;top:calc(100% - 1px);left:50%;right:auto;
-  inset-inline-start:auto;inset-inline-end:auto;
+  position:absolute;top:calc(100% - 1px);
+  inset-inline-start:50%;inset-inline-end:auto;
   width:min(430px,calc(100% - 24px));max-height:min(420px,60vh);
-  text-align:center;transform:translate(-50%,-8px);transform-origin:center top;
+  text-align:center;transform:translate(50%,-8px);transform-origin:center top;
   z-index:50;
 }
-.stat-detail[data-open] {transform:translate(-50%,0);}
+ .stat-detail[data-open] {transform:translate(50%,0);}
 .stat-chip-list {justify-content:center;}
 .stat-specialties li {text-align:right;}
 .stat-career {text-align:right;}
