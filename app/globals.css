@@ -2475,3 +2475,7 @@ body:has(#mobile-menu:not([hidden])) .back-top {
  .promo-service-choice,.promo-modal-premium .promo-button {transition:none!important;}
  .promo-shine {display:none;}
 }
+
+
+/* Prevent hover transform from becoming the containing block for the shared centered stat popup. */
+.stats-grid .stat-cell[data-hover-active] {transform:none!important;}
