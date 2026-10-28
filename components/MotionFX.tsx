@@ -137,6 +137,9 @@ export function MotionFX() {
       r.dataset.state = "default";
       d.dataset.state = "default";
       if (!visible) {
+        cx = mx;
+        cy = my;
+        r.style.transform = `translate3d(${cx}px, ${cy}px,0)`;
         visible = true;
         r.classList.add("is-on");
         d.classList.add("is-on");
