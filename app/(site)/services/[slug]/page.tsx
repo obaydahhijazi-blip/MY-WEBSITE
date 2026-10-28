@@ -13,7 +13,7 @@ const select = async (slug: string) => {
 export async function generateMetadata({ params }: P): Promise<Metadata> {
   const { slug } = await params;
   const { site, item } = await select(slug);
-  if (!item) return { title: "الخدمة غير متاحة", robots: { index: false } };
+  if (!item) notFound();
   return { title: `${item.title} | ${site.settings.nameAr}`,
     description: item.description.slice(0,160),
     alternates: { canonical: `${siteUrl}/services/${slug}` } };
