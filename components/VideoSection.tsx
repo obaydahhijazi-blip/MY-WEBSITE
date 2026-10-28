@@ -201,7 +201,7 @@ export function VideoSection({ video, works, categories, items, index, instagram
                     </div>
                   ) : null}
                 </div>
-                <ul ref={reelRow} className="reel-row" aria-label={video.reelsTitle}>
+                <ul ref={reelRow} className="reel-row" data-cursor="اسحب" aria-label={video.reelsTitle}>
                   {reels.map((w) => (
                     <li key={w.id} className="work-card-enter">
                       <VideoCard w={w} label={labelOf(w.category)} onOpen={() => { setOpen(w); track("portfolio_open", { project: w.id, category: w.category, gallery: "video" }); }} tall />
