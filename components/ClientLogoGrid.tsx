@@ -22,12 +22,12 @@ function Logo({ c }: { c: Client }) {
     </>
   );
   return c.href ? (
-    <a href={c.href} target="_blank" rel="noopener noreferrer" className="client-logo" draggable={false}>
+    <a href={c.href} target="_blank" rel="noopener noreferrer" className="client-logo" data-cursor="eye" draggable={false}>
       {inner}
       <span className="sr-only">(يفتح موقع {c.name} في نافذة جديدة)</span>
     </a>
   ) : (
-    <span className="client-logo" tabIndex={0}>
+    <span className="client-logo" data-cursor="eye" tabIndex={0}>
       {inner}
     </span>
   );
