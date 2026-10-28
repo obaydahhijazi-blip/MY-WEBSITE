@@ -22,13 +22,15 @@ import { WorkSection } from "@/components/WorkSection";
 import { VideoSection } from "@/components/VideoSection";
 import { BookingSection } from "@/components/booking/BookingSection";
 import { getSiteContent } from "@/lib/cms";
+import { PromotionExperience } from "@/components/PromotionExperience";
+import { getPromotion } from "@/lib/promotion";
 import { whatsappLink } from "@/lib/whatsapp";
 
 // Content edits published in /admin appear within this window even without the webhook.
 export const revalidate = 300;
 
 export default async function Home() {
-  const content = await getSiteContent();
+  const [content, campaign] = await Promise.all([getSiteContent(), getPromotion()]);
   const { settings, hero } = content;
   const contactHref = whatsappLink(settings.whatsappNumber, settings.whatsappMessage);
   const a = settings.availability;
@@ -74,6 +76,7 @@ export default async function Home() {
           availability={availability}
         />
         <IdentityMarquee items={content.marquee} />
+        <PromotionExperience campaign={campaign} />
         <BioSection about={content.about} index={idx("about")} demoMode={content.demoMode} services={content.expertise.items} />
         <ClientLogoGrid clients={content.clients} index={idx("clients")} />
         <Expertise expertise={content.expertise} index={idx("expertise")} projects={content.works.items} />
