@@ -63,7 +63,7 @@ export default async function Home() {
     <>
       <LogoIntro />
       <ScrollProgress />
-      <Header items={navigation} nameAr={settings.nameAr} whatsappHref={contactHref} ctaLabel={hero.primaryCta} music={settings.music} />
+      <Header items={navigation} nameAr={settings.nameAr} whatsappHref={contactHref} ctaLabel={hero.primaryCta} music={settings.music} services={content.expertise.items} categories={content.works.categories} />
       <main id="main">
         <HeroScene
           eyebrow={hero.eyebrow}
