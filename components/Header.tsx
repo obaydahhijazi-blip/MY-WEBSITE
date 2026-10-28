@@ -14,9 +14,11 @@ type Props = {
   whatsappHref: string;
   ctaLabel: string;
   music: SiteContent["settings"]["music"];
+  /** Subpages need absolute section targets and a solid header without a hero. */
+  interior?: boolean;
 };
 
-export function Header({ items, nameAr, whatsappHref, ctaLabel, music }: Props) {
+export function Header({ items, nameAr, whatsappHref, ctaLabel, music, interior = false }: Props) {
   const [solid, setSolid] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
@@ -96,7 +98,8 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music }: Props) 
     };
   }, [open]);
 
-  const isSolid = solid || open;
+  const isSolid = interior || solid || open;
+  const anchor = (id: string) => `${interior ? "/" : ""}#${id}`;
 
   /* eslint-disable @next/next/no-img-element -- tiny static logo, both variants preloaded to avoid a swap flash */
   return (
@@ -105,7 +108,7 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music }: Props) 
       data-solid={isSolid}
     >
       <div className="header-inner container-x flex items-center justify-between gap-4 lg:gap-8">
-        <a href="#top" className="flex shrink-0 items-center gap-3" aria-label={`${nameAr} — العودة إلى الأعلى`}>
+        <a href={interior ? "/" : "#top"} className="flex shrink-0 items-center gap-3" aria-label={`${nameAr} — العودة إلى الأعلى`}>
           <img src="/images/brand/logo-white.webp" alt="" width={600} height={402} className={`h-10 w-auto sm:h-12 ${isSolid ? "hidden" : ""}`} />
           <img src="/images/brand/logo-dark.webp" alt="" width={600} height={402} className={`h-10 w-auto sm:h-12 ${isSolid ? "" : "hidden"}`} />
         </a>
@@ -114,7 +117,7 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music }: Props) 
           <ul className="flex items-center gap-6 text-[0.92rem] font-medium xl:gap-8">
             {items.map((item) => (
               <li key={item.id}>
-                <a href={`#${item.id}`} className="nav-link" aria-current={active === item.id ? "true" : undefined}>
+                <a href={anchor(item.id)} className="nav-link" aria-current={active === item.id ? "true" : undefined}>
                   {item.label}
                 </a>
               </li>
@@ -124,7 +127,7 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music }: Props) 
 
         <div className="flex items-center gap-1.5 sm:gap-2">
           {music?.src ? <MusicToggle {...music} /> : null}
-          <a href="#quote" className="btn btn-primary hidden !min-h-11 !px-5 text-[0.9rem] md:inline-flex">
+          <a href={anchor("quote")} className="btn btn-primary hidden !min-h-11 !px-5 text-[0.9rem] md:inline-flex">
             {ctaLabel}
             <ArrowIcon direction="left" className="size-4 cta-arrow" />
           </a>
@@ -174,7 +177,7 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music }: Props) 
             <a href="#quote" onClick={() => setOpen(false)} className="btn btn-dark w-full">
               {ctaLabel}
             </a>
-            <a href="#consultation" onClick={() => setOpen(false)} className="btn btn-outline w-full">
+            <a href={anchor("consultation")} onClick={() => setOpen(false)} className="btn btn-outline w-full">
               احجز استشارة مجانية
             </a>
             <a href={whatsappHref} target="_blank" rel="noopener noreferrer" data-track="whatsapp_click" className="inline-flex min-h-12 items-center justify-center gap-2 text-sm font-medium text-ink-2">
