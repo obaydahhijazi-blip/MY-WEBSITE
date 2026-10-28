@@ -74,7 +74,7 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
     if(await expert.count() !== 1) throw Error("Expertise mega menu missing");
     await expert.hover();
     const menu=expert.locator(".nav-mega-panel");
-    if(await menu.evaluate(el=>getComputedStyle(el).visibility) !== "visible") throw Error("Expertise hover menu not visible");
+    await menu.waitFor({state:"visible",timeout:2500});
     if(await menu.locator("a[href='/services/identity']").count() !== 1) throw Error("Expertise destinations not linked");
     const works=page.locator(".nav-mega-parent").filter({has:page.locator("a[href='#works']")});
     await works.hover();
