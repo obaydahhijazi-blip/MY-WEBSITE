@@ -77,14 +77,14 @@ export function MotionFX() {
         if (node instanceof HTMLElement) {
           const css = getComputedStyle(node);
           const bg = css.backgroundColor;
-          const match = bg.match(/rgba?\\(\\s*([\\d.]+)[,\\s]+([\\d.]+)[,\\s]+([\\d.]+)(?:[,\\s/]+([\\d.]+))?/i);
+          const match = bg.match(/rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)(?:[,\s/]+([\d.]+))?/i);
           if (match && (match[4] === undefined || Number(match[4]) > .25)) {
             const [red, green, blue] = [Number(match[1]), Number(match[2]), Number(match[3])];
             return (.2126 * red + .7152 * green + .0722 * blue) < 148 ? "light" : "dark";
           }
           // When a painted background uses a gradient, parent backgroundColor may be transparent.
           if (css.backgroundImage !== "none") {
-            if (/#001e25|#00373e|rgb\\(0[,\\s]+30[,\\s]+37|rgb\\(0[,\\s]+55[,\\s]+62/i.test(css.backgroundImage)) return "light";
+            if (/#001e25|#00373e|rgb\(0[,\s]+30[,\s]+37|rgb\(0[,\s]+55[,\s]+62/i.test(css.backgroundImage)) return "light";
           }
         }
       }
