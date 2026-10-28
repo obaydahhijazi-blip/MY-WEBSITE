@@ -2243,3 +2243,10 @@ body:has(#mobile-menu:not([hidden])) .back-top {
   .offer-sheet{border-radius:0;box-shadow:none;padding:0;max-width:none}
   .offer-table tr,.offer-extra section,.offer-footer {break-inside:avoid}
 }
+
+
+/* Promotion dialog is above the decorative branded cursor: restore a native mouse pointer. */
+@media (hover:hover) and (pointer:fine) {
+  html.has-cursor .promo-backdrop, html.has-cursor .promo-backdrop * { cursor:auto !important; }
+  html.has-cursor .promo-backdrop button, html.has-cursor .promo-backdrop a { cursor:pointer !important; }
+}
