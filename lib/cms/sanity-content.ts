@@ -80,6 +80,8 @@ export function mergeSanityContent(local: SiteContent, data: Record<string, any>
       role: x!.role || undefined,
       company: x!.company || undefined,
       demo: Boolean(x!.demo),
+      rating: typeof x!.rating === "number" && x!.rating >= 1 && x!.rating <= 5 ? x!.rating : 5,
+      photo: image(x!.photo) ? { ...image(x!.photo)!, alt: x!.name ? `صورة ${x!.name}` : "صورة صاحب التقييم" } : undefined,
       logo: image(x!.logo) ? { ...image(x!.logo)!, alt: x!.company ? `شعار ${x!.company}` : "" } : undefined,
     }));
 
