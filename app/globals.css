@@ -1367,64 +1367,116 @@ img {
   transform: none;
 }
 
-/* ───────── Cursor ring (mouse devices) ───────── */
-.cursor-ring {
+/* ───────── Branded OBAYDAH GRAPHIC cursor (fine pointer devices) ───────── */
+/* Only the pointer and its typographic orbit; never covers or blocks a real control. */
+.cursor-orbit, .cursor-point {
   position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 90;
+  inset: 0 auto auto 0;
+  z-index: 95;
   pointer-events: none;
   display: none;
-}
-.has-cursor .cursor-ring {
-  display: block;
-}
-.cursor-ring::before {
-  content: "";
-  position: absolute;
-  top: -16px;
-  left: -16px;
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
-  border: 1.5px solid var(--color-cyan);
   opacity: 0;
-  transition:
-    opacity 0.3s,
-    transform 0.35s var(--ease-out-soft),
-    background-color 0.3s,
-    border-color 0.3s;
+  color: var(--cursor-ink, #007a89);
+  will-change: transform;
 }
-.cursor-ring.is-on::before {
-  opacity: 0.8;
-}
-.cursor-ring[data-state="link"]::before {
-  transform: scale(1.5);
-  background: rgb(0 187 212 / 0.12);
-}
-.cursor-ring[data-state="label"]::before {
-  transform: scale(2.6);
-  background: var(--color-cyan);
-  border-color: var(--color-cyan);
-  opacity: 1;
-}
-.cursor-ring.is-down::before {
-  transform: scale(0.8);
-}
-.cursor-tag {
+.cursor-orbit[data-tone="light"], .cursor-point[data-tone="light"] { --cursor-ink: #fafaf8; }
+.cursor-orbit[data-tone="dark"], .cursor-point[data-tone="dark"] { --cursor-ink: #007a89; }
+.has-cursor .cursor-orbit, .has-cursor .cursor-point { display: block; }
+.cursor-orbit.is-on, .cursor-point.is-on { opacity: 1; }
+.cursor-orbit[data-state="hidden"], .cursor-point[data-state="hidden"] { opacity: 0 !important; }
+.cursor-orbit-shell {
   position: absolute;
-  top: 0;
-  left: 0;
-  transform: translate(-50%, -50%);
-  font-size: 0.78rem;
+  width: 140px;
+  height: 140px;
+  left: -70px;
+  top: -70px;
+  transform: rotate(var(--cursor-angle, 0deg)) scaleX(var(--cursor-stretch, 1));
+  transform-origin: center;
+  transition: scale 280ms var(--ease-out-soft);
+}
+.cursor-orbit-type {
+  position: absolute;
+  inset: 0;
+  width: 140px;
+  height: 140px;
+  color: inherit;
+  animation: cursor-type-spin 19s linear infinite;
+  transition: opacity 280ms ease;
+}
+@keyframes cursor-type-spin { to { transform: rotate(360deg); } }
+.cursor-orbit[data-state="link"] .cursor-orbit-shell { scale: 1.08; }
+.cursor-orbit[data-state="label"] .cursor-orbit-shell,
+.cursor-orbit[data-state="drag"] .cursor-orbit-shell { scale: 1.13; }
+.cursor-orbit[data-state="label"] .cursor-orbit-type,
+.cursor-orbit[data-state="drag"] .cursor-orbit-type { animation-play-state: paused; }
+.cursor-orbit-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 9%, transparent);
+  transform: translate(-50%,-50%);
+  transition: width 270ms ease, height 270ms ease, background 270ms ease;
+}
+.cursor-orbit[data-state="label"] .cursor-orbit-core,
+.cursor-orbit[data-state="drag"] .cursor-orbit-core { width: 56px; height: 56px; }
+.cursor-orbit-label {
+  position: absolute;
+  width: max-content;
+  max-width: 68px;
+  text-align: center;
+  line-height: 1.4;
+  font-size: 12px;
   font-weight: 700;
-  color: var(--color-petrol);
   white-space: nowrap;
   opacity: 0;
-  transition: opacity 0.2s;
 }
-.cursor-ring[data-state="label"] .cursor-tag {
-  opacity: 1;
+.cursor-orbit[data-state="label"] .cursor-orbit-label { opacity: 1; }
+.cursor-orbit-drag { position: absolute; font-family: Arial, sans-serif; font-size: 27px; line-height: 1; opacity: 0; }
+.cursor-orbit[data-state="drag"] .cursor-orbit-drag { opacity: 1; }
+.cursor-orbit-ripple {
+  position: absolute;
+  inset: 31px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(.55);
+}
+.cursor-orbit.is-down .cursor-orbit-ripple { animation: cursor-click-ripple .43s ease-out both; }
+.cursor-orbit.is-down .cursor-orbit-core { width: 29px; height: 29px; }
+@keyframes cursor-click-ripple {
+  12% { opacity: .9; transform: scale(.5); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+.cursor-point { z-index: 96; }
+.cursor-point span {
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.cursor-point[data-state="label"] span, .cursor-point[data-state="drag"] span { opacity: 0; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  /* Keep text editing native; decorative cursor only replaces the normal pointer. */
+  html.has-cursor :not(input):not(textarea):not(select):not([contenteditable="true"]) { cursor: none !important; }
+  html.has-cursor input, html.has-cursor textarea, html.has-cursor [contenteditable="true"] { cursor: text !important; }
+  html.has-cursor select { cursor: default !important; }
+  /* Native dialogs render in the browser top layer above fixed cursors. */
+  html.has-cursor dialog[open], html.has-cursor dialog[open] * { cursor: auto !important; }
+  html.has-cursor dialog[open] a, html.has-cursor dialog[open] button { cursor: pointer !important; }
+  html.has-cursor dialog[open] input, html.has-cursor dialog[open] textarea { cursor: text !important; }
+}
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .cursor-orbit, .cursor-point { display: none !important; }
+  .cursor-orbit-type { animation: none !important; }
 }
 
 /* ───────── Spotlight on service cards ───────── */

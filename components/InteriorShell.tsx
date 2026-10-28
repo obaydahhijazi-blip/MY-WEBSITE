@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Header } from "@/components/Header";
 import { ContactFooter } from "@/components/ContactFooter";
+import { MotionFX } from "@/components/MotionFX";
 import { getSiteContent } from "@/lib/cms";
 import { whatsappLink } from "@/lib/whatsapp";
 
@@ -13,5 +14,6 @@ export async function InteriorShell({ children }: { children: ReactNode }) {
     <Header interior items={navigation} nameAr={site.settings.nameAr} whatsappHref={contact} ctaLabel={site.hero.primaryCta} music={site.settings.music} />
     <div className="pt-[var(--header-h)]">{children}</div>
     <ContactFooter interior content={site} navigation={navigation} />
+    <MotionFX />
   </>;
 }
