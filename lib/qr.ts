@@ -90,7 +90,6 @@ export function qrSvgPath(value: string): {size:number; path:string} | null {
         const x=right-dx;
         if(reserved[y][x])continue;
         let dark=cursor<codeBits?((codewords[cursor>>>3]>>>(7-(cursor&7)))&1)===1:false;
-        dark !== ((x+y)%2!==0); // mask 0 below
         if((x+y)%2===0)dark=!dark;
         modules[y][x]=dark;
         cursor++;
