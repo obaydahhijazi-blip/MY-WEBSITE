@@ -75,22 +75,6 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
     await works.hover();
     if(await works.locator("a[href*='workCategory=identity']").count() !== 1) throw Error("Work categories missing");
   });
-  if(kind === "desktop") await check("service CTA alignment and centered stat details", async () => {
-    const cards = page.locator("#expertise .service-card-cta");
-    if(await cards.count() < 4) throw Error("Missing service CTAs");
-    const positions = await cards.evaluateAll(nodes=>nodes.map(n=>n.getBoundingClientRect().bottom));
-    if(Math.max(...positions.slice(0,4))-Math.min(...positions.slice(0,4))>8) throw Error("First-row CTAs not aligned: "+positions.slice(0,4));
-    const stat = page.locator(".stats-band .stat-cell").first();
-    await stat.hover();
-    const tooltip = stat.locator(".stat-detail");
-    await tooltip.waitFor({state:"visible",timeout:2500});
-    const center = await page.evaluate(() => {
-      const rect=document.querySelector(".stats-band").getBoundingClientRect();
-      const detail=document.querySelector(".stat-detail[data-open]").getBoundingClientRect();
-      return {diff:Math.abs(rect.x+rect.width/2-(detail.x+detail.width/2)), overflow:getComputedStyle(document.querySelector(".stats-band")).overflow};
-    });
-    if(center.diff>15||center.overflow==="hidden") throw Error("Stat detail must be centered and unclipped: "+JSON.stringify(center));
-  });
   if(kind === "desktop") await check("promotional ticker and modal cursor layering", async () => {
     const ticker=page.locator(".promo-marquee");
     if(await ticker.count() === 0)return; // Campaign not active.
@@ -116,6 +100,22 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
     }
     await popup.locator(".promo-close").click();
     await popup.waitFor({state:"hidden",timeout:2000});
+  });
+  if(kind === "desktop") await check("service CTA alignment and centered stat details", async () => {
+    const cards = page.locator("#expertise .service-card-cta");
+    if(await cards.count() < 4) throw Error("Missing service CTAs");
+    const positions = await cards.evaluateAll(nodes=>nodes.map(n=>n.getBoundingClientRect().bottom));
+    if(Math.max(...positions.slice(0,4))-Math.min(...positions.slice(0,4))>8) throw Error("First-row CTAs not aligned: "+positions.slice(0,4));
+    const stat = page.locator(".stats-band .stat-cell").first();
+    await stat.hover();
+    const tooltip = stat.locator(".stat-detail");
+    await tooltip.waitFor({state:"visible",timeout:2500});
+    const center = await page.evaluate(() => {
+      const rect=document.querySelector(".stats-band").getBoundingClientRect();
+      const detail=document.querySelector(".stat-detail[data-open]").getBoundingClientRect();
+      return {diff:Math.abs(rect.x+rect.width/2-(detail.x+detail.width/2)), overflow:getComputedStyle(document.querySelector(".stats-band")).overflow};
+    });
+    if(center.diff>15||center.overflow==="hidden") throw Error("Stat detail must be centered and unclipped: "+JSON.stringify(center));
   });
   if (kind === "mobile") await check("custom cursor disabled on phones", async () => {
     const details = await page.evaluate(() => ({
