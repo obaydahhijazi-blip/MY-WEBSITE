@@ -91,7 +91,7 @@ export default async function Home() {
         />
         {content.testimonials.items.length ? <Testimonials testimonials={content.testimonials} index={idx("testimonials")} /> : null}
         <ProcessTimeline process={content.process} index={idx("process")} />
-        <PromotionExperience campaign={campaign} services={content.quote.services} />
+        <div className="quote-banner-anchor" data-promotion-placement="before-quote"><PromotionExperience campaign={campaign} services={content.quote.services} /></div>
         <QuoteSection quote={content.quote} whatsappNumber={settings.whatsappNumber} index={idx("quote")} />
         <BookingSection consultation={content.consultation} whatsappNumber={settings.whatsappNumber} index={idx("consultation")} />
         <FaqSection faq={content.faq} index={idx("faq")} />
