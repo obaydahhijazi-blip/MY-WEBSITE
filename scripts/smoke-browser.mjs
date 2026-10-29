@@ -56,12 +56,16 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
           positions.filter(p=>p.x>4&&p.y< -4).length
         ],glyphs:glyphs.length,
         marker:!!document.querySelector(".cursor-point-mark"),
-        ring:getComputedStyle(document.querySelector(".cursor-orbit-outline")).borderTopWidth
+        ring:getComputedStyle(document.querySelector(".cursor-orbit-outline")).borderTopWidth,
+        outlineSize:document.querySelector(".cursor-orbit-outline").getBoundingClientRect().width,
+        letterSize:parseFloat(getComputedStyle(glyphs[0]).fontSize)
       };
     });
-    if (rendered.size > 90) throw Error("Cursor is too large: "+rendered.size);
+    if (rendered.size < 74 || rendered.size > 78) throw Error("Expected compact 76px typography orbit: "+rendered.size);
     if(rendered.quadrantCount.some(x=>x<3))throw Error("Letters not distributed across the ring: "+JSON.stringify(rendered));
     if(rendered.css!=="16s"||!rendered.marker||rendered.ring==="0px")throw Error("Custom pointer/ring/rotation missing: "+JSON.stringify(rendered));
+    if(rendered.outlineSize < 50 || rendered.outlineSize > 54 || rendered.letterSize > 8.3)
+      throw Error("Compact ring geometry or type sizing is incorrect: "+JSON.stringify(rendered));
   });
   if (kind === "desktop") await check("eye-only and play cursor states stay upright without labels", async () => {
     await page.evaluate(() => {
