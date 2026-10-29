@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowIcon, CloseIcon, MenuIcon, WhatsAppIcon, LineIcon } from "@/components/icons";
+import { ArrowIcon, CloseIcon, WhatsAppIcon, LineIcon } from "@/components/icons";
 import { MusicToggle } from "@/components/MusicToggle";
 import { lockScroll, unlockScroll } from "@/lib/scroll";
 import type { Category, Service, SiteContent } from "@/lib/cms/types";
@@ -121,9 +121,8 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music, services 
       data-solid={isSolid}
     >
       <div className="header-inner container-x flex items-center justify-between gap-4 lg:gap-8">
-        <a href={interior ? "/" : "#top"} className="flex shrink-0 items-center gap-3" aria-label={`${nameAr} — العودة إلى الأعلى`}>
-          <img src="/images/brand/logo-white.webp" alt="" width={600} height={402} className={`h-10 w-auto sm:h-12 ${isSolid ? "hidden" : ""}`} />
-          <img src="/images/brand/logo-dark.webp" alt="" width={600} height={402} className={`h-10 w-auto sm:h-12 ${isSolid ? "" : "hidden"}`} />
+        <a href={interior ? "/" : "#top"} className="header-wordmark shrink-0 font-latin text-[0.8rem] font-bold tracking-[0.055em] sm:text-[0.92rem]" aria-label={`${nameAr} — العودة إلى الأعلى`}>
+          OBAYDAH<span className="text-cyan">.</span>GRAPHIC
         </a>
 
         <nav aria-label="التنقل الرئيسي" className="hidden lg:block">
@@ -181,13 +180,13 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music, services 
           <button
             ref={toggleRef}
             type="button"
-            className="grid size-11 place-items-center rounded-full lg:hidden"
+            className="header-menu-trigger inline-flex min-h-11 items-center justify-center rounded-full border border-current/25 px-3 text-sm font-semibold lg:hidden"
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}
             onClick={() => setOpen((v) => !v)}
           >
-            {open ? <CloseIcon /> : <MenuIcon />}
+            {open ? <CloseIcon /> : <span className="header-menu-text">القائمة</span>}
           </button>
         </div>
       </div>
