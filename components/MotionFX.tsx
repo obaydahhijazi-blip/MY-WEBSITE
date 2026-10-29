@@ -66,7 +66,9 @@ export function MotionFX() {
     let my = -200;
     let cx = mx;
     let cy = my;
-    let stretch = 0;
+    let elastic = 0;
+    let elasticVelocity = 0;
+    let elasticAngle = 0;
     let raf = 0;
     let visible = false;
     let magnet: HTMLElement | null = null;
@@ -108,11 +110,17 @@ export function MotionFX() {
       cx += vx * .18;
       cy += vy * .18;
       const speed = Math.hypot(vx, vy);
-      const goal = Math.min(.07, speed / 180);
-      stretch += (goal - stretch) * .17;
+      // The ring behaves like a gently deformable elastic band.
+      // Circular lettering and the central eye/play/arrow stay perfectly upright.
+      const target = Math.min(.23, speed / 155);
+      elasticVelocity = (elasticVelocity + (target - elastic) * .16) * .74;
+      elastic += elasticVelocity;
+      if (speed > 1.1) elasticAngle = Math.atan2(vy, vx) * 180 / Math.PI;
       r.style.transform = `translate3d(${cx.toFixed(1)}px,${cy.toFixed(1)}px,0)`;
-      r.style.setProperty("--cursor-stretch", (1 + stretch).toFixed(3));
-      if (speed > .15 || stretch > .003) raf = requestAnimationFrame(animate);
+      r.style.setProperty("--cursor-elastic-x", (1 + elastic).toFixed(3));
+      r.style.setProperty("--cursor-elastic-y", (1 - elastic * .64).toFixed(3));
+      r.style.setProperty("--cursor-elastic-angle", `${elasticAngle.toFixed(1)}deg`);
+      if (speed > .15 || Math.abs(elastic) > .001 || Math.abs(elasticVelocity) > .001) raf = requestAnimationFrame(animate);
     };
     const kick = () => { if (!raf) raf = requestAnimationFrame(animate); };
 
