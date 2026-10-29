@@ -88,6 +88,38 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
     if(await page.locator(".cursor-orbit-play").evaluate(el=>getComputedStyle(el).display)==="none") throw Error("Play icon must be visible");
     await page.locator("#cursor-state-probe").evaluate(el=>el.remove());
   });
+  if (kind === "desktop") await check("elastic cursor follows velocity without deforming circular letters", async () => {
+    await page.mouse.move(300,250);
+    await page.waitForTimeout(180);
+    await page.mouse.move(1100,410);
+    await page.waitForTimeout(60);
+    const stretched = await page.locator(".cursor-orbit").evaluate(el=>({
+      x:parseFloat(getComputedStyle(el).getPropertyValue("--cursor-elastic-x")),
+      y:parseFloat(getComputedStyle(el).getPropertyValue("--cursor-elastic-y")),
+      outline:getComputedStyle(el.querySelector(".cursor-orbit-outline")).transform,
+      letters:el.querySelectorAll(".cursor-orbit-letter").length
+    }));
+    if(!(stretched.x>1.02 && stretched.y<1 && stretched.outline!=="none" && stretched.letters>=28))
+      throw Error("Expected visible elastic deformation of outline with intact text ring: "+JSON.stringify(stretched));
+    await page.waitForTimeout(1100);
+    const recovered = await page.locator(".cursor-orbit").evaluate(el=>parseFloat(getComputedStyle(el).getPropertyValue("--cursor-elastic-x")));
+    if(Math.abs(recovered-1)>.025) throw Error("Elastic outline should spring back at rest: "+recovered);
+  });
+  if (kind === "desktop") await check("editorial customer review layout switches featured story", async () => {
+    const section=page.locator("#testimonials");
+    if(await section.count()!==1)throw Error("Testimonials section missing");
+    const hero=section.locator(".review-showcase-feature");
+    if(await hero.count()!==1)throw Error("Expected one large editorial featured card");
+    if(await section.locator(".reviews-carousel").count()!==0)throw Error("Old visible scrollbar carousel must be removed");
+    const previews=section.locator(".review-showcase-preview");
+    if(await previews.count()<1)throw Error("Related testimonial previews missing");
+    const oldText=await hero.locator(".review-showcase-feature-quote").textContent();
+    await previews.first().click();
+    const newText=await hero.locator(".review-showcase-feature-quote").textContent();
+    if(!newText || oldText===newText)throw Error("Selecting a preview did not change the featured testimonial");
+    if(await section.locator(".review-showcase-demo").count()!==1)throw Error("Sample testimonial must remain labelled as demo");
+    if(await section.locator(".review-showcase-progress").count()!==1)throw Error("Pagination progress must be present");
+  });
   if (kind === "desktop") await check("navigation mega menus expose real sections", async () => {
     if(await page.locator("header.site-header a[href='#expertise']").count() !== 0) throw Error("Removed specialty header item returned");
     if(await page.locator(".site-header img[src*='logo-']").count()!==0)throw Error("Striped header brand mark was not removed");
