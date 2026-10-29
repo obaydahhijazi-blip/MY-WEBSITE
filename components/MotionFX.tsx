@@ -8,8 +8,8 @@ const ORBIT_LETTERS = Array.from("OBAYDAH GRAPHIC • OBAYDAH GRAPHIC •");
 /**
  * Site-wide micro-interactions, all disabled for reduced motion:
  * - Section headings reveal word by word (words stay whole, so Arabic letters keep joining).
- * - On fine-pointer devices: branded SVG typography cursor with adaptive contrast, magnetic
- *   CTAs, work/drag labels, click ripple and speed stretch. Service card spotlight remains.
+ * - On fine-pointer devices: branded radial typography cursor with adaptive contrast, magnetic
+ *   CTAs, icon states, click ripple and shared inertial orbit drift. Service card spotlight remains.
  */
 export function MotionFX() {
   const ring = useRef<HTMLDivElement>(null);
@@ -66,9 +66,9 @@ export function MotionFX() {
     let my = -200;
     let cx = mx;
     let cy = my;
-    let elastic = 0;
-    let elasticVelocity = 0;
-    let elasticAngle = 0;
+    let orbitDriftX = 0;
+    let orbitDriftY = 0;
+    let orbitTilt = 0;
     let raf = 0;
     let visible = false;
     let magnet: HTMLElement | null = null;
@@ -110,17 +110,20 @@ export function MotionFX() {
       cx += vx * .18;
       cy += vy * .18;
       const speed = Math.hypot(vx, vy);
-      // The ring behaves like a gently deformable elastic band.
-      // Circular lettering and the central eye/play/arrow stay perfectly upright.
-      const target = Math.min(.23, speed / 155);
-      elasticVelocity = (elasticVelocity + (target - elastic) * .16) * .74;
-      elastic += elasticVelocity;
-      if (speed > 1.1) elasticAngle = Math.atan2(vy, vx) * 180 / Math.PI;
+      // Inertial Drift: the lettering and circular outline move together as
+      // one rigid unit. No rubber/stretching or unequal scale on either element.
+      const desiredX = Math.max(-5, Math.min(5, vx * .22));
+      const desiredY = Math.max(-5, Math.min(5, vy * .22));
+      const desiredTilt = Math.max(-6, Math.min(6, vx * .07));
+      orbitDriftX += (desiredX - orbitDriftX) * .22;
+      orbitDriftY += (desiredY - orbitDriftY) * .22;
+      orbitTilt += (desiredTilt - orbitTilt) * .16;
       r.style.transform = `translate3d(${cx.toFixed(1)}px,${cy.toFixed(1)}px,0)`;
-      r.style.setProperty("--cursor-elastic-x", (1 + elastic).toFixed(3));
-      r.style.setProperty("--cursor-elastic-y", (1 - elastic * .64).toFixed(3));
-      r.style.setProperty("--cursor-elastic-angle", `${elasticAngle.toFixed(1)}deg`);
-      if (speed > .15 || Math.abs(elastic) > .001 || Math.abs(elasticVelocity) > .001) raf = requestAnimationFrame(animate);
+      r.style.setProperty("--cursor-inertia-x", `${orbitDriftX.toFixed(2)}px`);
+      r.style.setProperty("--cursor-inertia-y", `${orbitDriftY.toFixed(2)}px`);
+      r.style.setProperty("--cursor-inertia-tilt", `${orbitTilt.toFixed(2)}deg`);
+      if (speed > .15 || Math.abs(orbitDriftX) > .02 || Math.abs(orbitDriftY) > .02 || Math.abs(orbitTilt) > .02)
+        raf = requestAnimationFrame(animate);
     };
     const kick = () => { if (!raf) raf = requestAnimationFrame(animate); };
 
@@ -233,6 +236,7 @@ export function MotionFX() {
     <>
       <div ref={ring} className="cursor-orbit" data-tone="dark" data-state="default" aria-hidden="true">
         <div className="cursor-orbit-shell">
+          <span className="cursor-orbit-kinetic" aria-hidden="true">
           <span className="cursor-orbit-type" aria-hidden="true">
             {ORBIT_LETTERS.map((character, index) => (
               <span
@@ -243,6 +247,7 @@ export function MotionFX() {
             ))}
           </span>
           <span className="cursor-orbit-outline" aria-hidden="true" />
+          </span>
           <span className="cursor-orbit-core">
             <svg className="cursor-orbit-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
               <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
