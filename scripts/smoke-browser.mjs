@@ -57,7 +57,7 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
         ],glyphs:glyphs.length,
         marker:!!document.querySelector(".cursor-point-mark"),
         ring:getComputedStyle(document.querySelector(".cursor-orbit-outline")).borderTopWidth,
-        outlineSize:document.querySelector(".cursor-orbit-outline").getBoundingClientRect().width,
+        outlineSize:parseFloat(getComputedStyle(document.querySelector(".cursor-orbit-outline")).width),
         letterSize:parseFloat(getComputedStyle(glyphs[0]).fontSize)
       };
     });
