@@ -2479,3 +2479,79 @@ body:has(#mobile-menu:not([hidden])) .back-top {
 
 /* Prevent hover transform from becoming the containing block for the shared centered stat popup. */
 .stats-grid .stat-cell[data-hover-active] {transform:none!important;}
+
+
+/* Oct 29: cursor geometry v5. Every letter is positioned individually; no SVG textPath or clipped glyphs. */
+.cursor-orbit-shell {
+  width:84px; height:84px; left:-42px; top:-42px;
+  transform:none!important; scale:1!important; transform-origin:center!important;
+}
+.cursor-orbit-type {
+  display:block!important; position:absolute; inset:0;
+  width:84px;height:84px; overflow:visible!important;
+  animation:cursor-type-spin 16s linear infinite;
+  transform-origin:50% 50%; pointer-events:none; opacity:.96!important;
+}
+.cursor-orbit-letter {
+  position:absolute;left:50%;top:50%;display:block;
+  width:max-content;height:auto;min-width:2px;
+  font:700 8.6px/1 Arial,Helvetica,sans-serif;white-space:pre;
+  transform:translate(-50%,-50%) rotate(var(--orbit-angle)) translateY(-36px);
+  transform-origin:50% 50%;
+  backface-visibility:hidden;user-select:none;
+}
+.cursor-orbit-outline {
+  display:block;position:absolute;inset:13px; border:1px solid currentColor;
+  opacity:.52;border-radius:50%;pointer-events:none;
+  box-shadow:inset 0 0 12px rgb(0 187 212 / .05);
+}
+.cursor-orbit-core {top:50%;left:50%;transform:translate(-50%,-50%);width:32px;height:32px;border:0;background:transparent!important;box-shadow:none!important;}
+.cursor-orbit[data-state="default"] .cursor-orbit-core {width:0;height:0;opacity:0;}
+.cursor-orbit:is([data-state="eye"],[data-state="play"],[data-state="symbol"],[data-state="link"],[data-state="drag"]) .cursor-orbit-core {
+  width:36px;height:36px;border:0;background:transparent!important;transform:translate(-50%,-50%);
+}
+.cursor-orbit[data-state="eye"] .cursor-orbit-eye,
+.cursor-orbit[data-state="play"] .cursor-orbit-play,
+.cursor-orbit[data-state="link"] .cursor-orbit-arrow {
+  position:absolute;top:50%;left:50%;width:23px;height:23px;
+  transform:translate(-50%,-50%)!important;opacity:1;display:block;
+}
+.cursor-orbit[data-state="eye"] .cursor-orbit-eye {width:25px;height:25px;}
+.cursor-orbit-arrow {display:none;}
+.cursor-orbit[data-state="default"] .cursor-orbit-type,
+.cursor-orbit[data-state="eye"] .cursor-orbit-type,
+.cursor-orbit[data-state="play"] .cursor-orbit-type,
+.cursor-orbit[data-state="symbol"] .cursor-orbit-type,
+.cursor-orbit[data-state="link"] .cursor-orbit-type,
+.cursor-orbit[data-state="drag"] .cursor-orbit-type {display:block!important;opacity:.94!important;}
+.cursor-orbit[data-state="eye"] .cursor-orbit-shell,
+.cursor-orbit[data-state="play"] .cursor-orbit-shell,
+.cursor-orbit[data-state="symbol"] .cursor-orbit-shell,
+.cursor-orbit[data-state="link"] .cursor-orbit-shell,
+.cursor-orbit[data-state="drag"] .cursor-orbit-shell {scale:1!important;transform:none!important;}
+.cursor-orbit-label,.cursor-orbit[data-state="eye"] .cursor-orbit-label,.cursor-orbit[data-state="link"] .cursor-orbit-label {display:none!important;}
+.cursor-orbit[data-state="symbol"] .cursor-orbit-symbol {width:22px;height:22px;display:grid;place-items:center;}
+.cursor-orbit[data-state="symbol"] .cursor-orbit-symbol .cursor-symbol {width:22px;height:22px;}
+.cursor-point span {display:none!important;}
+.cursor-point-mark {display:block;position:absolute;top:-7px;left:-7px;width:14px;height:14px;filter:drop-shadow(0 0 3px rgb(0 187 212 / .16));}
+.cursor-point:not([data-state="default"]) .cursor-point-mark {opacity:0;}
+.cursor-orbit[data-state="hidden"] .cursor-orbit-type {animation-play-state:paused;}
+/* Keep branded pointer above the offer dialog without masking buttons. */
+.cursor-orbit,.cursor-point {pointer-events:none!important;}
+@media(max-width:767px),(hover:none),(pointer:coarse),(prefers-reduced-motion:reduce) {
+  .cursor-orbit,.cursor-point {display:none!important;}
+  .cursor-orbit-type {animation:none!important;}
+}
+/* One promotional band, placed directly before the quotation form only. */
+.quote-banner-anchor {display:block;position:relative;width:100%;margin:0;padding:0;}
+.quote-banner-anchor .promo-marquee {margin:0;min-height:58px;max-width:100%;border-radius:0;}
+.quote-banner-anchor + #quote {margin-top:0;}
+/* Icon-only service CTA; clickable area remains the full service card. */
+.service-card-cta.service-card-cta-icon {min-height:52px;gap:0;align-self:flex-start;white-space:normal;}
+.service-card-cta-icon .service-card-arrow {display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1px solid rgb(0 187 212 / .65);transition:transform .23s,background-color .23s;transform:none;}
+.service-card-tilt:is(:hover,:focus-visible) .service-card-cta-icon .service-card-arrow {transform:translate(-3px,-3px);background:#00bbd4;color:#00262d;}
+/* Replace the striped/stacked brand mark with a compact text wordmark. */
+.header-wordmark {display:inline-flex;align-items:center;min-height:44px;direction:ltr;text-decoration:none;white-space:nowrap;line-height:1.2;}
+.header-menu-trigger {width:auto!important;white-space:nowrap;min-width:68px;}
+.header-menu-text {font-size:.83rem;letter-spacing:0;}
+@media(prefers-reduced-motion:reduce){.service-card-cta-icon .service-card-arrow {transition:none!important;}}

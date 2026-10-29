@@ -2,6 +2,9 @@
 
 import { useEffect, useRef } from "react";
 
+// Glyph-by-glyph radial placement avoids SVG textPath truncation and clipping.
+const ORBIT_LETTERS = Array.from("OBAYDAH GRAPHIC • OBAYDAH GRAPHIC •");
+
 /**
  * Site-wide micro-interactions, all disabled for reduced motion:
  * - Section headings reveal word by word (words stay whole, so Arabic letters keep joining).
@@ -145,14 +148,15 @@ export function MotionFX() {
       const labelled = target?.closest<HTMLElement>("[data-cursor]");
       const interactive = target?.closest("a, button, [role='tab'], summary, [role='button']");
       const label = labelled?.dataset.cursor || "";
+      const explore = label === "استكشف" || label === "explore" || label === "link";
       const drag = /اسحب|drag/i.test(label);
       const eye = label === "عرض" || label === "eye";
       const play = label === "تشغيل" || label === "play";
       const symbol = symbolTarget?.dataset.cursorIcon || "";
-      t.textContent = eye || play || symbol ? "" : label;
+      t.textContent = ""; // Keep all states icon-only; never paint Arabic words inside the cursor.
       r.dataset.icon = symbol;
       r.dataset.eye = eye ? "true" : "false";
-      r.dataset.state = eye ? "eye" : play ? "play" : symbol ? "symbol" : drag ? "drag" : labelled ? "label" : interactive ? "link" : "default";
+      r.dataset.state = eye ? "eye" : play ? "play" : symbol ? "symbol" : drag ? "drag" : explore || interactive ? "link" : "default";
       d.dataset.state = r.dataset.state;
       updateTone(target);
 
@@ -221,21 +225,23 @@ export function MotionFX() {
     <>
       <div ref={ring} className="cursor-orbit" data-tone="dark" data-state="default" aria-hidden="true">
         <div className="cursor-orbit-shell">
-          <svg className="cursor-orbit-type" viewBox="0 0 112 112" focusable="false" aria-hidden="true">
-            <defs>
-              <path id="obaydah-type-orbit" d="M56 10 a46 46 0 1 1 -.001 0 Z" />
-            </defs>
-            <circle cx="56" cy="56" r="35" fill="none" stroke="currentColor" strokeWidth=".65" strokeOpacity=".45" />
-            <text fill="currentColor" fontSize="11.4" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" letterSpacing="0" textLength="252" lengthAdjust="spacing">
-              <textPath href="#obaydah-type-orbit" startOffset="4%">OBAYDAH GRAPHIC · OBAYDAH GRAPHIC ·</textPath>
-            </text>
-          </svg>
+          <span className="cursor-orbit-type" aria-hidden="true">
+            {ORBIT_LETTERS.map((character, index) => (
+              <span
+                key={index}
+                className="cursor-orbit-letter"
+                style={{ ["--orbit-angle" as string]: `${index * 360 / ORBIT_LETTERS.length}deg` }}
+              >{character === " " ? "\u00a0" : character}</span>
+            ))}
+          </span>
+          <span className="cursor-orbit-outline" aria-hidden="true" />
           <span className="cursor-orbit-core">
             <svg className="cursor-orbit-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
               <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
               <circle cx="12" cy="12" r="2.5" />
             </svg>
             <svg className="cursor-orbit-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M8 5.2a1 1 0 0 1 1.52-.85l10 6.8a1 1 0 0 1 0 1.7l-10 6.8A1 1 0 0 1 8 18.8Z" /></svg>
+            <svg className="cursor-orbit-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M5 19 19 5M9 5h10v10" /></svg>
             <span className="cursor-orbit-symbol" aria-hidden="true">
               <svg className="cursor-symbol cursor-symbol-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
               <svg className="cursor-symbol cursor-symbol-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/></svg>
@@ -249,7 +255,12 @@ export function MotionFX() {
           <span className="cursor-orbit-ripple" />
         </div>
       </div>
-      <div ref={dot} className="cursor-point" data-tone="dark" data-state="default" aria-hidden="true"><span /></div>
+      <div ref={dot} className="cursor-point" data-tone="dark" data-state="default" aria-hidden="true">
+        <svg className="cursor-point-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round" focusable="false">
+          <path d="m12 2 3.5 6.5L22 12l-6.5 3.5L12 22l-3.5-6.5L2 12l6.5-3.5L12 2Z"/>
+          <path d="M12 8.3v7.4M8.3 12h7.4" strokeWidth=".9" opacity=".65"/>
+        </svg>
+      </div>
     </>
   );
 }

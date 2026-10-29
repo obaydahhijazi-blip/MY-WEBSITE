@@ -41,7 +41,7 @@ export function Expertise({ expertise, index, projects = [] }: { expertise: Site
             const sample = projects.find(w => !w.demo && (maps[item.icon] || []).includes(w.category));
             return (
               <li key={item.title} className="reveal service-item" style={{ ["--delay" as string]: `${(i % 4) * 0.07}s` }}>
-                <Link href={`/services/${item.icon}`} className="service-card service-card-tilt group h-full" onPointerMove={tilt} onPointerLeave={reset} onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) { e.currentTarget.style.setProperty("--tilt-x", "0deg"); e.currentTarget.style.setProperty("--tilt-y", "0deg"); } }} data-cursor="استكشف" aria-label={`استكشف خدمة ${item.title}`}>
+                <Link href={`/services/${item.icon}`} className="service-card service-card-tilt group h-full" onPointerMove={tilt} onPointerLeave={reset} onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) { e.currentTarget.style.setProperty("--tilt-x", "0deg"); e.currentTarget.style.setProperty("--tilt-y", "0deg"); } }} data-cursor="explore" aria-label={`استكشف خدمة ${item.title}`}>
                   {sample ? <div className="service-preview pointer-events-none absolute inset-x-4 top-4 h-32 overflow-hidden rounded-xl" aria-hidden="true"><Image src={sample.cover.src} alt="" fill sizes="240px" className="object-cover" /></div> : null}
                   <div className="relative z-[1] flex items-start justify-between gap-4">
                     <span className="service-icon"><LineIcon name={item.icon} className="size-[26px]" /></span>
@@ -49,7 +49,9 @@ export function Expertise({ expertise, index, projects = [] }: { expertise: Site
                   </div>
                   <h3 className="relative z-[1] mt-10 text-[1.22rem] font-bold leading-snug text-white">{item.title}</h3>
                   <p className="relative z-[1] mt-3 leading-8 text-white/65">{item.description}</p>
-                  <span className="service-card-cta relative z-[1] mt-auto inline-flex min-h-11 items-center gap-2 pt-5 text-sm font-semibold text-cyan group-hover:underline"><span>استكشف الخدمة</span><span className="service-card-arrow" aria-hidden="true">↖</span></span>
+                  <span className="service-card-cta service-card-cta-icon relative z-[1] mt-auto inline-flex items-center pt-5 text-cyan" aria-hidden="true">
+                    <span className="service-card-arrow"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 19 19 5M9 5h10v10"/></svg></span>
+                  </span>
                   <span className="service-line" aria-hidden="true" />
                 </Link>
               </li>

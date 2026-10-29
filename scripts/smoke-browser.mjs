@@ -21,7 +21,11 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
   });
   if (kind === "desktop") await check("branded cursor follows pointer and adapts to contrasting surfaces", async () => {
     await page.waitForFunction(() => document.documentElement.classList.contains("has-cursor"), null, {timeout:8000});
-    if (!(await page.locator(".cursor-orbit-type textPath").textContent())?.includes("OBAYDAH GRAPHIC")) throw Error("Brand typography missing");
+    const letters = page.locator(".cursor-orbit-letter");
+    const phrase = await page.locator(".cursor-orbit-type").textContent();
+    if (!phrase?.includes("OBAYDAH") || !phrase.includes("GRAPHIC")) throw Error("Branded ring characters missing");
+    if (await letters.count() < 28) throw Error("Full radial typography ring not built");
+    if (await page.locator(".cursor-orbit-type textPath").count() !== 0) throw Error("Legacy textPath must be removed");
     await page.evaluate(() => {
       const el = document.createElement("div");
       el.id = "cursor-tone-probe";
@@ -37,14 +41,27 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
     await page.waitForTimeout(100);
     if (await page.locator(".cursor-orbit").getAttribute("data-tone") !== "dark") throw Error("Cursor must be cyan above white");
     await page.locator("#cursor-tone-probe").evaluate(e=>e.remove());
-    const rendered = await page.locator(".cursor-orbit-type").evaluate(el => ({
-      size: parseFloat(getComputedStyle(el).width), // CSS size, not the rotated transform bounding box
-      text: el.querySelector("text")?.getComputedTextLength() || 0,
-      css: getComputedStyle(el).animationDuration,
-    }));
+    const rendered = await page.locator(".cursor-orbit-type").evaluate(el => {
+      const glyphs = Array.from(el.querySelectorAll(".cursor-orbit-letter"));
+      const rect = el.getBoundingClientRect();
+      const positions = glyphs.map(g => {
+        const r=g.getBoundingClientRect();
+        return {x:r.x+r.width/2-(rect.x+rect.width/2),y:r.y+r.height/2-(rect.y+rect.height/2)};
+      });
+      return {size:parseFloat(getComputedStyle(el).width),css:getComputedStyle(el).animationDuration,
+        quadrantCount:[
+          positions.filter(p=>p.x>4&&p.y>4).length,
+          positions.filter(p=>p.x< -4&&p.y>4).length,
+          positions.filter(p=>p.x< -4&&p.y< -4).length,
+          positions.filter(p=>p.x>4&&p.y< -4).length
+        ],glyphs:glyphs.length,
+        marker:!!document.querySelector(".cursor-point-mark"),
+        ring:getComputedStyle(document.querySelector(".cursor-orbit-outline")).borderTopWidth
+      };
+    });
     if (rendered.size > 90) throw Error("Cursor is too large: "+rendered.size);
-    if (rendered.text > 267 || rendered.text < 230) throw Error("Circular text must fit its path: "+rendered.text);
-    if (rendered.css !== "16s") throw Error("Circular text animation must be active");
+    if(rendered.quadrantCount.some(x=>x<3))throw Error("Letters not distributed across the ring: "+JSON.stringify(rendered));
+    if(rendered.css!=="16s"||!rendered.marker||rendered.ring==="0px")throw Error("Custom pointer/ring/rotation missing: "+JSON.stringify(rendered));
   });
   if (kind === "desktop") await check("eye-only and play cursor states stay upright without labels", async () => {
     await page.evaluate(() => {
@@ -62,6 +79,8 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
       visible:getComputedStyle(el.querySelector(".cursor-orbit-eye")).opacity,
     }));
     if(eye.label!=="none"||eye.rotation!=="none"||eye.visible!=="1") throw Error("Eye must be visible, upright and without text: "+JSON.stringify(eye));
+    const circle = await page.locator(".cursor-orbit-outline").evaluate(el=>({visible:getComputedStyle(el).display,border:getComputedStyle(el).borderTopWidth}));
+    if(circle.visible==="none"||circle.border==="0px")throw Error("Ring must remain around eye: "+JSON.stringify(circle));
     await page.locator("#cursor-state-probe").evaluate(el=>el.dataset.cursor="play");
     await page.mouse.move(47,47);
     await page.waitForTimeout(100);
@@ -71,11 +90,15 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
   });
   if (kind === "desktop") await check("navigation mega menus expose real sections", async () => {
     if(await page.locator("header.site-header a[href='#expertise']").count() !== 0) throw Error("Removed specialty header item returned");
+    if(await page.locator(".site-header img[src*='logo-']").count()!==0)throw Error("Striped header brand mark was not removed");
+    if(await page.locator(".header-wordmark").count()!==1)throw Error("Replacement wordmark is missing");
     const works=page.locator(".nav-mega-parent").filter({has:page.locator("a[href='#works']")});
     await works.hover();
     if(await works.locator("a[href*='workCategory=identity']").count() !== 1) throw Error("Work categories missing");
   });
   if(kind === "desktop") await check("promotional ticker and modal cursor layering", async () => {
+    if(await page.locator(".quote-banner-anchor").count()!==1)throw Error("Banner needs one top-only anchor");
+    if(await page.locator(".promo-marquee").count()>1)throw Error("Promo strip should appear only once");
     const ticker=page.locator(".promo-marquee");
     if(await ticker.count() === 0)return; // Campaign not active.
     if(await ticker.locator(".promo-marquee-cta").count()!==0)throw Error("Removed ticker CTA returned");
@@ -104,6 +127,8 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
   if(kind === "desktop") await check("service CTA alignment and centered stat details", async () => {
     const cards = page.locator("#expertise .service-card-cta");
     if(await cards.count() < 4) throw Error("Missing service CTAs");
+    for(const text of await cards.allTextContents())if(text.includes("استكشف"))throw Error("Service CTA must be icon-only");
+    if(await page.locator("#expertise .service-card-cta-icon svg").count()<4)throw Error("Service CTA icons are missing");
     const positions = await cards.evaluateAll(nodes=>nodes.map(n=>n.getBoundingClientRect().bottom));
     if(Math.max(...positions.slice(0,4))-Math.min(...positions.slice(0,4))>8) throw Error("First-row CTAs not aligned: "+positions.slice(0,4));
     const stat = page.locator(".stats-band .stat-cell").first();
@@ -116,6 +141,17 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
       return {diff:Math.abs(rect.x+rect.width/2-(detail.x+detail.width/2)), overflow:getComputedStyle(document.querySelector(".stats-band")).overflow};
     });
     if(center.diff>15||center.overflow==="hidden") throw Error("Stat detail must be centered and unclipped: "+JSON.stringify(center));
+  });
+  if(kind === "desktop") await check("hover cursor preserves delayed outer ring over service links", async () => {
+    await page.goto(base+"/",{waitUntil:"domcontentloaded"});
+    const first=page.locator("#expertise .service-card").first();
+    await first.scrollIntoViewIfNeeded();
+    await first.hover();
+    await page.waitForTimeout(160);
+    if(await page.locator(".cursor-orbit").getAttribute("data-state")!=="link")throw Error("Service cursor should be an icon state");
+    if(await page.locator(".cursor-orbit-arrow").evaluate(el=>getComputedStyle(el).display)==="none")throw Error("Service hover arrow not visible");
+    const ring = await page.locator(".cursor-orbit-type").evaluate(el=>({animation:getComputedStyle(el).animationName,display:getComputedStyle(el).display}));
+    if(ring.animation==="none"||ring.display==="none")throw Error("Hover should retain animated ring");
   });
   if (kind === "mobile") await check("custom cursor disabled on phones", async () => {
     const details = await page.evaluate(() => ({
