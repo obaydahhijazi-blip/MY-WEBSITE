@@ -61,11 +61,11 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
         letterSize:parseFloat(getComputedStyle(glyphs[0]).fontSize)
       };
     });
-    if (rendered.size < 74 || rendered.size > 78) throw Error("Expected compact 76px typography orbit: "+rendered.size);
+    if (rendered.size < 64 || rendered.size > 68) throw Error("Expected smaller 66px typography orbit: "+rendered.size);
     if(rendered.quadrantCount.some(x=>x<3))throw Error("Letters not distributed across the ring: "+JSON.stringify(rendered));
     if(rendered.css!=="16s"||!rendered.marker||rendered.ring==="0px")throw Error("Custom pointer/ring/rotation missing: "+JSON.stringify(rendered));
-    if(rendered.outlineSize < 50 || rendered.outlineSize > 54 || rendered.letterSize > 8.3)
-      throw Error("Compact ring geometry or type sizing is incorrect: "+JSON.stringify(rendered));
+    if(rendered.outlineSize < 42 || rendered.outlineSize > 46 || rendered.letterSize > 7.4)
+      throw Error("Smaller unified ring geometry or type sizing is incorrect: "+JSON.stringify(rendered));
   });
   if (kind === "desktop") await check("eye-only and play cursor states stay upright without labels", async () => {
     await page.evaluate(() => {
@@ -92,22 +92,39 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
     if(await page.locator(".cursor-orbit-play").evaluate(el=>getComputedStyle(el).display)==="none") throw Error("Play icon must be visible");
     await page.locator("#cursor-state-probe").evaluate(el=>el.remove());
   });
-  if (kind === "desktop") await check("elastic cursor follows velocity without deforming circular letters", async () => {
+  if (kind === "desktop") await check("unified cursor inertia moves typography and circle without stretching", async () => {
     await page.mouse.move(300,250);
-    await page.waitForTimeout(180);
+    await page.waitForTimeout(200);
     await page.mouse.move(1100,410);
-    await page.waitForTimeout(60);
-    const stretched = await page.locator(".cursor-orbit").evaluate(el=>({
-      x:parseFloat(getComputedStyle(el).getPropertyValue("--cursor-elastic-x")),
-      y:parseFloat(getComputedStyle(el).getPropertyValue("--cursor-elastic-y")),
-      outline:getComputedStyle(el.querySelector(".cursor-orbit-outline")).transform,
-      letters:el.querySelectorAll(".cursor-orbit-letter").length
+    await page.waitForTimeout(70);
+    const moving = await page.locator(".cursor-orbit").evaluate(el => {
+      const group = el.querySelector(".cursor-orbit-kinetic");
+      const lettering = el.querySelector(".cursor-orbit-type");
+      const outline = el.querySelector(".cursor-orbit-outline");
+      return {
+        dx:parseFloat(getComputedStyle(el).getPropertyValue("--cursor-inertia-x")),
+        dy:parseFloat(getComputedStyle(el).getPropertyValue("--cursor-inertia-y")),
+        tilt:parseFloat(getComputedStyle(el).getPropertyValue("--cursor-inertia-tilt")),
+        shared:lettering?.parentElement===group && outline?.parentElement===group,
+        groupTransform:getComputedStyle(group).transform,
+        outlineTransform:getComputedStyle(outline).transform,
+        letters:el.querySelectorAll(".cursor-orbit-letter").length,
+        elasticX:getComputedStyle(el).getPropertyValue("--cursor-elastic-x").trim(),
+        elasticY:getComputedStyle(el).getPropertyValue("--cursor-elastic-y").trim()
+      };
+    });
+    if (!(moving.shared && moving.letters>=28 && Math.abs(moving.dx)>0.3 &&
+      moving.groupTransform!=="none" && moving.outlineTransform==="none" &&
+      moving.elasticX==="" && moving.elasticY===""))
+      throw Error("Both ring layers should move rigidly without rubber deformation: "+JSON.stringify(moving));
+    await page.waitForTimeout(1200);
+    const settled=await page.locator(".cursor-orbit").evaluate(el => ({
+      dx:parseFloat(getComputedStyle(el).getPropertyValue("--cursor-inertia-x")),
+      dy:parseFloat(getComputedStyle(el).getPropertyValue("--cursor-inertia-y")),
+      tilt:parseFloat(getComputedStyle(el).getPropertyValue("--cursor-inertia-tilt"))
     }));
-    if(!(stretched.x>1.02 && stretched.y<1 && stretched.outline!=="none" && stretched.letters>=28))
-      throw Error("Expected visible elastic deformation of outline with intact text ring: "+JSON.stringify(stretched));
-    await page.waitForTimeout(1100);
-    const recovered = await page.locator(".cursor-orbit").evaluate(el=>parseFloat(getComputedStyle(el).getPropertyValue("--cursor-elastic-x")));
-    if(Math.abs(recovered-1)>.025) throw Error("Elastic outline should spring back at rest: "+recovered);
+    if(Math.abs(settled.dx)>.15 || Math.abs(settled.dy)>.15 || Math.abs(settled.tilt)>.15)
+      throw Error("Inertial group must settle without spring or distortion: "+JSON.stringify(settled));
   });
   if (kind === "desktop") await check("editorial customer review layout switches featured story", async () => {
     const section=page.locator("#testimonials");

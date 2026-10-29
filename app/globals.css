@@ -2483,40 +2483,40 @@ body:has(#mobile-menu:not([hidden])) .back-top {
 
 /* Oct 29: cursor geometry v5. Every letter is positioned individually; no SVG textPath or clipped glyphs. */
 .cursor-orbit-shell {
-  width:76px; height:76px; left:-38px; top:-38px;
+  width:66px; height:66px; left:-33px; top:-33px;
   transform:none!important; scale:1!important; transform-origin:center!important;
 }
 .cursor-orbit-type {
   display:block!important; position:absolute; inset:0;
-  width:76px;height:76px; overflow:visible!important;
+  width:66px;height:66px; overflow:visible!important;
   animation:cursor-type-spin 16s linear infinite;
   transform-origin:50% 50%; pointer-events:none; opacity:.96!important;
 }
 .cursor-orbit-letter {
   position:absolute;left:50%;top:50%;display:block;
   width:max-content;height:auto;min-width:2px;
-  font:700 8.1px/1 Arial,Helvetica,sans-serif;white-space:pre;
-  transform:translate(-50%,-50%) rotate(var(--orbit-angle)) translateY(-32px);
+  font:700 7.2px/1 Arial,Helvetica,sans-serif;white-space:pre;
+  transform:translate(-50%,-50%) rotate(var(--orbit-angle)) translateY(-28px);
   transform-origin:50% 50%;
   backface-visibility:hidden;user-select:none;
 }
 .cursor-orbit-outline {
-  display:block;position:absolute;inset:12px; border:1px solid currentColor;
+  display:block;position:absolute;inset:11px; border:1px solid currentColor;
   opacity:.52;border-radius:50%;pointer-events:none;
   box-shadow:inset 0 0 12px rgb(0 187 212 / .05);
 }
 .cursor-orbit-core {top:50%;left:50%;transform:translate(-50%,-50%);width:32px;height:32px;border:0;background:transparent!important;box-shadow:none!important;}
 .cursor-orbit[data-state="default"] .cursor-orbit-core {width:0;height:0;opacity:0;}
 .cursor-orbit:is([data-state="eye"],[data-state="play"],[data-state="symbol"],[data-state="link"],[data-state="drag"]) .cursor-orbit-core {
-  width:36px;height:36px;border:0;background:transparent!important;transform:translate(-50%,-50%);
+  width:30px;height:30px;border:0;background:transparent!important;transform:translate(-50%,-50%);
 }
 .cursor-orbit[data-state="eye"] .cursor-orbit-eye,
 .cursor-orbit[data-state="play"] .cursor-orbit-play,
 .cursor-orbit[data-state="link"] .cursor-orbit-arrow {
-  position:absolute;top:50%;left:50%;width:23px;height:23px;
+  position:absolute;top:50%;left:50%;width:20px;height:20px;
   transform:translate(-50%,-50%)!important;opacity:1;display:block;
 }
-.cursor-orbit[data-state="eye"] .cursor-orbit-eye {width:25px;height:25px;}
+.cursor-orbit[data-state="eye"] .cursor-orbit-eye {width:22px;height:22px;}
 .cursor-orbit-arrow {display:none;}
 .cursor-orbit[data-state="default"] .cursor-orbit-type,
 .cursor-orbit[data-state="eye"] .cursor-orbit-type,
@@ -2530,10 +2530,10 @@ body:has(#mobile-menu:not([hidden])) .back-top {
 .cursor-orbit[data-state="link"] .cursor-orbit-shell,
 .cursor-orbit[data-state="drag"] .cursor-orbit-shell {scale:1!important;transform:none!important;}
 .cursor-orbit-label,.cursor-orbit[data-state="eye"] .cursor-orbit-label,.cursor-orbit[data-state="link"] .cursor-orbit-label {display:none!important;}
-.cursor-orbit[data-state="symbol"] .cursor-orbit-symbol {width:22px;height:22px;display:grid;place-items:center;}
-.cursor-orbit[data-state="symbol"] .cursor-orbit-symbol .cursor-symbol {width:22px;height:22px;}
+ .cursor-orbit[data-state="symbol"] .cursor-orbit-symbol {width:20px;height:20px;display:grid;place-items:center;}
+ .cursor-orbit[data-state="symbol"] .cursor-orbit-symbol .cursor-symbol {width:20px;height:20px;}
 .cursor-point span {display:none!important;}
-.cursor-point-mark {display:block;position:absolute;top:-7px;left:-7px;width:14px;height:14px;filter:drop-shadow(0 0 3px rgb(0 187 212 / .16));}
+.cursor-point-mark {display:block;position:absolute;top:-6px;left:-6px;width:12px;height:12px;filter:drop-shadow(0 0 3px rgb(0 187 212 / .16));}
 .cursor-point:not([data-state="default"]) .cursor-point-mark {opacity:0;}
 .cursor-orbit[data-state="hidden"] .cursor-orbit-type {animation-play-state:paused;}
 /* Keep branded pointer above the offer dialog without masking buttons. */
@@ -2646,9 +2646,21 @@ body:has(#mobile-menu:not([hidden])) .back-top {
   .review-showcase-feature {animation:none!important;}
   .review-showcase-nav,.review-showcase-preview,.review-showcase-preview::after,.review-showcase-progress>span {transition:none!important;}
 }
-/* Elastic outline only: lettering and icons never deform. */
-.cursor-orbit-outline {
-  transform:rotate(var(--cursor-elastic-angle,0deg)) scale(var(--cursor-elastic-x,1),var(--cursor-elastic-y,1));
+/* Unified inertial orbit: writing + circle drift and tilt together as one rigid layer.
+   The icon remains upright at the center and the orbit keeps its circular geometry. */
+.cursor-orbit-kinetic {
+  position:absolute;
+  inset:0;
+  display:block;
+  pointer-events:none;
+  transform:translate3d(var(--cursor-inertia-x,0px),var(--cursor-inertia-y,0px),0) rotate(var(--cursor-inertia-tilt,0deg));
   transform-origin:50% 50%;
   will-change:transform;
+}
+.cursor-orbit-outline {
+  transform:none!important;
+  will-change:auto;
+}
+@media (prefers-reduced-motion:reduce) {
+  .cursor-orbit-kinetic {transform:none!important;}
 }
