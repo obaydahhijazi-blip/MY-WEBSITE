@@ -130,6 +130,21 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
     const section=page.locator("#testimonials");
     if(await section.count()===0){ console.log("INFO No testimonials in test build (demo fixtures explicitly disabled)"); return; }
     const hero=section.locator(".review-showcase-feature");
+    if(await section.locator(".review-showcase-pages button").count()>1){
+      await hero.scrollIntoViewIfNeeded();
+      await page.mouse.move(15,15); // Not hovering the testimonial section.
+      await page.evaluate(()=>{if(document.activeElement instanceof HTMLElement)document.activeElement.blur();});
+      const beforeAuto=await hero.locator(".review-showcase-feature-quote").textContent();
+      await page.waitForFunction(previous=>{
+        const node=document.querySelector(".review-showcase-feature-quote");
+        return Boolean(node && node.textContent!==previous);
+      }, beforeAuto, {timeout:8500});
+      await section.hover();
+      const pausedText=await hero.locator(".review-showcase-feature-quote").textContent();
+      await page.waitForTimeout(5900);
+      const afterHover=await hero.locator(".review-showcase-feature-quote").textContent();
+      if(pausedText!==afterHover)throw Error("Autoplay must pause while reader hovers over the testimonials");
+    }
     if(await hero.count()!==1)throw Error("Expected one large editorial featured card");
     if(await section.locator(".reviews-carousel").count()!==0)throw Error("Old visible scrollbar carousel must be removed");
     const previews=section.locator(".review-showcase-preview");
