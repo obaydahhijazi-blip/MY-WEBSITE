@@ -177,13 +177,17 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
     });
     if(!location)throw Error("Promo strip should be placed before quote section");
     const popup=page.locator(".promo-backdrop");
-    await popup.waitFor({state:"visible",timeout:6000});
+    await popup.waitFor({state:"visible",timeout:9000});
     const top=await page.evaluate(()=>({
       cursor:Number(getComputedStyle(document.querySelector(".cursor-orbit")).zIndex),
       overlay:Number(getComputedStyle(document.querySelector(".promo-backdrop")).zIndex),
       orbs:document.querySelectorAll(".promo-orb").length
     }));
     if(top.cursor<=top.overlay||top.orbs<2)throw Error("Cursor should appear above animated popup: "+JSON.stringify(top));
+    if(await popup.locator(".promo-flip-unit").count()!==4)throw Error("Four redesigned countdown units expected");
+    const flip=await popup.locator(".promo-flip-digits").last().evaluate(el=>getComputedStyle(el).animationName);
+    if(flip!=="promo-numeric-flip")throw Error("Countdown should use 3D flip transition: "+flip);
+    if(await popup.locator(".promo-auto-dismiss-track").count()!==1)throw Error("Missing footer progress bar for automatic closing");
     const choices=popup.locator(".promo-service-choice");
     if(await choices.count()>1){
       await choices.nth(1).click();
@@ -191,6 +195,25 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
     }
     await popup.locator(".promo-close").click();
     await popup.waitFor({state:"hidden",timeout:2000});
+  });
+  if(kind === "desktop") await check("promotion delays entry then auto-dismisses with progress", async () => {
+    const ticker=page.locator(".promo-marquee");
+    if(await ticker.count()===0)return; // Inactive campaign intentionally omits popup.
+    await page.evaluate(()=>{
+      for(const key of Object.keys(sessionStorage))if(key.startsWith("promo-seen:"))sessionStorage.removeItem(key);
+    });
+    await page.mouse.move(8,8);
+    await page.reload({waitUntil:"domcontentloaded"});
+    const popup=page.locator(".promo-backdrop");
+    await page.waitForTimeout(1150);
+    if(await popup.count()!==0)throw Error("Promotion must appear several seconds after entry, not immediately");
+    await popup.waitFor({state:"visible",timeout:8000});
+    const bar=popup.locator(".promo-auto-dismiss-track");
+    const before=Number(await bar.getAttribute("aria-valuenow"));
+    await page.waitForTimeout(1300);
+    const after=Number(await bar.getAttribute("aria-valuenow"));
+    if(!(before>after && after<100))throw Error("Automatic dismissal progress is not counting down: "+before+" to "+after);
+    await popup.waitFor({state:"hidden",timeout:14000});
   });
   if(kind === "desktop") await check("service CTA alignment and centered stat details", async () => {
     const cards = page.locator("#expertise .service-card-cta");
