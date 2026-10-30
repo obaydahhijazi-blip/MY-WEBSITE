@@ -2673,3 +2673,69 @@ body:has(#mobile-menu:not([hidden])) .back-top {
 @media (prefers-reduced-motion:reduce) {
   .cursor-orbit-kinetic {transform:none!important;}
 }
+
+
+/* Premium campaign countdown: beveled glass facets and flip transitions. */
+.promo-flip-counter {
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px!important; perspective:750px;
+}
+.promo-modal-premium .promo-flip-unit {
+  position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:5px;min-width:0;min-height:94px;padding:13px 5px 10px;
+  border:none!important;border-radius:0!important;
+  clip-path:polygon(13% 0,87% 0,100% 14%,100% 86%,87% 100%,13% 100%,0 86%,0 14%);
+  background:linear-gradient(155deg,rgba(115,216,221,.24),rgba(255,255,255,.045) 48%,rgba(0,18,27,.24))!important;
+  box-shadow:none!important;
+}
+.promo-flip-unit::before {
+  content:"";position:absolute;inset:1px;z-index:-1;pointer-events:none;
+  clip-path:inherit;
+  background:linear-gradient(140deg,rgba(152,237,243,.22),rgba(255,255,255,.07) 38%,rgba(0,13,20,.23) 75%);
+}
+.promo-flip-unit::after {
+  content:"";position:absolute;z-index:-1;left:12%;right:12%;top:50%;
+  height:1px;background:rgba(0,0,0,.19);box-shadow:0 1px rgba(255,255,255,.09);
+}
+.promo-flip-reflection {
+  position:absolute;z-index:-1;pointer-events:none;
+  top:-45%;left:-65%;width:90%;height:180%;
+  transform:rotate(24deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.09),transparent);
+  animation:promo-glass-sheen 7s ease-in-out infinite;
+}
+.promo-flip-unit:nth-child(even) .promo-flip-reflection {animation-delay:-3s;}
+.promo-flip-stage {display:grid;place-items:center;min-height:43px;width:100%;perspective:550px;overflow:visible;}
+.promo-modal-premium .promo-flip-digits {
+  display:block;font:800 clamp(1.4rem,3.6vw,2.15rem)/1.1 Arial,Helvetica,sans-serif;
+  color:#f6ffff;text-shadow:0 2px 13px rgba(115,224,235,.32);font-variant-numeric:tabular-nums;
+  transform-origin:50% 50%;
+  backface-visibility:hidden;
+  animation:promo-numeric-flip .53s cubic-bezier(.18,.75,.21,1) both;
+}
+.promo-modal-premium .promo-flip-unit small {position:relative;font-size:.69rem;color:#9fcfd2;font-weight:700;line-height:1.5;}
+.promo-auto-dismiss {margin-top:15px;padding-top:12px;border-top:1px solid rgba(191,236,238,.16);}
+.promo-auto-dismiss-caption {display:flex;align-items:center;justify-content:space-between;gap:12px;color:#adcdd0;font-size:.72rem;line-height:1.6;}
+.promo-auto-dismiss-caption > span {display:inline-flex;align-items:center;gap:8px;}
+.promo-auto-dismiss-caption strong {white-space:nowrap;color:#e1f8f9;font:700 .78rem/1.4 Arial,Helvetica,sans-serif;}
+.promo-auto-dismiss-dot {display:block;flex-shrink:0;width:6px;height:6px;background:#83dce6;border-radius:100%;box-shadow:0 0 9px rgba(104,227,239,.6);}
+.promo-auto-dismiss-track {position:relative;overflow:hidden;width:100%;height:4px;background:rgba(255,255,255,.14);border-radius:999px;margin-top:9px;}
+.promo-auto-dismiss-track > span {display:block;height:100%;border-radius:inherit;width:100%;background:linear-gradient(90deg,#c2f3f0,#49b7ca,#e0c47d);box-shadow:0 0 12px rgba(121,228,235,.25);transition:width 80ms linear;}
+@keyframes promo-numeric-flip {
+  0% {transform:rotateX(-82deg) translateY(-6px);opacity:.24;filter:blur(2px);}
+  68% {transform:rotateX(9deg) translateY(0);opacity:1;filter:blur(0);}
+  100% {transform:rotateX(0deg);opacity:1;}
+}
+@keyframes promo-glass-sheen {
+  0%,65% {transform:translateX(-100%) rotate(24deg);}
+  100% {transform:translateX(260%) rotate(24deg);}
+}
+@media(max-width:600px) {
+  .promo-flip-counter {gap:5px!important;}
+  .promo-modal-premium .promo-flip-unit {min-height:76px;padding:9px 3px 7px;}
+  .promo-flip-stage {min-height:33px;}
+  .promo-modal-premium .promo-flip-digits {font-size:clamp(1.33rem,5vw,1.76rem);}
+}
+@media(prefers-reduced-motion:reduce) {
+  .promo-flip-digits,.promo-flip-reflection {animation:none!important;}
+  .promo-auto-dismiss-track > span {transition:none!important;}
+}
