@@ -158,11 +158,30 @@ for (const [kind, ctxOptions] of [["desktop",{ viewport:{width:1440,height:900} 
   });
   if (kind === "desktop") await check("navigation mega menus expose real sections", async () => {
     if(await page.locator("header.site-header a[href='#expertise']").count() !== 0) throw Error("Removed specialty header item returned");
-    if(await page.locator(".site-header img[src*='logo-']").count()!==0)throw Error("Striped header brand mark was not removed");
-    if(await page.locator(".header-wordmark").count()!==1)throw Error("Replacement wordmark is missing");
+    const lightLogo=page.locator(".header-brand-original img[src='/images/brand/logo-white.webp']");
+    const darkLogo=page.locator(".header-brand-original img[src='/images/brand/logo-dark.webp']");
+    if(await lightLogo.count()!==1 || await darkLogo.count()!==1)throw Error("Original light/dark brand assets must be restored");
+    if(await page.locator(".header-wordmark").count())throw Error("Text-only replacement must be removed");
+    await page.waitForFunction(() => [...document.querySelectorAll(".header-brand-original img")].every(img => img.complete && img.naturalWidth>0));
+    if(await page.locator(".header-nav-rail").count()!==1)throw Error("Glass navigation rail missing");
     const works=page.locator(".nav-mega-parent").filter({has:page.locator("a[href='#works']")});
     await works.hover();
+    await page.waitForTimeout(550);
+    const pill=await page.locator(".header-nav-glider").evaluate(el=>({
+      visible:el.getAttribute("data-visible"),width:el.getBoundingClientRect().width,
+      transition:getComputedStyle(el).transitionProperty
+    }));
+    if(pill.visible!=="true" || pill.width<36 || !pill.transition.includes("transform"))
+      throw Error("Sliding highlighted nav capsule is not active: "+JSON.stringify(pill));
     if(await works.locator("a[href*='workCategory=identity']").count() !== 1) throw Error("Work categories missing");
+    const process=page.locator(".header-nav-rail a[href='#process']");
+    if(await process.count()===1){
+      await process.click();
+      const wipe=page.locator(".header-section-wipe");
+      if(await wipe.count()!==1)throw Error("Section travel sweep missing after navigation");
+      const animation=await wipe.evaluate(el=>getComputedStyle(el).animationName);
+      if(animation!=="nav-section-light-travel")throw Error("Wrong navigation transition animation: "+animation);
+    }
   });
   if(kind === "desktop") await check("promotional ticker and modal cursor layering", async () => {
     if(await page.locator(".quote-banner-anchor").count()!==1)throw Error("Banner needs one top-only anchor");
