@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import type { SiteContent, Testimonial } from "@/lib/cms/types";
 
 const normalize = (index: number, length: number) => ((index % length) + length) % length;
+const AUTO_ADVANCE_MS = 5600;
 
 function Avatar({ review, featured = false }: { review: Testimonial; featured?: boolean }) {
   const initials = (review.name || "عميل").trim().split(/\s+/).slice(0, 2).map(word => word[0]).join("");
@@ -36,6 +37,55 @@ function Stars({ rating }: { rating?: number }) {
 export function Testimonials({ testimonials, index }: { testimonials: SiteContent["testimonials"]; index: string }) {
   const items = testimonials.items;
   const [active, setActive] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Cycle through every testimonial while it is visible. Pause whenever the
+  // reader hovers, focuses a control, switches tabs, or requests reduced motion.
+  // The timer is independent of active so it doesn't reset after every swap.
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || items.length < 2) return;
+
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let visible = false;
+    let hovered = false;
+    let focused = false;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => { visible = Boolean(entry?.isIntersecting); },
+      { threshold: 0.25 },
+    );
+    observer.observe(section);
+
+    const enter = () => { hovered = true; };
+    const leave = () => { hovered = false; };
+    const focusIn = () => { focused = true; };
+    const focusOut = (event: FocusEvent) => {
+      if (!(event.relatedTarget instanceof Node) || !section.contains(event.relatedTarget)) {
+        focused = false;
+      }
+    };
+    section.addEventListener("pointerenter", enter);
+    section.addEventListener("pointerleave", leave);
+    section.addEventListener("focusin", focusIn);
+    section.addEventListener("focusout", focusOut);
+
+    const interval = window.setInterval(() => {
+      if (visible && !hovered && !focused && !document.hidden && !motion.matches) {
+        setActive(previous => normalize(previous + 1, items.length));
+      }
+    }, AUTO_ADVANCE_MS);
+
+    return () => {
+      window.clearInterval(interval);
+      observer.disconnect();
+      section.removeEventListener("pointerenter", enter);
+      section.removeEventListener("pointerleave", leave);
+      section.removeEventListener("focusin", focusIn);
+      section.removeEventListener("focusout", focusOut);
+    };
+  }, [items.length]);
+
   if (!items.length) return null;
 
   const current = normalize(active, items.length);
@@ -48,7 +98,7 @@ export function Testimonials({ testimonials, index }: { testimonials: SiteConten
   const progressStyle = { ["--review-progress" as string]: `${((current + 1) / items.length) * 100}%` } as CSSProperties;
 
   return (
-    <section id="testimonials" className="section bg-paper-2 review-showcase" aria-labelledby="testimonials-title">
+    <section ref={sectionRef} id="testimonials" className="section bg-paper-2 review-showcase" aria-labelledby="testimonials-title">
       <div className="container-x">
         <header className="review-showcase-heading">
           <div>
@@ -121,7 +171,7 @@ export function Testimonials({ testimonials, index }: { testimonials: SiteConten
             {items.map((item, i) => <button type="button" key={item.id} onClick={() => change(i)}
               className={current === i ? "is-current" : ""} aria-label={`الرأي ${i + 1}`} aria-current={current === i ? "true" : undefined} />)}
           </div>
-          <span className="review-showcase-footer-note">اكتشف المزيد من التجارب</span>
+          <span className="review-showcase-footer-note">الآراء تتبدّل تلقائياً</span>
         </div>}
       </div>
     </section>
