@@ -161,7 +161,7 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music, services 
 
         <nav aria-label="التنقل الرئيسي" className="hidden lg:block">
           <ul ref={navRailRef} onPointerLeave={() => setHoveredNav(null)} className="header-nav-rail flex items-center text-[0.92rem] font-medium">
-            <span className="header-nav-glider" data-visible={navPill.visible} aria-hidden="true"
+            <li className="header-nav-glider" data-visible={navPill.visible} aria-hidden="true"
               style={{ width: navPill.width, transform: `translate3d(${navPill.left}px,0,0)` }} />
             {items.map((item) => (
               <li key={item.id} className={isMega(item.id) ? "nav-mega-parent header-nav-entry" : "header-nav-entry"}
