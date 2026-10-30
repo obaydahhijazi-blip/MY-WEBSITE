@@ -24,6 +24,10 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music, services 
   const [solid, setSolid] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
+  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
+  const [travelKey, setTravelKey] = useState(0);
+  const [navPill, setNavPill] = useState({ left: 0, width: 0, visible: false });
+  const navRailRef = useRef<HTMLUListElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
@@ -66,6 +70,35 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music, services 
       window.removeEventListener("hashchange", onScroll);
     };
   }, [items]);
+
+  // Shared illuminated pill glides between hovered/focused/active sections.
+  // Measuring the real anchors keeps RTL layouts and web fonts correctly aligned.
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const rail = navRailRef.current;
+      const targetId = hoveredNav ?? active;
+      if (!rail || !targetId) {
+        setNavPill(p => p.visible ? { ...p, visible: false } : p);
+        return;
+      }
+      const target = Array.from(rail.querySelectorAll<HTMLAnchorElement>("[data-nav-section]"))
+        .find(a => a.dataset.navSection === targetId);
+      if (!target) return;
+      const parentRect = rail.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      const next = { left: rect.left - parentRect.left, width: rect.width, visible: true };
+      setNavPill(p =>
+        Math.abs(p.left-next.left)<.3 && Math.abs(p.width-next.width)<.3 && p.visible
+          ? p : next
+      );
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    schedule();
+    window.addEventListener("resize", schedule);
+    return () => { window.removeEventListener("resize", schedule); if (frame) cancelAnimationFrame(frame); };
+  }, [hoveredNav, active, items]);
 
   // Mobile menu: Escape to close, focus trap, scroll lock.
   useEffect(() => {
@@ -121,16 +154,25 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music, services 
       data-solid={isSolid}
     >
       <div className="header-inner container-x flex items-center justify-between gap-4 lg:gap-8">
-        <a href={interior ? "/" : "#top"} className="header-wordmark shrink-0 font-latin text-[0.8rem] font-bold tracking-[0.055em] sm:text-[0.92rem]" aria-label={`${nameAr} — العودة إلى الأعلى`}>
-          OBAYDAH<span className="text-cyan">.</span>GRAPHIC
+        <a href={interior ? "/" : "#top"} className="header-brand-original flex shrink-0 items-center" aria-label={`${nameAr} — العودة إلى الأعلى`}>
+          <img src="/images/brand/logo-white.webp" alt="" width={600} height={402} className={`header-brand-image h-10 w-auto sm:h-12 ${isSolid ? "hidden" : ""}`} />
+          <img src="/images/brand/logo-dark.webp" alt="" width={600} height={402} className={`header-brand-image h-10 w-auto sm:h-12 ${isSolid ? "" : "hidden"}`} />
         </a>
 
         <nav aria-label="التنقل الرئيسي" className="hidden lg:block">
-          <ul className="flex items-center gap-5 text-[0.92rem] font-medium xl:gap-7">
+          <ul ref={navRailRef} onPointerLeave={() => setHoveredNav(null)} className="header-nav-rail flex items-center text-[0.92rem] font-medium">
+            <span className="header-nav-glider" data-visible={navPill.visible} aria-hidden="true"
+              style={{ width: navPill.width, transform: `translate3d(${navPill.left}px,0,0)` }} />
             {items.map((item) => (
-              <li key={item.id} className={isMega(item.id) ? "nav-mega-parent" : undefined}>
-                <a href={anchor(item.id)} className="nav-link nav-top-link" aria-current={active === item.id ? "true" : undefined} aria-haspopup={isMega(item.id) ? "true" : undefined}>
-                  {item.label}
+              <li key={item.id} className={isMega(item.id) ? "nav-mega-parent header-nav-entry" : "header-nav-entry"}
+                onPointerEnter={e => { if (e.pointerType === "mouse") setHoveredNav(item.id); }}
+                onFocus={() => setHoveredNav(item.id)}
+                onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setHoveredNav(null); }}>
+                <a href={anchor(item.id)} data-nav-section={item.id}
+                  onClick={() => setTravelKey(k => k + 1)}
+                  className="nav-link nav-top-link header-nav-item-link"
+                  aria-current={active === item.id ? "true" : undefined} aria-haspopup={isMega(item.id) ? "true" : undefined}>
+                  <span className="header-nav-label">{item.label}</span>
                   {isMega(item.id) && <span className="nav-chevron" aria-hidden="true">⌄</span>}
                 </a>
                 {isMega(item.id) && <div className="nav-mega-panel" dir="rtl">
@@ -160,6 +202,8 @@ export function Header({ items, nameAr, whatsappHref, ctaLabel, music, services 
             ))}
           </ul>
         </nav>
+
+        {travelKey > 0 && <span key={travelKey} className="header-section-wipe" aria-hidden="true" />}
 
         <div className="flex items-center gap-1.5 sm:gap-2">
           {music?.src ? <MusicToggle {...music} /> : null}
