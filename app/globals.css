@@ -2571,11 +2571,12 @@ body:has(#mobile-menu:not([hidden])) .back-top {
 .review-showcase-layout.is-single {grid-template-columns:minmax(0,1fr);}
 .review-showcase-feature {
   --feature-pad:clamp(25px,3.8vw,52px);
+  transform-origin:72% 50%;backface-visibility:hidden;
   position:relative;display:flex;flex-direction:column;isolation:isolate;overflow:hidden;min-width:0;
   padding:var(--feature-pad);border-radius:27px;background:#00373e;color:#fff;
   border:1px solid rgb(255 255 255 / .09);
   box-shadow:0 26px 75px -49px rgb(0 50 59 / .38);
-  animation:review-showcase-enter .42s ease both;
+  animation:review-showcase-enter .58s cubic-bezier(.22,.75,.2,1) both;
 }
 .review-showcase-feature::before {content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:
   radial-gradient(circle at 12% 13%,rgb(37 199 215 / .18),transparent 37%),
@@ -2625,7 +2626,15 @@ body:has(#mobile-menu:not([hidden])) .back-top {
 .review-showcase-pages button.is-current::after {background:#007e8c;width:14px;border-radius:99px;}
 .review-showcase-pages button:focus-visible {outline:2px solid #00a7b4;}
 .review-showcase-footer-note {font-size:.75rem;color:#7b9194;white-space:nowrap;}
-@keyframes review-showcase-enter {from {opacity:.45;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes review-showcase-enter {
+  from {opacity:.15;transform:perspective(1200px) rotateY(7deg) translateY(12px) scale(.975);}
+  to {opacity:1;transform:perspective(1200px) rotateY(0deg) translateY(0) scale(1);}
+}
+@keyframes review-showcase-preview-enter {
+  from {opacity:.55;transform:translateY(7px);}
+  to {opacity:1;transform:translateY(0);}
+}
+.review-showcase-preview {animation:review-showcase-preview-enter .4s ease both;}
 @media(max-width:950px){
   .review-showcase-layout {grid-template-columns:minmax(0,1fr);}
   .review-showcase-feature {min-height:365px;}
@@ -2643,7 +2652,7 @@ body:has(#mobile-menu:not([hidden])) .back-top {
   .review-showcase-footer-note {display:none;}
 }
 @media(prefers-reduced-motion:reduce){
-  .review-showcase-feature {animation:none!important;}
+  .review-showcase-feature,.review-showcase-preview {animation:none!important;}
   .review-showcase-nav,.review-showcase-preview,.review-showcase-preview::after,.review-showcase-progress>span {transition:none!important;}
 }
 /* Unified inertial orbit: writing + circle drift and tilt together as one rigid layer.
